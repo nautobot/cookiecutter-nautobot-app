@@ -3,7 +3,7 @@ import os
 import shutil
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
-ADDONS_DIR = f"{PROJECT_DIRECTORY}/{{ cookiecutter.plugin_name }}/"
+ADDONS_DIR = f"{PROJECT_DIRECTORY}/{{ cookiecutter.nautobot_app_name }}/"
 
 
 def remove_file(directory, filepath):
@@ -36,7 +36,7 @@ if __name__ == "__main__":
             "models.py",
             "navigation.py",
             "tables.py",
-            "templates/{{ cookiecutter.plugin_name }}/{{ cookiecutter.model_class_name.lower() }}.html",
+            "templates/{{ cookiecutter.nautobot_app_name }}/{{ cookiecutter.model_class_name.lower() }}.html",
             "tests/fixtures.py",
             "tests/test_api_views.py",
             "tests/test_filter_{{ cookiecutter.model_class_name.lower() }}.py",
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file.
     shutil.copy(
-        os.path.expanduser("~/.cookiecutter_replay/nautobot-plugin.json"),
+        os.path.expanduser("~/.cookiecutter_replay/nautobot-app.json"),
         f"{PROJECT_DIRECTORY}/.cookiecutter.json",
     )
 

@@ -1,0 +1,15 @@
+Cookiecutter Nautobot App
+- Remove `max_nautobot_version` from `cookiecutter.json`
+- Revise `cookiecutter.json` with non-internal defaults
+- Revise `CONTRIBUTORS.md` to be in line with Dev. Standards
+- Bug in `pyproject.toml`? `# NOTE: There is a bug in Markdown v3.3.5 that crashes Poetry`
+- Update URLs namespace to `nautobot_apps:` (blocked by Nautobot v2)
+- Update API URLs namespace to `nautobot_apps-api:` (blocked by Nautobot v2)
+- Update docs URLs from `plugins` to `nautobot-apps` (blocked by Nautobot v2)
+
+Nautobot Core
+- Change: Rename `PLUGINS` to `NAUTOBOT_APPS`
+- Change: Rename `plugins:` URL namespace to `nautobot_apps:`
+- Change: Rename `plugins:` URL namespace to `nautobot_apps-api:`
+- Change: Docs URLs renamed from `plugins` to `nautobot-apps` 
+- 

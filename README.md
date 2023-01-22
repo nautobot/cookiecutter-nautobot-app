@@ -8,7 +8,7 @@ This Cookiecutter template provides a framework, also known as a **cookie**, for
 
 ### IMPORTANT Cookie Notes
 
-- The logo of the project is a placeholder (`docs/images/icon-{{cookiecutter.app_slug}}.png`) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
+- The logo of the project is a placeholder (`docs/images/icon-{{ cookiecutter.app_slug }}.png`) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
 - Please resolve and remove **all** of the comments and blocks marked with `Developer Note - Remove Me!` prior to publishing. Catch'em all with `rgrep "Developer Note" app-root`.
 - The documentation website will be built and hosted on `readthedocs.io` for open source projects and is documented as part of the process.
 
@@ -42,7 +42,7 @@ Let's walk you through baking a **nautobot-app**.
 | **model_class_name** | If you want to generate initial files, such as `models.py`, `forms.py`, `filters.py`, `navigation.py`, `tables.py`, `views`, and API models, initialize this name to a valid model name. The default value is `None` |
 | **Select open_source_license** | Determine if project is open source or not |
 | **docs_base_url**| The main URL where the project documentation will be hosted. For open source projects use the default (`https://docs.nautobot.com`). |
-| **docs_app_url**| The full URL for documentation hosting. You might want to shorten the project alias, for example `https://docs.nautobot.com/projects/data-validation/en/latest` instead of `https://docs.nautobot.com/projects/nautobot-app-data-validation/en/latest`. Make sure there's no trailing `/`! |
+| **docs_nautobot_app_url**| The full URL for documentation hosting. You might want to shorten the project alias, for example `https://docs.nautobot.com/projects/data-validation/en/latest` instead of `https://docs.nautobot.com/projects/nautobot-app-data-validation/en/latest`. Make sure there's no trailing `/`! |
 
 > NOTE: Cookiecutter by default bakes the new cookie within the current working directory. If that is not desirable then use the `-o` option to specify a different output folder.
 
@@ -59,7 +59,6 @@ project_slug [nautobot-app-nautobot-data-validation-engine]: nautobot-app-data-v
 repo_url [https://github.com/nautobot/nautobot-app-data-validation-engine]:
 base_url [nautobot-data-validation-engine]:
 min_nautobot_version [1.2.0]:
-max_nautobot_version [1.9999]:
 nautobot_version [latest]:
 camel_name [NautobotDataValidationEngine]:
 project_short_description [Data Validation Engine]:
@@ -70,7 +69,7 @@ Select open_source_license:
 2 - Not open source
 Choose from 1, 2 [1]:
 docs_base_url [https://docs.nautobot.com]:
-docs_app_url [https://docs.nautobot.com/projects/nautobot-data-validation-engine/en/latest]: https://docs.nautobot.com/projects/data-validation/en/latest
+docs_nautobot_app_url [https://docs.nautobot.com/projects/nautobot-data-validation-engine/en/latest]: https://docs.nautobot.com/projects/data-validation/en/latest
 
 Congratulations!  Your cookie has now been baked. It is located at /vagrant/nautobot-app-data-validation-engine.
 
