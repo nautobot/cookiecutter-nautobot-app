@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+import os
+import shutil
+
+PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
+ADDONS_DIR = f"{PROJECT_DIRECTORY}/{{ cookiecutter.plugin_name }}/"
+
+
+def remove_file(directory, filepath):
+    """
+    Remove a file from the project directory.
+
+    >>> remove_file('./api/', 'text.txt')
+    # It will delete './api/text.txt' from project dir
+
+    Args:
+        directory (str): base directory path
+        filepath (str): file path within the base directory
+    """
+    os.remove(os.path.join(directory, filepath))
+
+
+if __name__ == "__main__":
+
+    if "Not open source" == "{{ cookiecutter.open_source_license }}":
+        remove_file(PROJECT_DIRECTORY, "LICENSE")
+
+    if "None" == "{{ cookiecutter.model_class_name }}":
+        files_to_remove = [
+            "api/nested_serializers.py",
+            "api/serializers.py",
+            "api/urls.py",
+            "api/views.py",
+            "filters.py",
+            "forms.py",
+            "models.py",
+            "navigation.py",
+            "tables.py",
+            "templates/{{ cookiecutter.plugin_name }}/{{ cookiecutter.model_class_name.lower() }}.html",
+            "tests/fixtures.py",
+            "tests/test_api_views.py",
+            "tests/test_filter_{{ cookiecutter.model_class_name.lower() }}.py",
+            "tests/test_form_{{ cookiecutter.model_class_name.lower() }}.py",
+            "tests/test_model_{{ cookiecutter.model_class_name.lower() }}.py",
+            "tests/test_views.py",
+            "urls.py",
+            "views/{{ cookiecutter.model_class_name.lower() }}.py",
+        ]
+        for file in files_to_remove:
+            remove_file(ADDONS_DIR, file)
+
+    # Persist the baked cookie parameters in-repo for future usage as a replay file.
+    shutil.copy(
+        os.path.expanduser("~/.cookiecutter_replay/nautobot-plugin.json"),
+        f"{PROJECT_DIRECTORY}/.cookiecutter.json",
+    )
+
+    print(
+        f"\nCongratulations!  Your cookie has now been baked. It is located at {PROJECT_DIRECTORY}.\n"
+    )
+    print(
+        "⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:\n"
+    )
+    print(
+        f"* poetry lock\n* cp development/creds.example.env development/creds.env\n* invoke makemigrations\n"
+    )
+    print(
+        "creds.env will be ignored by git and can be used to override default environment variables.\n"
+    )
