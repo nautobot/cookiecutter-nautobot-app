@@ -1,5 +1,5 @@
 ARG NAUTOBOT_VER="1.5.7"
-ARG PYTHON_VER=3.8
+ARG PYTHON_VER=3.7
 FROM ghcr.io/nautobot/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
 
 # Make the value available after the FROM directive
