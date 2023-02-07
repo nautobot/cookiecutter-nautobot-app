@@ -2,8 +2,11 @@
 import os
 import shutil
 
+from cookiecutter.config import get_user_config
+
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 ADDONS_DIR = f"{PROJECT_DIRECTORY}/{{ cookiecutter.nautobot_app_name }}/"
+USER_CONFIG = get_user_config()
 
 
 def remove_file(directory, filepath):
@@ -51,7 +54,7 @@ if __name__ == "__main__":
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file.
     shutil.copy(
-        os.path.expanduser("~/.cookiecutter_replay/nautobot-app.json"),
+        os.path.join(USER_CONFIG["replay_dir"], "nautobot-app.json"),
         f"{PROJECT_DIRECTORY}/.cookiecutter.json",
     )
 

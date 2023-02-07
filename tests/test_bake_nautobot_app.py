@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import py
 
@@ -45,6 +47,7 @@ def cookies_baked_nautobot_app(cookies):
                 "app_name": "my_app",
             },
     }
+    os.environ['COOKIECUTTER_CONFIG'] = str(cookies._config_file)
     for app_slug in ["nautobot-app", "my-app"]:
         results[app_slug] = cookies.bake(
             extra_context=extra_context[app_slug]
@@ -60,6 +63,7 @@ def cookies_baked_nautobot_app(cookies):
 
 
 def test_bake_project(cookies):
+    os.environ['COOKIECUTTER_CONFIG'] = str(cookies._config_file)
     result = cookies.bake()
 
     assert result.exit_code == 0
