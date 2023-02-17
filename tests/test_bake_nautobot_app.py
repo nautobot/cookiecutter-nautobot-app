@@ -19,10 +19,9 @@ def init_examples_project(project_name):
     # e.g. "../../examples/{project_name}"
     # examples_project = Path(__file__).parent.parent / "examples" / project_name
     examples_project = py.path.local(__file__ + f"/../../examples/{project_name}")
-    examples_project = Path(str(examples_project))
 
     # Clean examples project
-    if examples_project.is_dir():
+    if examples_project.isdir():
         shutil.rmtree(examples_project)
         examples_project.mkdir()
     else:
@@ -86,4 +85,4 @@ def test_bake_nautobot_execution(cookies_baked_nautobot_app):
     app_slug = "nautobot-app"
     assert results[app_slug].exit_code == 0
     assert results[app_slug].exception is None
-    assert examples_projects[app_slug].is_dir()
+    assert examples_projects[app_slug].isdir()
