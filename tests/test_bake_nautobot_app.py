@@ -16,7 +16,7 @@ def init_examples_project(project_name):
         examples_project (py.path.local): Created example project
     """
     # Set examples folder to cookiecutter level directory
-    examples_project = Path.cwd() / "examples" / project_name
+    examples_project = Path("examples") / project_name
 
     # Clean examples project
     if examples_project.is_dir():
