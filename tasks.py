@@ -1,12 +1,14 @@
 import pathlib
+import shutil
 import sys
-from invoke import task
 from glob import glob
+
+from invoke import task
 
 
 @task
 def test(context):
-    """Test a specific cookiecutter template."""
+    """Test that the cookie bakes."""
     test_dir = pathlib.Path.cwd() / "tests"
     if test_dir.exists():
         print("Starting Tests")
@@ -21,7 +23,7 @@ def test(context):
     }
 )
 def baked_test(context, build=False):
-    """Execute tests within a baked cookiecutter example."""
+    """Execute tests within a baked cookie example."""
     context.run(f"invoke test")
 
     for baked_cookie in glob("examples/*"):
@@ -35,3 +37,10 @@ def baked_test(context, build=False):
 
             context.run("invoke tests")
             context.run("invoke stop")
+
+
+@task
+def cleanup(context):
+    """Cleanup baked cookie example directories."""
+    for example in glob("examples/*"):
+        shutil.rmtree(example)

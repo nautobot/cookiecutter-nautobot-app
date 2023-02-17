@@ -1,7 +1,7 @@
 ---
-{{ cookiecutter.nautobot_app_name }}:
-  project_name: "{{ cookiecutter.nautobot_app_slug }}"
-  nautobot_ver: "{{ cookiecutter.nautobot_version }}"
+{{cookiecutter.nautobot_app_name}}:
+  project_name: "{{cookiecutter.nautobot_app_slug}}"
+  nautobot_ver: "{{cookiecutter.nautobot_version}}"
   local: false
   python_ver: "3.7"
   compose_dir: "development"

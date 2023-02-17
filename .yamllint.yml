@@ -10,11 +10,3 @@ rules:
     quote-type: "double"
 ignore: |
   .venv/
-  ansible-collection/{{ cookiecutter.project_slug }}/collections/requirements.yml
-  ansible-collection/{{ cookiecutter.project_slug }}/roles/requirements.yml
-  ansible-collection/{{ cookiecutter.project_slug }}/galaxy.yml
-  ansible-collection/{{ cookiecutter.project_slug }}/requirements.yml
-  ansible-project/{{ cookiecutter.project_slug }}/collections/requirements.yml
-  ansible-project/{{ cookiecutter.project_slug }}/roles/requirements.yml
-  ansible-project/{{ cookiecutter.project_slug }}/requirements.yml
-  python/{{ cookiecutter.project_slug }}/.github/workflows/ci.yml
