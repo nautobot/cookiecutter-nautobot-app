@@ -15,9 +15,9 @@ Markdown = "3.3.4"
 [tool.poetry.dev-dependencies]
 pytest = "~7.2.1"
 pytest-cookies = "~0.6.1"
-invoke = "~1.4.1"
+invoke = "~1.7.3"
 yamllint = "^1.23.0"
-black = "~21.12b0"
+black = "~23.1.0"
 toml = "~0.10.2"
 
 [build-system]

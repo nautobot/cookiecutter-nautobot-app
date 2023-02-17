@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file.
     shutil.copy(
-        os.path.join(USER_CONFIG["replay_dir"], "nautobot-app.json"),
+        os.path.join(USER_CONFIG["replay_dir"], "cookiecutter-nautobot-app.json"),
         f"{PROJECT_DIRECTORY}/.cookiecutter.json",
     )
 

@@ -127,3 +127,26 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+### vscode ###
+.vscode/*
+*.code-workspace
+
+# Rando
+creds.env
+development/*.txt
+
+# Invoke overrides
+invoke.yml
+
+# Docs
+docs/README.md
+docs/CHANGELOG.md
+public
+
+# Nested example files
+examples/*
+
+# Self-signed certs
+nautobot.crt
+nautobot.key
