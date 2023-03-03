@@ -1,6 +1,6 @@
 # Cookiecutter for Nautobot Apps.
 
-**NOTICE ⚠️:** This recipe is intended for 1.5.2+/2.0 of Nautobot. It will not be compatible with previous releases of Nautobot that do not have support for [our Apps API](https://docs.nautobot.com/projects/core/en/stable/release-notes/version-1.5/?h=api+app#nautobot-apps-api-2723) and has not been ratified. Until then, please check out [the existing cookie in the NTC org](https://github.com/networktocode-llc/cookiecutter-ntc/tree/main/nautobot-plugin).
+**NOTICE ⚠️:** This recipe requires Nautobot 1.5.2+. It will not be compatible with previous releases of Nautobot that do not have support for [our Apps API](https://docs.nautobot.com/projects/core/en/stable/release-notes/version-1.5/#nautobot-apps-api-2723) and has not been ratified. Until then, please check out [the existing cookie in the NTC org](https://github.com/networktocode-llc/cookiecutter-ntc/tree/main/nautobot-plugin). This will be the future home of the Nautobot App Cookie for the purpose of 2.0 migration, open-sourcing, and book.
 
 ## Introduction
 
