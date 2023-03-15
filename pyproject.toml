@@ -6,7 +6,7 @@ authors = ["Network to Code, LLC <info@networktocode.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-cookiecutter = "^1.7.2"
+cookiecutter = "~2.1.1"
 pyyaml = "^5.3.1"
 # NOTE: There is a bug in Markdown v3.3.5 that crashes Poetry
 # TODO(jathan): ^ Is the line above still relevant?
