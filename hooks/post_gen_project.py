@@ -1,9 +1,11 @@
-#!/usr/bin/env python
 import os
 import shutil
 
+from cookiecutter.config import get_user_config
+
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 ADDONS_DIR = f"{PROJECT_DIRECTORY}/{{ cookiecutter.nautobot_app_name }}/"
+USER_CONFIG = get_user_config()
 
 
 def remove_file(directory, filepath):
@@ -20,12 +22,25 @@ def remove_file(directory, filepath):
     os.remove(os.path.join(directory, filepath))
 
 
-if __name__ == "__main__":
+CONGRATS = f"""
+Congratulations! Your cookie has now been baked. It is located at {PROJECT_DIRECTORY}.
 
+⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
+
+* poetry lock
+* cp development/creds.example.env development/creds.env
+* poetry shell
+* invoke makemigrations
+
+The file "creds.env will be ignored by git and can be used to override default environment variables.
+"""
+
+
+if __name__ == "__main__":
     if "Not open source" == "{{ cookiecutter.open_source_license }}":
         remove_file(PROJECT_DIRECTORY, "LICENSE")
 
-    if "None" == "{{ cookiecutter.model_class_name }}":
+    if "{{ cookiecutter.model_class_name }}" == "None":
         files_to_remove = [
             "api/nested_serializers.py",
             "api/serializers.py",
@@ -51,19 +66,8 @@ if __name__ == "__main__":
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file.
     shutil.copy(
-        os.path.expanduser("~/.cookiecutter_replay/nautobot-app.json"),
+        os.path.join(USER_CONFIG["replay_dir"], "nautobot-app.json"),
         f"{PROJECT_DIRECTORY}/.cookiecutter.json",
     )
 
-    print(
-        f"\nCongratulations!  Your cookie has now been baked. It is located at {PROJECT_DIRECTORY}.\n"
-    )
-    print(
-        "⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:\n"
-    )
-    print(
-        f"* poetry lock\n* cp development/creds.example.env development/creds.env\n* invoke makemigrations\n"
-    )
-    print(
-        "creds.env will be ignored by git and can be used to override default environment variables.\n"
-    )
+    print(CONGRATS)
