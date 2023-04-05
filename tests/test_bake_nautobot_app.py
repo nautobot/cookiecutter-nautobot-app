@@ -38,11 +38,11 @@ def cookies_baked_nautobot_app(cookies):
     extra_context = {
         "nautobot-app": {
                 "open_source_license": "Not open source",
-                "app_name": "nautobot_app",
+                "nautobot_app_name": "nautobot_app",
             },
         "my-app": {
                 "open_source_license": "Apache-2.0",
-                "app_name": "my_app",
+                "nautobot_app_name": "my_app",
             },
     }
     for app_slug in ["nautobot-app", "my-app"]:
