@@ -1,4 +1,4 @@
-"""Django URL routes for {{ cookiecutter.nautobot_app_name }}."""
+"""Django urlpatterns declaration for {{ cookiecutter.verbose_name }}."""
 from django.urls import path
 from nautobot.extras.views import ObjectChangeLogView
 
@@ -19,6 +19,6 @@ urlpatterns = [
         "{{ cookiecutter.model_class_name | lower }}/<slug:slug>/changelog/",
         ObjectChangeLogView.as_view(),
         name="{{ cookiecutter.model_class_name.lower() }}_changelog",
-        kwargs={"model": models.{{ cookiecutter.model_class_name }} },
+        kwargs={"model": models.{{ cookiecutter.model_class_name }}},
     ),
 ]
