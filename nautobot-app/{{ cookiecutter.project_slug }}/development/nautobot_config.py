@@ -3,8 +3,8 @@
 import os
 import sys
 
-from nautobot.core.settings import *  # noqa: F403
-from nautobot.core.settings_funcs import parse_redis_connection
+from nautobot.core.settings import *  # noqa: F403  # pylint: disable=wildcard-import,unused-wildcard-import
+from nautobot.core.settings_funcs import parse_redis_connection, is_truthy
 
 
 #
@@ -46,7 +46,9 @@ if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
 # Debug
 #
 
-DEBUG = True
+DEBUG = is_truthy(os.getenv("NAUTOBOT_DEBUG", False))
+
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 # Django Debug Toolbar
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda _request: DEBUG and not TESTING}
@@ -61,8 +63,6 @@ if DEBUG and "debug_toolbar.middleware.DebugToolbarMiddleware" not in MIDDLEWARE
 #
 
 LOG_LEVEL = "DEBUG" if DEBUG else "INFO"
-
-TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 # Verbose logging during normal development operation, but quiet logging during unit test execution
 if not TESTING:
@@ -134,9 +134,6 @@ CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 # Enable installed plugins. Add the name of each plugin to the list.
 NAUTOBOT_APPS = ["{{ cookiecutter.nautobot_app_name }}"]
 
-# Backwarsd compatibility for v1.x
-PLUGINS = NAUTOBOT_APPS
-
 # Nautobot App configuration settings. These settings are used by various plugins that the user may have installed.
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 # NAUTOBOT_APPS_CONFIG = {
@@ -147,4 +144,5 @@ PLUGINS = NAUTOBOT_APPS
 # }
 #
 # Backwarsd compatibility for v1.x
+# PLUGINS = NAUTOBOT_APPS
 # PLUGINS_CONFIG = NAUTOBOT_APPS_CONFIG
