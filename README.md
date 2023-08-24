@@ -10,7 +10,7 @@ This Cookiecutter template provides a framework, also known as a **cookie**, for
 
 ### IMPORTANT Cookie Notes
 
-- The logo of the project is a placeholder (`docs/images/icon-{{ cookiecutter.app_slug }}.png`) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
+- The logo of the project is a placeholder (`docs/images/icon-{{ cookiecutter.nautobot_app_slug }}.png`) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
 - Please resolve and remove **all** of the comments and blocks marked with `Developer Note - Remove Me!` prior to publishing. Catch'em all with `rgrep "Developer Note" app-root`.
 - The documentation website will be built and hosted on `readthedocs.io` for open source projects and is documented as part of the process.
 
@@ -30,13 +30,12 @@ Let's walk you through baking a **nautobot-app**.
 | **full_name** | Used in the **author** field within `pyproject.toml` and `NautobotAppConfig` |
 | **email** | Used in the **author** field within `pyproject.toml` |
 | **github_org** | Used to construct **repo_url** |
-| **app_name** | The Python name of the Nautobot App |
+| **nautobot_app_name** | The Python name of the Nautobot App |
 | **verbose_name** | Used in `NautobotAppConfig` |
-| **app_slug** | Python packaging name |
+| **nautobot_app_slug** | Python packaging name |
 | **project_slug** | Used to construct **repo_url** |
 | **base_url** | Defines Nautobot App's base URL used in Nautobot |
 | **min_nautobot_version** | The minimum supported Nautobot version |
-| **max_nautobot_version** | The maximum supported Nautobot version |
 | **nautobot_version** | Used for development purposes to decide with Nautobot-dev Docker image to use for development |
 | **camel_name** | Used to define the Nautobot App's subclassing of `NautobotAppConfig`, e.g. `MyNautobotAppConfig(NautobotAppConfig):` |
 | **project_short_description** | Used in the **description** field within `NautobotAppConfig` |
@@ -54,13 +53,13 @@ codeowner_github_usernames [@smith-ntc]:
 full_name [Network to Code, LLC]:
 email [info@networktocode.com]:
 github_org [nautobot]:
-app_name [my_nautobot_app]: nautobot_data_validation_engine
+nautobot_app_name [my_nautobot_app]: nautobot_data_validation_engine
 verbose_name [Nautobot Data Validation Engine]: Data Validation Engine
-app_slug [nautobot-data-validation-engine]:
+nautobot_app_slug [nautobot-data-validation-engine]:
 project_slug [nautobot-app-nautobot-data-validation-engine]: nautobot-app-data-validation-engine
 repo_url [https://github.com/nautobot/nautobot-app-data-validation-engine]:
 base_url [nautobot-data-validation-engine]:
-min_nautobot_version [1.2.0]:
+min_nautobot_version [1.5.2]:
 nautobot_version [latest]:
 camel_name [NautobotDataValidationEngine]:
 project_short_description [Data Validation Engine]:

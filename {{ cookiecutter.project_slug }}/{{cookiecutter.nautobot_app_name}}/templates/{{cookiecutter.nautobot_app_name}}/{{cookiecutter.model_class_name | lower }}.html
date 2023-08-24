@@ -1,5 +1,5 @@
 {% raw %}
-{% extends 'base.html' %}
+{% extends 'generic/object_retrieve.html' %}
 {% load buttons %}
 {% load static %}
 {% load custom_links %}
@@ -89,12 +89,12 @@
 		</div>
 		{% include 'inc/custom_fields_panel.html' %}
 		{% include 'inc/relationships_panel.html' %}
-		{% nautobot_app_left_page object %}
+		{% plugin_left_page object %}
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
-		{% nautobot_app_full_width_page object %}
+		{% plugin_full_width_page object %}
 	</div>
 </div>
 {% endblock %}

@@ -1,5 +1,5 @@
-"""Nautobot App declaration for {{ cookiecutter.nautobot_app_name }}."""
-# Metadata is inherited from Nautobot. If not including Nautobot in the  environment, this should be added.
+"""Nautobot App declaration for {{ cookiecutter.verbose_name }}."""
+# Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added.
 try:
     from importlib import metadata
 except ImportError:

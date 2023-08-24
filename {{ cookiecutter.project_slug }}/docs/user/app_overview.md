@@ -15,6 +15,9 @@ This document provides an overview of the App including critical information and
 
 ## Authors and Maintainers
 
+!!! warning "Developer Note - Remove Me!"
+    Add the team and/or the main individuals maintaining this project. Include historical maintainers as well.
+
 ## Nautobot Features Used
 
 !!! warning "Developer Note - Remove Me!"

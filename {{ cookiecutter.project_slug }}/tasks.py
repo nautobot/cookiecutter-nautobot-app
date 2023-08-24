@@ -40,7 +40,7 @@ namespace.configure(
         "{{ cookiecutter.nautobot_app_name }}": {
             "nautobot_ver": "{{ cookiecutter.nautobot_version }}",
             "project_name": "{{ cookiecutter.nautobot_app_name }}",
-            "python_ver": "3.7",
+            "python_ver": "3.8",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
@@ -89,12 +89,26 @@ def docker_compose(context, command, **kwargs):
         "NAUTOBOT_VER": context.{{ cookiecutter.nautobot_app_name }}.nautobot_ver,
         "PYTHON_VER": context.{{ cookiecutter.nautobot_app_name }}.python_ver,
     }
-    compose_command = f'docker-compose --project-name {context.{{ cookiecutter.nautobot_app_name }}.project_name} --project-directory "{context.{{ cookiecutter.nautobot_app_name }}.compose_dir}"'
+    compose_command_tokens = [
+        "docker-compose",
+        f"--project-name {context.{{ cookiecutter.nautobot_app_name }}.project_name}",
+        f'--project-directory "{context.{{ cookiecutter.nautobot_app_name }}.compose_dir}"',
+    ]
+
     for compose_file in context.{{ cookiecutter.nautobot_app_name }}.compose_files:
         compose_file_path = os.path.join(context.{{ cookiecutter.nautobot_app_name }}.compose_dir, compose_file)
-        compose_command += f' -f "{compose_file_path}"'
-    compose_command += f" {command}"
+        compose_command_tokens.append(f' -f "{compose_file_path}"')
+
+    compose_command_tokens.append(command)
+
+    # If `service` was passed as a kwarg, add it to the end.
+    service = kwargs.pop("service", None)
+    if service is not None:
+        compose_command_tokens.append(service)
+
     print(f'Running docker-compose command "{command}"')
+    compose_command = " ".join(compose_command_tokens)
+
     return context.run(compose_command, env=build_env, **kwargs)
 
 
@@ -153,11 +167,11 @@ def debug(context):
     docker_compose(context, "up")
 
 
-@task
-def start(context):
+@task(help={"service": "If specified, only affect this service."})
+def start(context, service=None):
     """Start Nautobot and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
-    docker_compose(context, "up --detach")
+    docker_compose(context, "up --detach", service=service)
 
 
 @task
@@ -295,10 +309,10 @@ def docs(context):
     command = "mkdocs serve -v"
 
     if is_truthy(context.{{ cookiecutter.nautobot_app_name }}.local):
-        print("Serving Documentation...")
+        print(">>> Serving Documentation at http://localhost:8001")
         run_command(context, command)
     else:
-        print("Only used when developing locally (i.e. context.{{ cookiecutter.nautobot_app_name }}.local=True)!")
+        start(context, service="docs")
 
 
 # ------------------------------------------------------------------------------

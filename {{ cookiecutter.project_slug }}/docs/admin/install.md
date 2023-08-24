@@ -21,7 +21,7 @@ Here you will find detailed instructions on how to **install** and **configure**
 ## Install Guide
 
 !!! note
-    Nautobot Apps can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this Nautobot App 
+    Nautobot Apps can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this Nautobot App
     is [`{{ cookiecutter.nautobot_app_slug }}`](https://pypi.org/project/{{ cookiecutter.nautobot_app_slug }}/).
 
 This Nautobot App is available as a Python package via PyPI and can be installed with `pip`:
