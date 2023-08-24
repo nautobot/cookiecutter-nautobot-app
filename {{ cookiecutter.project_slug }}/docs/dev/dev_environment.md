@@ -401,7 +401,7 @@ namespace.configure(
 )
 ```
 
-Or set the `INVOKE_NAUTOBOT_GOLDEN_CONFIG_PYTHON_VER` variable.
+Or set the `INVOKE_{{ cookiecutter.nautobot_app_name.upper() }}_PYTHON_VER` variable.
 
 ### Updating Nautobot Version
 
