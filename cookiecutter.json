@@ -9,7 +9,7 @@
     "project_slug": "nautobot-app-{{ cookiecutter.nautobot_app_slug }}",
     "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
     "base_url": "{{ cookiecutter.nautobot_app_slug }}",
-    "min_nautobot_version": "1.5.7",
+    "min_nautobot_version": "1.5.2",
     "nautobot_version": "latest",
     "camel_name": "{{ cookiecutter.nautobot_app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",

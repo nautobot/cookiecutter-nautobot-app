@@ -7,8 +7,9 @@ menu_items = (
     NavMenuItem(
         link="plugins:{{ cookiecutter.nautobot_app_name }}:{{ cookiecutter.model_class_name.lower() }}_list",
         link_text="{{ cookiecutter.verbose_name }}",
+        permissions=["{{ cookiecutter.nautobot_app_name }}.view_{{ cookiecutter.model_class_name.lower() }}"],
         buttons=(
-            Na vMenuButton(
+            NavMenuButton(
                 link="plugins:{{ cookiecutter.nautobot_app_name }}:{{ cookiecutter.model_class_name.lower() }}_add",
                 title="Add",
                 icon_class="mdi mdi-plus-thick",

@@ -1,4 +1,4 @@
-"""Unit tests for {{ cookiecutter.nautobot_app_name }}."""
+"""Unit tests for {{ cookiecutter.verbose_name }}."""
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse

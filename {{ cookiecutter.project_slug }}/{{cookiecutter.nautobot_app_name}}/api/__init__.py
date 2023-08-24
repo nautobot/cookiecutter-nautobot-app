@@ -1,1 +1,1 @@
-"""REST API module for {{ cookiecutter.nautobot_app_name }}."""
+"""REST API module for {{ cookiecutter.verbose_name }}."""

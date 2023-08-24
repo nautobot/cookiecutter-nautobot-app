@@ -1,4 +1,4 @@
-"""Unit tests for {{ cookiecutter.nautobot_app_name }}."""
+"""Unit tests for {{ cookiecutter.verbose_name }}."""
 from nautobot.utilities.testing import APIViewTestCases
 
 from {{ cookiecutter.nautobot_app_name }} import models

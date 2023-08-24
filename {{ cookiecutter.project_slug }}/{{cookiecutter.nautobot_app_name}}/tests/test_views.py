@@ -22,10 +22,16 @@ class {{ cookiecutter.model_class_name }}ViewTest(ViewTestCases.PrimaryObjectVie
         fixtures.create_{{ cookiecutter.model_class_name.lower() }}()
 
     def test_bulk_import_objects_with_constrained_permission(self):
-        pass
+        """Auto-generated model does not implement `bulk_import`."""
 
     def test_bulk_import_objects_with_permission(self):
-        pass
+        """Auto-generated model does not implement `bulk_import`."""
 
     def test_bulk_import_objects_without_permission(self):
-        pass
+        """Auto-generated model does not implement `bulk_import`."""
+
+    def test_bulk_import_objects_with_permission_csv_file(self):
+        """Auto-generated model does not implement `bulk_import`."""
+
+    def test_has_advanced_tab(self):
+        """Auto-generated model does not implement an advanced tab."""

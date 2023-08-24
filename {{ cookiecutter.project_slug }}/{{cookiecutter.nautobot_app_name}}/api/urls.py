@@ -1,4 +1,4 @@
-"""Django REST Framework API URL routes for {{ cookiecutter.nautobot_app_name }}."""
+"""Django API urlpatterns declaration for {{ cookiecutter.nautobot_app_name }}."""
 
 from nautobot.core.api import OrderedDefaultRouter
 

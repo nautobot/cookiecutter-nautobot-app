@@ -394,7 +394,7 @@ namespace.configure(
     {
         "{{ cookiecutter.nautobot_app_name }}": {
             ...
-            "python_ver": "3.7",
+            "python_ver": "3.8",
 	    ...
         }
     }
@@ -413,7 +413,7 @@ namespace.configure(
     {
         "{{ cookiecutter.nautobot_app_name }}": {
             ...
-            "nautobot_ver": "1.0.2",
+            "nautobot_ver": "1.5.2",
 	    ...
         }
     }

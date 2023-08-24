@@ -1,1 +1,1 @@
-"""Unit tests for {{ cookiecutter.nautobot_app_name }}."""
+"""Unit tests for {{ cookiecutter.verbose_name }}."""

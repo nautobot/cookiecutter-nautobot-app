@@ -15,3 +15,5 @@ To install the App, please follow the instructions detailed in the [Installation
 
 !!! warning "Developer Note - Remove Me!"
     After taking the first steps, what else could the users look at doing.
+
+You can check out the [Use Cases](app_use_cases.md) section for more examples.
