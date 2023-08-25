@@ -1,0 +1,12 @@
+---
+{{cookiecutter.plugin_name}}:
+  project_name: "{{cookiecutter.plugin_slug}}"
+  nautobot_ver: "{{cookiecutter.nautobot_version}}"
+  local: false
+  python_ver: "3.8"
+  compose_dir: "development"
+  compose_files:
+    - "docker-compose.base.yml"
+    - "docker-compose.redis.yml"
+    - "docker-compose.postgres.yml"
+    - "docker-compose.dev.yml"

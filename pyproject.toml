@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "cookiecutter-nautobot-app"
+version = "1.0.0"
+description = "Cookiecutter template for baking Nautobot App cookies."
+authors = ["Network to Code, LLC <info@networktocode.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+cookiecutter = "^2.3.0"
+pyyaml = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-cookies = "*"
+invoke = "*"
+yamllint = "*"
+black = "*"
+toml = "*"
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
