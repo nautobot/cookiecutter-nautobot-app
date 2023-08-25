@@ -1,3 +1,15 @@
+- Should `tasks.py` and `invoke.*.yml` be common across templates?
+- Update `nautobot-app/tests/test_bake_nautobot_app.py`
+- Run `rgrep -i plugin` and hunt down all remaining rebranding survivors (apart from valid links)
+- Review nautobot-app templated CI files
+- Update and test main repo CI pipeline
+- Update CODEOWNERS
+- Update README
+- Test and fix any necessary version pins in pyproject.toml
+
+
+## Pre-integrations todo
+
 Cookiecutter Nautobot App
 - Remove `max_nautobot_version` from `cookiecutter.json`
 - Revise `cookiecutter.json` with non-internal defaults
@@ -11,5 +23,5 @@ Nautobot Core
 - Change: Rename `PLUGINS` to `NAUTOBOT_APPS`
 - Change: Rename `plugins:` URL namespace to `nautobot_apps:`
 - Change: Rename `plugins:` URL namespace to `nautobot_apps-api:`
-- Change: Docs URLs renamed from `plugins` to `nautobot-apps` 
-- 
+- Change: Docs URLs renamed from `plugins` to `nautobot-apps`
+-

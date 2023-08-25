@@ -2,16 +2,17 @@
 
 Here you will find any steps necessary to cleanly remove the App from your Nautobot environment.
 
-## Uninstall Guide
-
-!!! warning "Developer Note - Remove Me!"
-    Detailed instructions on how to remove the app from Nautobot.
-
-Remove the configuration you added in `nautobot_config.py` from `NAUTOBOT_APPS` & `NAUTOBOT_APPS_CONFIG`.
-
 ## Database Cleanup
 
-!!! warning "Developer Note - Remove Me!"
-    Any cleanup operations to ensure the database is clean after the app is removed. Beyond deleting tables, is there anything else that needs cleaning up, such as CFs, relationships, etc. if they're no longer desired?
+Prior to removing the App from the `nautobot_config.py`, run the following command to roll back any migration specific to this App.
 
-Drop all tables from the Nautobot App: `{{ cookiecutter.project_slug.replace('-', '_') }}*`.
+```shell
+nautobot-server migrate {{cookiecutter.project_slug.replace('-', '_')}} zero
+```
+
+!!! warning "Developer Note - Remove Me!"
+    Any other cleanup operations to ensure the database is clean after the app is removed. Is there anything else that needs cleaning up, such as CFs, relationships, etc. if they're no longer desired?
+
+## Remove App configuration
+
+Remove the configuration you added in `nautobot_config.py` from `PLUGINS` & `PLUGINS_CONFIG`.

@@ -1,29 +1,13 @@
+import json
 import os
-import shutil
+from collections import OrderedDict
+from pathlib import Path
 
-from cookiecutter.config import get_user_config
+_PROJECT_PATH = Path.cwd()
+_ADDONS_PATH = _PROJECT_PATH / "{{ cookiecutter.nautobot_app_name }}"
 
-PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
-ADDONS_DIR = f"{PROJECT_DIRECTORY}/{{ cookiecutter.nautobot_app_name }}/"
-USER_CONFIG = get_user_config()
-
-
-def remove_file(directory, filepath):
-    """
-    Remove a file from the project directory.
-
-    >>> remove_file('./api/', 'text.txt')
-    # It will delete './api/text.txt' from project dir
-
-    Args:
-        directory (str): base directory path
-        filepath (str): file path within the base directory
-    """
-    os.remove(os.path.join(directory, filepath))
-
-
-CONGRATS = f"""
-Congratulations! Your cookie has now been baked. It is located at {PROJECT_DIRECTORY}.
+_CONGRATS = f"""
+Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH}.
 
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
@@ -35,10 +19,9 @@ Congratulations! Your cookie has now been baked. It is located at {PROJECT_DIREC
 The file "creds.env will be ignored by git and can be used to override default environment variables.
 """
 
-
 if __name__ == "__main__":
     if "Not open source" == "{{ cookiecutter.open_source_license }}":
-        remove_file(PROJECT_DIRECTORY, "LICENSE")
+        (_PROJECT_PATH / "LICENSE").unlink()
 
     if "{{ cookiecutter.model_class_name }}" == "None":
         files_to_remove = [
@@ -62,12 +45,10 @@ if __name__ == "__main__":
             "views/{{ cookiecutter.model_class_name.lower() }}.py",
         ]
         for file in files_to_remove:
-            remove_file(ADDONS_DIR, file)
+            (_ADDONS_PATH / file).unlink()
 
-    # Persist the baked cookie parameters in-repo for future usage as a replay file.
-    shutil.copy(
-        os.path.join(USER_CONFIG["replay_dir"], "nautobot-app.json"),
-        f"{PROJECT_DIRECTORY}/.cookiecutter.json",
-    )
+    # Persist the baked cookie parameters in-repo for future usage as a replay file or for the drift management.
+    cookie = {{ cookiecutter }}
+    (_PROJECT_PATH / ".cookiecutter.json").write_text(json.dumps({"cookiecutter": cookie}, indent=4) + "\n", encoding="utf-8")
 
-    print(CONGRATS)
+    print(_CONGRATS)
