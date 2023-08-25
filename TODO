@@ -4,6 +4,7 @@
 - Review nautobot-app templated CI files
 - Update and test main repo CI pipeline
 - Update CODEOWNERS
+- Update README
 - Test and fix any necessary version pins in pyproject.toml
 
 
