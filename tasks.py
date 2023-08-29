@@ -347,7 +347,6 @@ def bandit(context, service=_DEFAULT_SERVICE):
         "--configfile=.bandit.yml",
         "--recursive",
         "*.py",
-        "pyproject.toml",
     ]
     context.run(" ".join(command))
 
