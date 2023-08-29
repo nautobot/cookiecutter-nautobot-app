@@ -38,6 +38,8 @@ RUN useradd \
     --shell /bin/bash \
     --uid $USER_UID \
     $USER_NAME
+# Set site-packages ownership to the user
+RUN chown -R $USER_UID:$USER_UID $(python -c "import site; print(site.getsitepackages()[0])")
 USER $USER_NAME
 RUN poetry config virtualenvs.create false && \
     poetry config installer.parallel true

@@ -102,7 +102,7 @@ def _prefix_command(
             yield f"--entrypoint='{entrypoint}'"
 
     if root:
-        yield "user=root"
+        yield "--user=root"
 
     yield "--"
     yield service
