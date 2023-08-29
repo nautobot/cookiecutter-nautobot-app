@@ -1,0 +1,28 @@
+---
+x-common-build: &common-build
+  context: ".."
+  dockerfile: "development/Dockerfile"
+  args:
+    FROM_IMAGE:
+    TARGET_WORKDIR:
+    USER_NAME:
+    USER_UID:
+services:
+  dev:
+    image: "$IMAGE_PREFIX/dev:$IMAGE_TAG"
+    hostname: "dev"
+    build:
+      <<: *common-build
+      target: "dev"
+    environment:
+      DEFAULT_BRANCH:
+      DEFAULT_REMOTE_NAME:
+      GITHUB_TOKEN:
+    volumes:
+      - "$PWD:$TARGET_WORKDIR"
+  qa:
+    image: "$IMAGE_PREFIX/qa:$IMAGE_TAG"
+    hostname: "qa"
+    build:
+      <<: *common-build
+      target: "qa"
