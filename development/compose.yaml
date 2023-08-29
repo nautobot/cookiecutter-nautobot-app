@@ -14,10 +14,6 @@ services:
     build:
       <<: *common-build
       target: "dev"
-    environment:
-      DEFAULT_BRANCH:
-      DEFAULT_REMOTE_NAME:
-      GITHUB_TOKEN:
     volumes:
       - "$PWD:$TARGET_WORKDIR"
   qa:
