@@ -27,7 +27,7 @@ importlib-metadata = "4.13.0"
 # Used for local development
 nautobot = { version = "^{{cookiecutter.min_nautobot_version}}", optional = true }
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 bandit = "*"
 black = "*"
 coverage = "*"
