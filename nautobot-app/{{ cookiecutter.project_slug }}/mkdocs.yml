@@ -1,7 +1,56 @@
 ---
-copyright: "Copyright &copy; The Authors"
 dev_addr: "127.0.0.1:8001"
 edit_uri: "edit/main/{{cookiecutter.project_slug}}/docs"
+site_dir: "{{cookiecutter.plugin_name}}/static/{{cookiecutter.plugin_name}}/docs"
+site_name: "{{cookiecutter.verbose_name}} Documentation"
+site_url: "{{cookiecutter.docs_app_url}}/"
+repo_url: "{{cookiecutter.repo_url}}"
+copyright: "Copyright &copy; The Authors"
+theme:
+  name: "material"
+  navigation_depth: 4
+  custom_dir: "docs/assets/overrides"
+  hljs_languages:
+    - "django"
+    - "yaml"
+  features:
+    - "content.action.edit"
+    - "content.action.view"
+    - "content.code.copy"
+    - "navigation.footer"
+    - "navigation.indexes"
+    - "navigation.tabs"
+    - "navigation.tabs.sticky"
+    - "navigation.tracking"
+    - "search.highlight"
+    - "search.share"
+    - "search.suggest"
+  favicon: "assets/favicon.ico"
+  logo: "assets/nautobot_logo.svg"
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: "default"
+      primary: "black"
+      toggle:
+        icon: "material/weather-sunny"
+        name: "Switch to dark mode"
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: "slate"
+      primary: "black"
+      toggle:
+        icon: "material/weather-night"
+        name: "Switch to light mode"
+extra_css:
+  - "assets/extra.css"
+
+# needed for RTD version flyout menu
+# jquery is not (yet) injected by RTD automatically and it might be dropped
+# as a dependency in the future
+extra_javascript:
+  - "https://code.jquery.com/jquery-3.6.0.min.js"
 
 extra:
   generator: false
@@ -22,16 +71,6 @@ extra:
     - icon: "fontawesome/brands/twitter"
       link: "https://twitter.com/networktocode"
       name: "Network to Code Twitter"
-
-extra_css:
-  - "assets/extra.css"
-
-# needed for RTD version flyout menu
-# jquery is not (yet) injected by RTD automatically and it might be dropped
-# as a dependency in the future
-extra_javascript:
-  - "https://code.jquery.com/jquery-3.6.0.min.js"
-
 markdown_extensions:
   - "admonition"
   - "toc":
@@ -44,6 +83,18 @@ markdown_extensions:
   - "pymdownx.snippets"
   - "pymdownx.superfences"
   - "footnotes"
+plugins:
+  - "search"
+  - "mkdocs-version-annotations"
+  - "mkdocstrings":
+      default_handler: "python"
+      handlers:
+        python:
+          paths: ["."]
+          options:
+            show_root_heading: true
+watch:
+  - "README.md"
 
 nav:
   - Overview: "index.md"
@@ -71,60 +122,3 @@ nav:
           - Package: "dev/code_reference/package.md"
           - API: "dev/code_reference/api.md"
   - Nautobot Docs Home ↗︎: "{{ cookiecutter.docs_base_url }}"
-
-plugins:
-  - "search"
-  - "mkdocs-version-annotations"
-  - "mkdocstrings":
-      default_handler: "python"
-      handlers:
-        python:
-          paths: ["."]
-          options:
-            show_root_heading: true
-
-repo_url: "{{cookiecutter.repo_url}}"
-site_dir: "{{cookiecutter.plugin_name}}/static/{{cookiecutter.plugin_name}}/docs"
-site_name: "{{cookiecutter.verbose_name}} Documentation"
-site_url: "{{cookiecutter.docs_app_url}}/"
-
-theme:
-  name: "material"
-  navigation_depth: 4
-  custom_dir: "docs/assets/overrides"
-  hljs_languages:
-    - "django"
-    - "yaml"
-  features:
-    - "navigation.tracking"
-    - "navigation.tabs"
-    - "navigation.tabs.sticky"
-    - "navigation.footer"
-    - "search.suggest"
-    - "search.highlight"
-    - "search.share"
-    - "navigation.indexes"
-    - "content.action.edit"
-    - "content.action.view"
-    - "content.code.copy"
-  favicon: "assets/favicon.ico"
-  logo: "assets/nautobot_logo.svg"
-  palette:
-    # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: "default"
-      primary: "black"
-      toggle:
-        icon: "material/weather-sunny"
-        name: "Switch to dark mode"
-
-    # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: "slate"
-      primary: "black"
-      toggle:
-        icon: "material/weather-night"
-        name: "Switch to light mode"
-
-watch:
-  - "README.md"
