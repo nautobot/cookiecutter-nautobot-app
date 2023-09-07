@@ -1,6 +1,6 @@
 """Tasks for use with Invoke.
 
-(c) 2020-2021 Network To Code
+Copyright (c) 2023, Network to Code, LLC
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -46,7 +46,7 @@ namespace.configure(
     {
         "{{cookiecutter.plugin_name}}": {
             "nautobot_ver": "{{cookiecutter.nautobot_version}}",
-            "project_name": "{{cookiecutter.plugin_name}}",
+            "project_name": "{{cookiecutter.plugin_slug}}",
             "python_ver": "3.8",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
@@ -616,7 +616,7 @@ def yamllint(context):
 @task
 def check_migrations(context):
     """Check for missing migrations."""
-    command = "nautobot-server --config=nautobot/core/tests/nautobot_config.py makemigrations --dry-run --check"
+    command = "nautobot-server makemigrations --dry-run --check"
 
     run_command(context, command)
 
@@ -628,9 +628,18 @@ def check_migrations(context):
         "failfast": "fail as soon as a single test fails don't run the entire test suite",
         "buffer": "Discard output from passing tests",
         "pattern": "Run specific test methods, classes, or modules instead of all tests",
+        "verbose": "Enable verbose test output.",
     }
 )
-def unittest(context, keepdb=False, label="{{cookiecutter.plugin_name}}", failfast=False, buffer=True, pattern=""):
+def unittest(
+    context,
+    keepdb=False,
+    label="{{cookiecutter.plugin_name}}",
+    failfast=False,
+    buffer=True,
+    pattern="",
+    verbose=False,
+):
     """Run Nautobot unit tests."""
     command = f"coverage run --module nautobot.core.cli test {label}"
 
@@ -642,6 +651,9 @@ def unittest(context, keepdb=False, label="{{cookiecutter.plugin_name}}", failfa
         command += " --buffer"
     if pattern:
         command += f" -k='{pattern}'"
+    if verbose:
+        command += " --verbosity 2"
+
     run_command(context, command)
 
 
@@ -655,10 +667,12 @@ def unittest_coverage(context):
 
 @task(
     help={
-        "failfast": "fail as soon as a single test fails don't run the entire test suite",
+        "failfast": "fail as soon as a single test fails don't run the entire test suite. (default: False)",
+        "keepdb": "Save and re-use test database between test runs for faster re-testing. (default: False)",
+        "lint-only": "Only run linters; unit tests will be excluded. (default: False)",
     }
 )
-def tests(context, failfast=False):
+def tests(context, failfast=False, keepdb=False, lint_only=False):
     """Run all tests for this plugin."""
     # If we are not running locally, start the docker containers so we don't have to for each test
     if not is_truthy(context.{{cookiecutter.plugin_name}}.local):
@@ -679,7 +693,8 @@ def tests(context, failfast=False):
     pylint(context)
     print("Running mkdocs...")
     build_and_check_docs(context)
-    print("Running unit tests...")
-    unittest(context, failfast=failfast)
+    if not lint_only:
+        print("Running unit tests...")
+        unittest(context, failfast=failfast, keepdb=keepdb)
     print("All tests have passed!")
     unittest_coverage(context)

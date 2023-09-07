@@ -14,7 +14,7 @@ This is a quick reference guide if you're already familiar with the development 
 The [Invoke](http://www.pyinvoke.org/) library is used to provide some helper commands based on the environment. There are a few configuration parameters which can be passed to Invoke to override the default configuration:
 
 - `nautobot_ver`: the version of Nautobot to use as a base for any built docker containers (default: {{cookiecutter.nautobot_version}})
-- `project_name`: the default docker compose project name (default: `{{cookiecutter.plugin_name}}`)
+- `project_name`: the default docker compose project name (default: `{{cookiecutter.plugin_slug}}`)
 - `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.8)
 - `local`: a boolean flag indicating if invoke tasks should be run on the host or inside the docker containers (default: False, commands will be run in docker containers)
 - `compose_dir`: the full path to a directory containing the project compose files
@@ -152,7 +152,7 @@ Poetry is used in lieu of the "virtualenv" commands and is leveraged in both env
 The `pyproject.toml` file outlines all of the relevant dependencies for the project:
 
 - `tool.poetry.dependencies` - the main list of dependencies.
-- `tool.poetry.dev-dependencies` - development dependencies, to facilitate linting, testing, and documentation building.
+- `tool.poetry.group.dev.dependencies` - development dependencies, to facilitate linting, testing, and documentation building.
 
 The `poetry shell` command is used to create and enable a virtual environment managed by Poetry, so all commands ran going forward are executed within the virtual environment. This is similar to running the `source venv/bin/activate` command with virtualenvs. To install project dependencies in the virtual environment, you should run `poetry install` - this will install **both** project and development dependencies.
 

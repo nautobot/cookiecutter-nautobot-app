@@ -11,12 +11,12 @@ from nautobot.extras.models.change_logging import ChangeLoggedModel
 
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
-# https://nautobot.readthedocs.io/en/latest/plugins/development/#using-the-extras_features-decorator-for-graphql
+# https://docs.nautobot.com/projects/core/en/latest/plugins/development/#using-the-extras_features-decorator-for-graphql
 # Then based on your reading you may decide to put the following decorator before the declaration of your class
 # @extras_features("custom_fields", "custom_validators", "relationships", "graphql")
 
 # If you want to choose a specific model to overload in your class declaration, please reference the following documentation:
-# how to chose a database model: https://nautobot.readthedocs.io/en/stable/plugins/development/#database-models
+# how to chose a database model: https://docs.nautobot.com/projects/core/en/stable/plugins/development/#database-models
 class {{ cookiecutter.model_class_name }}(BaseModel, ChangeLoggedModel):
     """Base model for {{ cookiecutter.verbose_name }} plugin."""
 
