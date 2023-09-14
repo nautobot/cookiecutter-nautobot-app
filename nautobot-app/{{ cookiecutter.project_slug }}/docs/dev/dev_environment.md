@@ -66,7 +66,7 @@ Run the following commands:
 ```shell
 poetry shell
 poetry install --extras nautobot
-export $(cat development/dev.env | xargs)
+export $(cat development/development.env | xargs)
 export $(cat development/creds.env | xargs)
 invoke start && sleep 5
 nautobot-server migrate
@@ -132,7 +132,6 @@ Each command can be executed with `invoke <command>`. All commands support the a
   tests            Run all tests for this plugin.
   unittest         Run Django unit tests for the plugin.
 ```
-
 
 ## Project Overview
 
@@ -315,6 +314,9 @@ When trying to debug an issue, one helpful thing you can look at are the logs wi
 
 !!! note
 	The `-f` tag will keep the logs open, and output them in realtime as they are generated.
+
+!!! info
+    Want to limit the log output even further? Use the `--tail <#>` command line argument in conjunction with `-f`.
 
 So for example, our plugin is named `{{ cookiecutter.plugin_slug }}`, the command would most likely be `docker logs {{ cookiecutter.plugin_name }}_nautobot_1 -f`. You can find the name of all running containers via `docker ps`.
 
