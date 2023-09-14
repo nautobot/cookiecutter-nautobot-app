@@ -13,8 +13,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dependencies]
 cookiecutter = "^2.3.0"
 python = "^3.8"
+pyyaml = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 bandit = "*"
 black = "*"
 invoke = "*"
