@@ -54,7 +54,7 @@ namespace.configure(
         "{{cookiecutter.plugin_name}}": {
             "nautobot_ver": "{{cookiecutter.nautobot_version}}",
             "project_name": "{{cookiecutter.plugin_slug}}",
-            "python_ver": "3.8",
+            "python_ver": "3.11",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
