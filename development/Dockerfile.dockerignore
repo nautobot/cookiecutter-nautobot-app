@@ -1,0 +1,15 @@
+**/*
+
+!/files/
+!/.bandit.yml
+!/.coveragerc
+!/.github/
+!/.yamllint.yml
+!/README.md
+!/development/default.env
+!/poetry.lock
+!/pyproject.toml
+!/nautobot-app/
+!/tasks.py
+
+__pycache__/

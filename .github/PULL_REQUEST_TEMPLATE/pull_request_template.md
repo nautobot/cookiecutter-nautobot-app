@@ -1,11 +1,12 @@
-## New Pull Request
+# Closes #<ISSUE_NUMBER>
 
-Have you:
+## What's Changed
 
-- [ ] Updated the README if necessary?
-- [ ] Updated any configuration settings?
+- Added some feature.
+- Fixed some bug.
+- Updated `some-library` to `<VERSION>`.
 
+## To Do
 
-## Change Notes
-
-## Justification
+- [ ] Update the documentation.
+- [ ] Add changelog.

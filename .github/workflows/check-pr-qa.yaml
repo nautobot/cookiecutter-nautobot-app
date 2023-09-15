@@ -1,0 +1,31 @@
+---
+name: "Check Pull Request Quality Assurance"
+
+on:  # yamllint disable-line rule:truthy
+  - "pull_request"
+
+# Cancel any existing runs of this workflow for this same PR
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    runs-on: "ubuntu-22.04"
+    env:
+      IMAGE_PREFIX: "ghcr.io/${{ github.repository }}"
+      IMAGE_TAG: "${{ github.sha }}"
+      TARGET_WORKDIR: "/${{ github.repository }}"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+      - name: "QA"
+        run: |
+          docker compose \
+            --env-file=development/default.env \
+            up \
+            --exit-code-from=qa \
+            --no-color \
+            --no-log-prefix \
+            -- \
+            qa
