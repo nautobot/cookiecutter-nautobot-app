@@ -8,8 +8,13 @@ Pre-requisites:
 
 - Docker and Docker Compose
 - git
-- Python 3.8+
-- Invoke
+- Python 3.8+ with pip
+
+Install dependencies:
+
+```shell
+pip install invoke python-dotenv toml
+```
 
 Clone the repository:
 
