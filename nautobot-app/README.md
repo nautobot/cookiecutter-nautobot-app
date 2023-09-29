@@ -60,7 +60,6 @@ repo_url [https://github.com/nautobot/nautobot-plugin-data-validation-engine]:
 base_url [nautobot-data-validation-engine]:
 min_nautobot_version [1.5.2]:
 max_nautobot_version [1.9999]:
-nautobot_version [latest]:
 camel_name [NautobotDataValidationEngine]:
 project_short_description [Data Validation Engine]:
 version [0.1.0]:

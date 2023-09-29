@@ -52,7 +52,7 @@ namespace = Collection("{{cookiecutter.plugin_name}}")
 namespace.configure(
     {
         "{{cookiecutter.plugin_name}}": {
-            "nautobot_ver": "{{cookiecutter.nautobot_version}}",
+            "nautobot_ver": "{{cookiecutter.min_nautobot_version}}",
             "project_name": "{{cookiecutter.plugin_slug}}",
             "python_ver": "3.11",
             "local": False,
