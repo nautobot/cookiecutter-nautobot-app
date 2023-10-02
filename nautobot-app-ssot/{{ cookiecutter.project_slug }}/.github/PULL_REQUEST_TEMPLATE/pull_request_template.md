@@ -1,10 +1,1 @@
-## New Pull Request
-
-Have you:
-- [ ] Updated the README if necessary?
-- [ ] Updated any configuration settings?
-- [ ] Written a unit test?
-
-## Change Notes
-
-## Justification
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/.github/PULL_REQUEST_TEMPLATE/pull_request_template.md

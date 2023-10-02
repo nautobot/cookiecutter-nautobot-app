@@ -1,1 +1,1 @@
-../../files/.yamllint.yml
+../../nautobot-app/{{ cookiecutter.project_slug }}/.yamllint.yml

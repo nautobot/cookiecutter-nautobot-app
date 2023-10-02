@@ -1,1 +1,1 @@
-"""REST API module for {{cookiecutter.plugin_name}} plugin."""
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/{{cookiecutter.plugin_name}}/api/__init__.py

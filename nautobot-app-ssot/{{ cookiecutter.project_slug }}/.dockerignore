@@ -1,1 +1,1 @@
-../../files/.dockerignore
+../../nautobot-app/{{ cookiecutter.project_slug }}/.dockerignore

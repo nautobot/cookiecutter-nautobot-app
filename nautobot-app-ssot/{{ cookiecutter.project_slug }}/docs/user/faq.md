@@ -1,1 +1,1 @@
-# Frequently Asked Questions
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/user/faq.md

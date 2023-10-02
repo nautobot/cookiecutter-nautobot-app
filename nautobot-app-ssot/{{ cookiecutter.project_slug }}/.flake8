@@ -1,1 +1,1 @@
-../../files/.flake8
+../../nautobot-app/{{ cookiecutter.project_slug }}/.flake8

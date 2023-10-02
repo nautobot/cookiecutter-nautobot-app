@@ -1,1 +1,1 @@
-../../files/.readthedocs.yaml
+../../nautobot-app/{{ cookiecutter.project_slug }}/.readthedocs.yaml

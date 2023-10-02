@@ -1,6 +1,1 @@
----
-hide:
-  - navigation
----
-
---8<-- "README.md"
+../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/index.md

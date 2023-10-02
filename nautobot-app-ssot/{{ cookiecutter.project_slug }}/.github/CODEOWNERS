@@ -1,2 +1,1 @@
-# Default owner(s) of all files in this repository
-* {{ cookiecutter.codeowner_github_usernames }}
+../../../nautobot-app/{{ cookiecutter.project_slug }}/.github/CODEOWNERS

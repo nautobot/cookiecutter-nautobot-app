@@ -1,1 +1,1 @@
-../../files/.gitignore
+../../nautobot-app/{{ cookiecutter.project_slug }}/.git{{''}}ignore

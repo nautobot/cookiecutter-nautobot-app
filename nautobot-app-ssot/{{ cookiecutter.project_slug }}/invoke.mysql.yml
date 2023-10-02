@@ -1,12 +1,1 @@
----
-{{cookiecutter.plugin_name}}:
-  project_name: "{{cookiecutter.plugin_slug}}"
-  nautobot_ver: "{{cookiecutter.nautobot_version}}"
-  local: false
-  python_ver: "3.11"
-  compose_dir: "development"
-  compose_files:
-    - "docker-compose.base.yml"
-    - "docker-compose.redis.yml"
-    - "docker-compose.mysql.yml"
-    - "docker-compose.dev.yml"
+../../nautobot-app/{{ cookiecutter.project_slug }}/invoke.mysql.yml

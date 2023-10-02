@@ -1,1 +1,1 @@
-../../files/LICENSE
+../../nautobot-app/{{ cookiecutter.project_slug }}/LICENSE

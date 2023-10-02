@@ -1,1 +1,1 @@
-../../files/.bandit.yml
+../../nautobot-app/{{ cookiecutter.project_slug }}/.bandit.yml
