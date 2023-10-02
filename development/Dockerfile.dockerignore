@@ -10,6 +10,8 @@
 !/poetry.lock
 !/pyproject.toml
 !/nautobot-app/
+!/nautobot-app-ssot/
 !/tasks.py
 
+examples/
 __pycache__/

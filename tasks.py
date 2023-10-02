@@ -65,9 +65,9 @@ _DEFAULT_SERVICE = getenv("INVOKE_DEFAULT_SERVICE", "dev")
 _LOCAL = _jsontobool(getenv("INVOKE_LOCAL", "False"))
 
 _TEMPLATES = [
-    "nautobot-app"
+    "nautobot-app",
     # "nautobot-app-chatops",
-    # "nautobot-app-ssot",
+    "nautobot-app-ssot",
 ]
 
 _PYTHON_NAMES_TO_CHECK = [
