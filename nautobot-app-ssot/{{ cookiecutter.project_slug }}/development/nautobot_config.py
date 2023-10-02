@@ -129,13 +129,19 @@ if not _TESTING:
 #
 
 # Enable installed Apps. Add the name of each App to the list.
-PLUGINS = ["{{cookiecutter.plugin_name}}"]
+PLUGINS = [
+    "nautobot_ssot",
+    "{{cookiecutter.plugin_name}}",
+]
 
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
-# PLUGINS_CONFIG = {
-#     '{{cookiecutter.plugin_name}}': {
-#         'foo': 'bar',
-#         'buzz': 'bazz'
-#     }
-# }
+PLUGINS_CONFIG = {
+    "nautobot_ssot": {
+        "hide_example_jobs": True,
+    },
+    # '{{cookiecutter.plugin_name}}': {
+    #     'foo': 'bar',
+    #     'buzz': 'bazz',
+    # },
+}

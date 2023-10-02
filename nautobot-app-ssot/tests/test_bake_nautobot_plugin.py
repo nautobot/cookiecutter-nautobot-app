@@ -22,7 +22,7 @@ def test_bake_nautobot_execution(cookies_baked_nautobot_plugin):
     Tests creation of example nautobot with the cookiecutter default values
     """
     results, examples_projects = cookies_baked_nautobot_plugin
-    plugin_slug = "nautobot-plugin"
+    plugin_slug = f"nautobot-plugin-ssot-ext-sor"
     assert results[plugin_slug].exit_code == 0
     assert results[plugin_slug].exception is None
     assert examples_projects[plugin_slug].isdir()

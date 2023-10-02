@@ -42,13 +42,19 @@ Once installed, the plugin needs to be enabled in your Nautobot configuration. T
 
 ```python
 # In your nautobot_config.py
-PLUGINS = ["{{cookiecutter.plugin_name}}"]
+PLUGINS = [
+    "nautobot_ssot",
+    "{{cookiecutter.plugin_name}}",
+]
 
-# PLUGINS_CONFIG = {
-#   "{{cookiecutter.plugin_name}}": {
-#     ADD YOUR SETTINGS HERE
-#   }
-# }
+PLUGINS_CONFIG = {
+    "nautobot_ssot": {
+        "hide_example_jobs": True,
+    },
+    '{{cookiecutter.plugin_name}}': {
+    #     ADD YOUR SETTINGS HERE
+    },
+}
 ```
 
 Once the Nautobot configuration is updated, run the Post Upgrade command (`nautobot-server post_upgrade`) to run migrations and clear any cache:
