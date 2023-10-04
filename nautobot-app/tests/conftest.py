@@ -16,14 +16,13 @@ def init_examples_project(project_name):
         examples_project (Path): Created example project
     """
     # Set examples folder to cookiecutter level directory
-    examples_project = (Path(__file__) / "/../../examples" / project_name).resolve()
+    examples_project = (Path(__file__) / "../../examples" / project_name).resolve()
 
     # Clean examples project
     if examples_project.is_dir():
         shutil.rmtree(examples_project)
-        examples_project.mkdir()
     else:
-        examples_project.mkdir(parents=True)
+        examples_project.parent.mkdir(parents=True, exist_ok=True)
     return examples_project
 
 
@@ -55,7 +54,7 @@ def cookies_baked_nautobot_app(cookies):
 
         assert results[plugin_slug].exception is None
 
-        examples_projects[plugin_slug] = init_examples_project(results[plugin_slug].project_path)
+        examples_projects[plugin_slug] = init_examples_project(plugin_slug)
         shutil.move(results[plugin_slug].project_path, examples_projects[plugin_slug])
 
     return results, examples_projects
