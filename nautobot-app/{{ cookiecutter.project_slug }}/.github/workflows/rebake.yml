@@ -69,9 +69,9 @@ jobs:
       contents: "write"
       packages: "read"
       pull-requests: "write"
-    container: "ghcr.io/nautobot/cookiecutter-nautobot-app-drift-manager/prod:${{ github.event.inputs.drift-manager-tag }}"
+    container: "ghcr.io/nautobot/cookiecutter-nautobot-app-drift-manager/prod:{% raw %}${{ github.event.inputs.drift-manager-tag }}{% endraw %}"
     env:
-      GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      GITHUB_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
     steps:
       - name: "Configure Rebake Arguments"
         id: "config"
@@ -79,40 +79,40 @@ jobs:
         run: |
           ARGS='--push'
 
-          if [[ '${{ github.event.inputs.draft }}' == 'true' ]]; then
+          if [[ '{% raw %}${{ github.event.inputs.draft }}{% endraw %}' == 'true' ]]; then
             ARGS="$ARGS --draft"
-          elif [[ '${{ github.event.inputs.draft }}' == 'false' ]]; then
+          elif [[ '{% raw %}${{ github.event.inputs.draft }}{% endraw %}' == 'false' ]]; then
             ARGS="$ARGS --no-draft"
-          elif [[ '${{ github.event.inputs.draft }}' == '' ]]; then
+          elif [[ '{% raw %}${{ github.event.inputs.draft }}{% endraw %}' == '' ]]; then
             echo "Using repo default value for --draft"
           else
-            echo "ERROR: Invalid value for draft: '${{ github.event.inputs.draft }}'"
+            echo "ERROR: Invalid value for draft: '{% raw %}${{ github.event.inputs.draft }}{% endraw %}'"
             exit 1
           fi
 
-          if [[ '${{ github.event.inputs.pull-request }}' != '' ]]; then
-            ARGS="$ARGS --pull-request='${{ github.event.inputs.pull-request }}'"
+          if [[ '{% raw %}${{ github.event.inputs.pull-request }}{% endraw %}' != '' ]]; then
+            ARGS="$ARGS --pull-request='{% raw %}${{ github.event.inputs.pull-request }}{% endraw %}'"
           fi
 
-          if [[ '${{ github.event.inputs.template }}' != '' ]]; then
-            ARGS="$ARGS --template='${{ github.event.inputs.template }}'"
+          if [[ '{% raw %}${{ github.event.inputs.template }}{% endraw %}' != '' ]]; then
+            ARGS="$ARGS --template='{% raw %}${{ github.event.inputs.template }}{% endraw %}'"
           fi
 
-          if [[ '${{ github.event.inputs.template-dir }}' != '' ]]; then
-            ARGS="$ARGS --template-dir='${{ github.event.inputs.template-dir }}'"
+          if [[ '{% raw %}${{ github.event.inputs.template-dir }}{% endraw %}' != '' ]]; then
+            ARGS="$ARGS --template-dir='{% raw %}${{ github.event.inputs.template-dir }}{% endraw %}'"
           fi
 
-          if [[ '${{ github.event.inputs.template-ref }}' != '' ]]; then
-            ARGS="$ARGS --template-ref='${{ github.event.inputs.template-ref }}'"
+          if [[ '{% raw %}${{ github.event.inputs.template-ref }}{% endraw %}' != '' ]]; then
+            ARGS="$ARGS --template-ref='{% raw %}${{ github.event.inputs.template-ref }}{% endraw %}'"
           fi
 
-          if [[ '${{ github.event.inputs.cookie }}' == '' ]]; then
-            ARGS="$ARGS '${{ github.repositoryUrl }}'"
+          if [[ '{% raw %}${{ github.event.inputs.cookie }}{% endraw %}' == '' ]]; then
+            ARGS="$ARGS '{% raw %}${{ github.repositoryUrl }}{% endraw %}'"
           else
-            ARGS="$ARGS '${{ github.event.inputs.cookie }}'"
+            ARGS="$ARGS '{% raw %}${{ github.event.inputs.cookie }}{% endraw %}'"
           fi
 
           echo "args=$ARGS" >> $GITHUB_OUTPUT
       - name: "Rebake"
         run: |
-          python -m ntc_cookie_drift_manager rebake ${{ steps.config.outputs.args }}
+          python -m ntc_cookie_drift_manager rebake {% raw %}${{ steps.config.outputs.args }}{% endraw %}
