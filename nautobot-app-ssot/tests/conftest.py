@@ -27,7 +27,7 @@ def init_examples_project(project_name):
 
 
 @fixture
-def cookies_baked_nautobot_app(cookies):
+def cookies_baked_nautobot_app_ssot(cookies):
     """Sets up an example cookiecutter project
     Args:
         cookies: wrapper for cookiecutter API when generating project
@@ -38,13 +38,13 @@ def cookies_baked_nautobot_app(cookies):
     examples_projects = {}
     results = {}
     extra_contexts = {
-        "nautobot-plugin": {
+        "nautobot-plugin-ssot-ext-sor": {
             "open_source_license": "Not open source",
-            "plugin_name": "nautobot_plugin",
+            "system_of_record": "Ext SoR",
         },
-        "my-plugin": {
+        "nautobot-plugin-ssot-my-sor": {
             "open_source_license": "Apache-2.0",
-            "plugin_name": "my_plugin",
+            "system_of_record": "My SoR",
         },
     }
     # pylint: disable-next=protected-access

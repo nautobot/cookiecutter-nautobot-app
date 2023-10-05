@@ -1,0 +1,1 @@
+../../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/admin/release_notes/version_1.0.md

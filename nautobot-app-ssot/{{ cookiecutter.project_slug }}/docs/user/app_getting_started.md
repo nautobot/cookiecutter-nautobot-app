@@ -1,0 +1,1 @@
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/user/app_getting_started.md

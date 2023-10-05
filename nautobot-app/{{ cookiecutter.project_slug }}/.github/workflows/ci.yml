@@ -1,7 +1,7 @@
 ---
 name: "CI"
 concurrency:  # Cancel any existing runs of this workflow for this same PR
-  group: "${{ '{{ github.workflow }}' }}-${{ '{{ github.ref }}' }}"
+  group: "{% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}"
   cancel-in-progress: true
 on: # yamllint disable-line rule:truthy rule:comments
   push:
@@ -85,8 +85,8 @@ jobs:
         python-version: ["3.11"]
         nautobot-version: ["{{cookiecutter.min_nautobot_version}}"]
     env:
-      INVOKE_{{cookiecutter.plugin_name.upper()}}_PYTHON_VER: "${{ '{{ matrix.python-version }}' }}"
-      INVOKE_{{cookiecutter.plugin_name.upper()}}_NAUTOBOT_VER: "${{ '{{ matrix.nautobot-version }}' }}"
+      INVOKE_{{cookiecutter.plugin_name.upper()}}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+      INVOKE_{{cookiecutter.plugin_name.upper()}}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v3"
@@ -98,17 +98,17 @@ jobs:
       - name: "Build"
         uses: "docker/build-push-action@v2"
         with:
-          builder: "${{ '{{ steps.buildx.outputs.name }}' }}"
+          builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
           context: "./"
           push: false
           load: true
-          tags: "${{ '{{ env.PLUGIN_NAME }}' }}/nautobot:${{ '{{ matrix.nautobot-version }}' }}-py${{ '{{ matrix.python-version }}' }}"
+          tags: "{% raw %}${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           file: "./development/Dockerfile"
-          cache-from: "type=gha,scope=${{ '{{ matrix.nautobot-version }}' }}-py${{ '{{ matrix.python-version }}' }}"
-          cache-to: "type=gha,scope=${{ '{{ matrix.nautobot-version }}' }}-py${{ '{{ matrix.python-version }}' }}"
+          cache-from: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
+          cache-to: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           build-args: |
-            NAUTOBOT_VER=${{ '{{ matrix.nautobot-version }}' }}
-            PYTHON_VER=${{ '{{ matrix.python-version }}' }}
+            NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
+            PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Linting: pylint"
@@ -134,8 +134,8 @@ jobs:
             nautobot-version: "stable"
     runs-on: "ubuntu-20.04"
     env:
-      INVOKE_{{cookiecutter.plugin_name.upper()}}_PYTHON_VER: "${{ '{{ matrix.python-version }}' }}"
-      INVOKE_{{cookiecutter.plugin_name.upper()}}_NAUTOBOT_VER: "${{ '{{ matrix.nautobot-version }}' }}"
+      INVOKE_{{cookiecutter.plugin_name.upper()}}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+      INVOKE_{{cookiecutter.plugin_name.upper()}}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v3"
@@ -147,17 +147,17 @@ jobs:
       - name: "Build"
         uses: "docker/build-push-action@v2"
         with:
-          builder: "${{ '{{ steps.buildx.outputs.name }}' }}"
+          builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
           context: "./"
           push: false
           load: true
-          tags: "${{ '{{ env.PLUGIN_NAME }}' }}/nautobot:${{ '{{ matrix.nautobot-version }}' }}-py${{ '{{ matrix.python-version }}' }}"
+          tags: "{% raw %}${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           file: "./development/Dockerfile"
-          cache-from: "type=gha,scope=${{ '{{ matrix.nautobot-version }}' }}-py${{ '{{ matrix.python-version }}' }}"
-          cache-to: "type=gha,scope=${{ '{{ matrix.nautobot-version }}' }}-py${{ '{{ matrix.python-version }}' }}"
+          cache-from: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
+          cache-to: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           build-args: |
-            NAUTOBOT_VER=${{ '{{ matrix.nautobot-version }}' }}
-            PYTHON_VER=${{ '{{ matrix.python-version }}' }}
+            NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
+            PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Use Mysql invoke settings when needed"
@@ -189,9 +189,9 @@ jobs:
       - name: "Upload binaries to release"
         uses: "svenstaro/upload-release-action@v2"
         with:
-          repo_token: "${{ '{{ secrets.NTC_GITHUB_TOKEN }}' }}"  # use GH_NAUTOBOT_BOT_TOKEN for Nautobot Org repos.
+          repo_token: "{% raw %}${{ secrets.NTC_GITHUB_TOKEN }}{% endraw %}"  # use GH_NAUTOBOT_BOT_TOKEN for Nautobot Org repos.
           file: "dist/*"
-          tag: "${{ '{{ github.ref }}' }}"
+          tag: "{% raw %}${{ github.ref }}{% endraw %}"
           overwrite: true
           file_glob: true
   publish_pypi:
@@ -219,19 +219,19 @@ jobs:
         uses: "pypa/gh-action-pypi-publish@release/v1"
         with:
           user: "__token__"
-          password: "${{ '{{ secrets.PYPI_API_TOKEN }}' }}"
+          password: "{% raw %}${{ secrets.PYPI_API_TOKEN }}{% endraw %}"
   slack-notify:
     needs:
       - "publish_gh"
       - "publish_pypi"
     runs-on: "ubuntu-20.04"
     env:
-      SLACK_WEBHOOK_URL: "${{ '{{ secrets.SLACK_WEBHOOK_URL }}' }}"
+      SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.SLACK_WEBHOOK_URL }}{% endraw %}"
       SLACK_MESSAGE: >-
         *NOTIFICATION: NEW-RELEASE-PUBLISHED*\n
-        Repository: <${{ '{{ github.server_url }}' }}/${{ '{{ github.repository }}' }}|${{ '{{ github.repository }}' }}>\n
-        Release: <${{ '{{ github.server_url }}' }}/${{ '{{ github.repository }}' }}/releases/tag/${{ '{{ github.ref_name }}' }}|${{ '{{ github.ref_name }}' }}>\n
-        Published by: <${{ '{{ github.server_url }}' }}/${{ '{{ github.actor }}' }}|${{ '{{ github.actor }}' }}>
+        Repository: <{% raw %}${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}{% endraw %}>\n
+        Release: <{% raw %}${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}|${{ github.ref_name }}{% endraw %}>\n
+        Published by: <{% raw %}${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}{% endraw %}>
     steps:
       - name: "Send a notification to Slack"
         # ENVs cannot be used directly in job.if. This is a workaround to check
@@ -241,17 +241,17 @@ jobs:
         with:
           payload: |
             {
-              "text": "${{ '{{ env.SLACK_MESSAGE }}' }}",
+              "text": "{% raw %}${{ env.SLACK_MESSAGE }}{% endraw %}",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ '{{ env.SLACK_MESSAGE }}' }}"
+                    "text": "{% raw %}${{ env.SLACK_MESSAGE }}{% endraw %}"
                   }
                 }
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: "${{ '{{ secrets.SLACK_WEBHOOK_URL }}' }}"
+          SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.SLACK_WEBHOOK_URL }}{% endraw %}"
           SLACK_WEBHOOK_TYPE: "INCOMING_WEBHOOK"
