@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "{{cookiecutter.plugin_slug}}"
-version = "{{cookiecutter.version}}"
+version = "0.1.0"
 description = "{{cookiecutter.project_short_description}}"
 authors = ["{{cookiecutter.full_name}} <{{cookiecutter.email}}>"]
 {%- if cookiecutter.open_source_license == 'Apache-2.0' %}

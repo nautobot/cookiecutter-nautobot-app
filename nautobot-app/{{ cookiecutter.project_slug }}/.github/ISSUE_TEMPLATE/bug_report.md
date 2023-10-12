@@ -6,7 +6,7 @@ about: Report a reproducible bug in the current release of {{cookiecutter.plugin
 ### Environment
 * Python version:  <!-- Example: 3.11.4 -->
 * Nautobot version:  <!-- Example: {{cookiecutter.min_nautobot_version}} -->
-* {{cookiecutter.plugin_slug}} version:  <!-- Example: {{cookiecutter.version}} -->
+* {{cookiecutter.plugin_slug}} version:  <!-- Example: 1.0.0 -->
 
 <!-- What did you expect to happen? -->
 ### Expected Behavior
