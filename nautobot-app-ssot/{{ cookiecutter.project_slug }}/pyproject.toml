@@ -32,7 +32,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 # Used for local development
-nautobot = { version = "^{{cookiecutter.min_nautobot_version}}", optional = true }
+nautobot = ">={{cookiecutter.min_nautobot_version}},<{{cookiecutter.max_nautobot_version}}"
 nautobot-ssot = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -60,9 +60,6 @@ mkdocs-version-annotations = "1.0.0"
 # Automatic documentation from sources, for MkDocs
 mkdocstrings = "0.22.0"
 mkdocstrings-python = "1.5.2"
-
-[tool.poetry.extras]
-nautobot = ["nautobot"]
 
 [tool.black]
 line-length = 120
