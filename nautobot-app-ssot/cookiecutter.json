@@ -14,10 +14,8 @@
     "base_url": "ssot-{{cookiecutter.system_of_record.lower().replace(' ', '-').replace('_', '-')}}",
     "min_nautobot_version": "1.6.0",
     "max_nautobot_version": "1.9999",
-    "nautobot_version": "latest",
     "camel_name": "{{cookiecutter.plugin_slug.title().replace(' ', '').replace('-', '')}}",
     "project_short_description": "{{cookiecutter.verbose_name}}",
-    "version": "0.1.0",
     "model_class_name": "None",
     "open_source_license": [
         "Apache-2.0",

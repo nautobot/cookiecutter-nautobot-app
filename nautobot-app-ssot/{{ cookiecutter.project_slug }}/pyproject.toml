@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "{{cookiecutter.plugin_slug}}"
-version = "{{cookiecutter.version}}"
+version = "0.1.0"
 description = "{{cookiecutter.project_short_description}}"
 authors = ["{{cookiecutter.full_name}} <{{cookiecutter.email}}>"]
 {%- if cookiecutter.open_source_license == 'Apache-2.0' %}
@@ -32,7 +32,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 # Used for local development
-nautobot = { version = "^{{cookiecutter.min_nautobot_version}}", optional = true }
+nautobot = "^{{cookiecutter.min_nautobot_version}}"
 nautobot-ssot = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -47,7 +47,6 @@ pydocstyle = "*"
 pylint = "*"
 pylint-django = "*"
 pylint-nautobot = "*"
-pytest = "*"
 yamllint = "*"
 toml = "*"
 Markdown = "*"
@@ -60,9 +59,6 @@ mkdocs-version-annotations = "1.0.0"
 # Automatic documentation from sources, for MkDocs
 mkdocstrings = "0.22.0"
 mkdocstrings-python = "1.5.2"
-
-[tool.poetry.extras]
-nautobot = ["nautobot"]
 
 [tool.black]
 line-length = 120
@@ -130,9 +126,3 @@ add_ignore = "D212"
 [build-system]
 requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-testpaths = [
-    "tests"
-]
-addopts = "-vv --doctest-modules"
