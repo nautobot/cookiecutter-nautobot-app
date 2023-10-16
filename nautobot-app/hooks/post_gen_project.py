@@ -15,7 +15,7 @@ Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH
 * poetry shell
 * invoke makemigrations
 
-The file "creds.env will be ignored by git and can be used to override default environment variables.
+The file `creds.env` will be ignored by git and can be used to override default environment variables.
 """
 
 if __name__ == "__main__":

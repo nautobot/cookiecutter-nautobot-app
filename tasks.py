@@ -436,7 +436,7 @@ def ruff(context, service=_DEFAULT_SERVICE, autoformat=False):
     }
 )
 def yamllint(context, service=_DEFAULT_SERVICE):
-    """Run yamllint to validate formating adheres to NTC defined YAML standards."""
+    """Run yamllint to validate formatting adheres to NTC defined YAML standards."""
     command = [
         *_prefix_command(context, service=service),
         "yamllint",
@@ -484,6 +484,38 @@ def help_task(context):
     for task_name in sorted(ns.task_names):
         print(50 * "-")
         context.run(f"invoke {task_name} --help", echo=True)
+
+
+@task(
+    help={
+        "debug": "Whether to run in debug mode (defaults to False)",
+        "input": "Whether to require user input (defaults to True)",
+        "json-file": "Path to a JSON file containing answers to prompts (defaults to empty)",
+        "output-dir": "Path to the output directory (defaults to ./outputs)",
+        "template": "Path to the cookiecutter template to bake (defaults to ./nautobot-app)",
+    },
+)
+def bake(context, debug=False, input=True, json_file="", output_dir="./outputs", template="./nautobot-app"):
+    """Bake a cookiecutter template.""" 
+
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+
+    command = [
+        *_prefix_command(context),
+        "cookiecutter",
+        f"--output-dir={output_dir}",
+        "--no-input" if input is False else "",
+        f"--replay-file={json_file}" if json_file else "",
+    ]
+
+    if debug:
+        command.append("--verbose");
+        command.append(f"--debug-file={output_dir}/debug.log")
+        command.append("--keep-project-on-failure")
+
+    command.append(template)
+
+    context.run(" ".join(command), pty=True)
 
 
 def _read_invoke_kwargs():
