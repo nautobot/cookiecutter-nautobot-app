@@ -489,14 +489,14 @@ def help_task(context):
 @task(
     help={
         "debug": "Whether to run in debug mode (defaults to False)",
-        "input": "Whether to require user input (defaults to True)",
+        "input": "Whether to require user input, ignored with `--json-file` (defaults to True)",
         "json-file": "Path to a JSON file containing answers to prompts (defaults to empty)",
         "output-dir": "Path to the output directory (defaults to ./outputs)",
         "template": "Path to the cookiecutter template to bake (defaults to ./nautobot-app)",
     },
 )
-def bake(context, debug=False, input=True, json_file="", output_dir="./outputs", template="./nautobot-app"):
-    """Bake a cookiecutter template.""" 
+def bake(context, _debug=False, _input=True, json_file="", output_dir="./outputs", template="./nautobot-app"):
+    """Bake a new cookie from the template."""
 
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
@@ -504,12 +504,14 @@ def bake(context, debug=False, input=True, json_file="", output_dir="./outputs",
         *_prefix_command(context),
         "cookiecutter",
         f"--output-dir={output_dir}",
-        "--no-input" if input is False else "",
         f"--replay-file={json_file}" if json_file else "",
     ]
 
-    if debug:
-        command.append("--verbose");
+    if not _input:
+        command.append("--no-input")
+
+    if _debug:
+        command.append("--verbose")
         command.append(f"--debug-file={output_dir}/debug.log")
         command.append("--keep-project-on-failure")
 

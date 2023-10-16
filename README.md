@@ -100,15 +100,17 @@ Output:
 Usage: inv[oke] [--core-opts] bake [--options] [other tasks here ...]
 
 Docstring:
-  Bake a cookiecutter template.
+  Bake a new cookie from the template.
 
 Options:
   -d, --debug                      Whether to run in debug mode (defaults to False)
-  -i, --[no-]input                 Whether to require user input (defaults to True)
-  -j STRING, --json-file=STRING    Path to a JSON file containing answers to prompts
-  -o STRING, --output-dir=STRING   Path to the output directory
-  -t STRING, --template=STRING     Path to the cookiecutter template to bake
+  -i, --[no-]input                 Whether to require user input, ignored with `--json-file` (defaults to True)
+  -j STRING, --json-file=STRING    Path to a JSON file containing answers to prompts (defaults to empty)
+  -o STRING, --output-dir=STRING   Path to the output directory (defaults to ./outputs)
+  -t STRING, --template=STRING     Path to the cookiecutter template to bake (defaults to ./nautobot-app)
 ```
+
+!!! IMPORTANT !!! The `--output-dir` argument should be located in the current directory, as the Cookiecutter creates the cookie inside the Docker container with the current directory bind mounted. When baking somewhere else, the resulting cookie would not be available from calling host system.
 
 ### JSON file
 
