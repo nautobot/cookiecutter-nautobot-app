@@ -21,8 +21,6 @@ from pathlib import Path
 from pwd import getpwuid
 from typing import Generator
 
-import toml
-from dotenv import load_dotenv
 from invoke.collection import Collection
 from invoke.tasks import task
 
@@ -34,28 +32,21 @@ def _jsontobool(value: str) -> bool:
 
 
 def _setup_env():
-    load_dotenv(_PATH / ".creds.env", verbose=True)
-    load_dotenv(_PATH / ".env", verbose=True)
-    load_dotenv(_PATH / "development/default.env", verbose=True)
-
     def setenv(key, value):
         if key not in environ:
             environ[key] = str(value)
 
-    setenv("REPOSITORY_DIR", _PATH.absolute())
     setenv("TARGET_WORKDIR", _PATH)
 
     uid = getuid()
     setenv("USER_UID", uid)
     setenv("USER_NAME", getpwuid(uid).pw_name)
 
-    pyproject = toml.load(_PATH / "pyproject.toml")
-    setenv("PACKAGE_SLUG", pyproject["tool"]["poetry"]["name"])
-    setenv("PACKAGE_NAME", pyproject["tool"]["poetry"]["name"].replace("-", "_"))
-    setenv("PACKAGE_VERSION", pyproject["tool"]["poetry"]["version"])
-
-    setenv("COMPOSE_PROJECT_NAME", environ["PACKAGE_SLUG"])
+    setenv("COMPOSE_FILE", "development/compose.yaml")
+    setenv("COMPOSE_PROJECT_NAME", "cookiecutter-nautobot-app")
+    setenv("FROM_IMAGE", "python:3.11-slim")
     setenv("IMAGE_PREFIX", f"localhost/{environ['COMPOSE_PROJECT_NAME']}")
+    setenv("IMAGE_TAG", "latest")
 
 
 _setup_env()
@@ -137,7 +128,7 @@ def build_task(context, service="", cache=True, force_rm=False, pull=False):
         "template": "Name of the cookiecutter template to test",
     }
 )
-def test_template(context, template):
+def test_template(context, template=""):
     """Test a specific cookiecutter template."""
     test_dir = _PATH / template / "tests"
     if not test_dir.exists():

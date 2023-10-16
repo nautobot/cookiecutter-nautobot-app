@@ -23,9 +23,7 @@ isort = "*"
 pylint = "*"
 pytest = "*"
 pytest-cookies = "*"
-python-dotenv = "*"
 ruff = "*"
-toml = "*"
 yamllint = "*"
 
 [tool.black]

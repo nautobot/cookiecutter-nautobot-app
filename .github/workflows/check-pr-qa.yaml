@@ -13,6 +13,8 @@ jobs:
   qa:
     runs-on: "ubuntu-22.04"
     env:
+      COMPOSE_FILE: "development/compose.yaml"
+      FROM_IMAGE: "python:3.11-slim"
       IMAGE_PREFIX: "ghcr.io/${{ github.repository }}"
       IMAGE_TAG: "${{ github.sha }}"
       TARGET_WORKDIR: "/${{ github.repository }}"
@@ -22,7 +24,6 @@ jobs:
       - name: "QA"
         run: |
           docker compose \
-            --env-file=development/default.env \
             up \
             --exit-code-from=qa \
             --no-color \
