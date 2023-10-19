@@ -2,7 +2,7 @@
 
 This repository houses Cookiecutter templates, designed to kick-start your Nautobot app development journey. Leveraging these templates allows for a standardized and rapid creation of Nautobot apps, adhering to best practices and common structural paradigms.
 
-## About Nautobot
+## About Nautobot Apps
 
 A Nautobot app is a Django application designed to extend the functionality of [Nautobot](https://github.com/nautobot/nautobot), an open-source Network Source of Truth and Automation Platform. By creating a Nautobot app, developers can introduce custom data models, views, templates, and REST API endpoints, enabling bespoke network management solutions and integrations. This modular approach fosters a flexible and scalable environment, allowing for a tailored experience in managing network resources and workflows.
 
