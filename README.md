@@ -8,7 +8,7 @@ A Nautobot app is a Django application designed to extend the functionality of [
 
 ## About Cookiecutter
 
-[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is a command-line utility that simplifies the creation of new projects by generating them from predefined templates. By providing a structured and consistent framework, it helps developers to avoid boilerplate code and to adhere to best practices right from the project's inception. Cookiecutter templates can encapsulate complex setups, and are extensively used in various ecosystems including [Jinja2](https://jinja.palletsprojects.com/), where they accelerate the setup of new projects by providing pre-configured configurations, directory structures, and common integrations.
+[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is a command-line utility that simplifies the creation of new projects by generating them from predefined templates. These templates utilize the [Jinja2](https://jinja.palletsprojects.com/) templating engine, allowing for dynamic content generation and customization. By providing a structured and consistent framework, Cookiecutter helps developers to avoid boilerplate code and to adhere to best practices right from the project's inception. The flexibility and power of Jinja2 under the hood enable Cookiecutter templates to encapsulate complex setups, making it a valuable tool for accelerating project initialization in various ecosystems.
 
 ## Templates
 
