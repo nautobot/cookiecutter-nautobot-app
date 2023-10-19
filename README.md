@@ -1,21 +1,21 @@
 # Cookiecutter Templates for Creating Nautobot Apps
 
-This repository houses Cookiecutter templates, designed to kick-start your Nautobot app development journey. Leveraging these templates allows for a standardized and rapid creation of Nautobot apps, adhering to best practices and common structural paradigms.
+This repository houses Cookiecutter templates, designed to kick-start your Nautobot App development journey. Leveraging these templates allows for a standardized and rapid creation of Nautobot Apps, adhering to best practices and common structural paradigms.
 
 ## About Nautobot Apps
 
-A Nautobot app is a Django application designed to extend the functionality of [Nautobot](https://github.com/nautobot/nautobot), an open-source Network Source of Truth and Automation Platform. By creating a Nautobot app, developers can introduce custom data models, views, templates, and REST API endpoints, enabling bespoke network management solutions and integrations. This modular approach fosters a flexible and scalable environment, allowing for a tailored experience in managing network resources and workflows.
+A Nautobot App is a Django application designed to extend the functionality of [Nautobot](https://github.com/nautobot/nautobot), an open-source Network Source of Truth and Automation Platform. By creating a Nautobot App, developers can introduce custom data models, views, templates, and REST API endpoints, enabling bespoke network management solutions and integrations. This modular approach fosters a flexible and scalable environment, allowing for a tailored experience in managing network resources and workflows.
 
 ## About Cookiecutter
 
-[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is a command-line utility that simplifies the creation of new projects by generating them from predefined templates. These templates utilize the [Jinja2](https://jinja.palletsprojects.com/) templating engine, allowing for dynamic content generation and customization. By providing a structured and consistent framework, Cookiecutter helps developers to avoid boilerplate code and to adhere to best practices right from the project's inception. The flexibility and power of Jinja2 under the hood enable Cookiecutter templates to encapsulate complex setups, making it a valuable tool for accelerating project initialization in various ecosystems.
+[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is a command-line utility that simplifies the creation of new projects by generating them from predefined templates. These templates utilize the [Jinja](https://jinja.palletsprojects.com/) templating engine, allowing for dynamic content generation and customization. By providing a structured and consistent framework, Cookiecutter helps developers to avoid boilerplate code and to adhere to best practices right from the project's inception. The flexibility and power of Jinja under the hood enable Cookiecutter templates to encapsulate complex setups, making it a valuable tool for accelerating project initialization in various ecosystems.
 
 ## Templates
 
-There are the following templates available:
+The following templates are available:
 
-- [`nautobot-app`](./nautobot-app) - A template for creating a new Nautobot app.
-- [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot app that is a Single Source of Truth (SSoT) app. Uses [Nautobot SSoT app](https://github.com/nautobot/nautobot-plugin-ssot) that facilitates integration and data synchronization between various "source of truth" (SoT) systems, with Nautobot acting as a central clearinghouse for data.
+- [`nautobot-app`](./nautobot-app) - A template for creating a new Nautobot App.
+- [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot App that extends the capabilities of the Nautobot Single Source of Truth (SSoT) App. The [Nautobot SSoT App](https://github.com/nautobot/nautobot-plugin-ssot) facilitates integration and data synchronization between various "source of truth" (SoT) systems, with Nautobot acting as a central clearinghouse for data.
 
 ## Local Quick-start
 
