@@ -15,7 +15,7 @@ A Nautobot app is a Django application designed to extend the functionality of [
 There are the following templates available:
 
 - [`nautobot-app`](./nautobot-app) - A template for creating a new Nautobot app.
-- [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot app that is a Single Source of Truth (SSoT) app. Uses [Nautobot SSoT app] (https://github.com/nautobot/nautobot-plugin-ssot) that facilitates integration and data synchronization between various "source of truth" (SoT) systems, with Nautobot acting as a central clearinghouse for data.
+- [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot app that is a Single Source of Truth (SSoT) app. Uses [Nautobot SSoT app](https://github.com/nautobot/nautobot-plugin-ssot) that facilitates integration and data synchronization between various "source of truth" (SoT) systems, with Nautobot acting as a central clearinghouse for data.
 
 ## Local Quick-start
 
