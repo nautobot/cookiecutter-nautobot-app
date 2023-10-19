@@ -1,6 +1,23 @@
 # Cookiecutter Templates for Creating Nautobot Apps
 
-## Local Quickstart
+This repository houses Cookiecutter templates, designed to kick-start your Nautobot app development journey. Leveraging these templates allows for a standardized and rapid creation of Nautobot apps, adhering to best practices and common structural paradigms.
+
+## About Nautobot
+
+A Nautobot app is a Django application designed to extend the functionality of [Nautobot](https://github.com/nautobot/nautobot), an open-source Network Source of Truth and Automation Platform. By creating a Nautobot app, developers can introduce custom data models, views, templates, and REST API endpoints, enabling bespoke network management solutions and integrations. This modular approach fosters a flexible and scalable environment, allowing for a tailored experience in managing network resources and workflows.
+
+## About Cookiecutter
+
+[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is a command-line utility that simplifies the creation of new projects by generating them from predefined templates. By providing a structured and consistent framework, it helps developers to avoid boilerplate code and to adhere to best practices right from the project's inception. Cookiecutter templates can encapsulate complex setups, and are extensively used in various ecosystems including [Jinja2](https://jinja.palletsprojects.com/), where they accelerate the setup of new projects by providing pre-configured configurations, directory structures, and common integrations.
+
+## Templates
+
+There are the following templates available:
+
+- [`nautobot-app`](./nautobot-app) - A template for creating a new Nautobot app.
+- [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot app that is a Single Source of Truth (SSoT) app. Uses [Nautobot SSoT app] (https://github.com/nautobot/nautobot-plugin-ssot) that facilitates integration and data synchronization between various "source of truth" (SoT) systems, with Nautobot acting as a central clearinghouse for data.
+
+## Local Quick-start
 
 For local usage or development.
 
@@ -40,7 +57,7 @@ invoke bake --template=nautobot-app
 
 To use templates locally with Docker and Invoke, you need first set up the repository as explained in [local quick-start](#local-quickstart).
 
-Then, you can use the following commands:
+Then, you can use the following command:
 
 ```shell
 invoke bake
@@ -186,10 +203,3 @@ Then run the following commands:
 ```shell
 cookiecutter --output-dir ./outputs --directory nautobot-app https://github.com/nautobot/cookiecutter-nautobot-app
 ```
-
-## Templates
-
-There are the following templates available:
-
-- [`nautobot-app`](./nautobot-app) - A template for creating a new Nautobot app.
-- [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot app that is a Single Source of Truth (SSoT) app.
