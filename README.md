@@ -55,7 +55,7 @@ invoke bake --template=nautobot-app
 
 ## Usage with Docker and Invoke
 
-To use templates locally with Docker and Invoke, you need first set up the repository as explained in [local quick-start](#local-quickstart).
+To use templates locally with Docker and Invoke, you need first set up the repository as explained in [local quick-start](#local-quick-start).
 
 Then, you can use the following command:
 
@@ -201,5 +201,8 @@ mkdir outpus
 Then run the following command:
 
 ```shell
-cookiecutter --output-dir ./outputs --directory nautobot-app https://github.com/nautobot/cookiecutter-nautobot-app
+cookiecutter \
+  --output-dir=./outputs \
+  --directory=nautobot-app \
+  https://github.com/nautobot/cookiecutter-nautobot-app
 ```
