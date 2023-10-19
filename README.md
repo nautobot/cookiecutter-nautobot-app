@@ -198,7 +198,7 @@ pip install cookiecutter
 mkdir outpus
 ```
 
-Then run the following commands:
+Then run the following command:
 
 ```shell
 cookiecutter --output-dir ./outputs --directory nautobot-app https://github.com/nautobot/cookiecutter-nautobot-app
