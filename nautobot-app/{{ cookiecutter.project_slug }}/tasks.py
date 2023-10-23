@@ -442,6 +442,7 @@ def dbshell(context, db_name="", input_file="", output_file="", query=""):
 def import_db(context, input_file="dump.sql"):
     """Stop Nautobot containers and replace the current database with the dump into the running `db` container."""
     docker_compose(context, "stop -- nautobot worker beat")
+    docker_compose(context, "down --volumes")
     start(context, "db")
     _await_healthy_service(context, "db")
 
