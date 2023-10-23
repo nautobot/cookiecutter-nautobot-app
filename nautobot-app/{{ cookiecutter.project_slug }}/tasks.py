@@ -458,7 +458,7 @@ def import_db(context, input_file="dump.sql"):
         command += [
             "psql",
             "--username=$POSTGRES_USER",
-            "postgres",
+            "$POSTGRES_DB",
         ]
     else:
         raise ValueError("Unsupported database backend.")
