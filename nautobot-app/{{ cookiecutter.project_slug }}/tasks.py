@@ -13,6 +13,7 @@ limitations under the License.
 """
 
 import os
+from time import sleep
 
 from invoke.collection import Collection
 from invoke.tasks import task as invoke_task
@@ -65,6 +66,17 @@ namespace.configure(
 
 def _is_compose_included(context, name):
     return f"docker-compose.{name}.yml" in context.{{cookiecutter.plugin_name}}.compose_files
+
+
+def _await_healthy_service(context, service):
+    container_id = docker_compose(context, f"ps -q -- {service}", echo=True).stdout.strip()
+
+    while True:
+        result = context.run("docker inspect --format='{{.State.Health.Status}}' " + container_id, hide=True)
+        if result.stdout.strip() == "healthy":
+            break
+        print(f"Waiting for `{service}` container to become healthy ...")
+        sleep(1)
 
 
 def task(function=None, *args, **kwargs):
@@ -429,7 +441,9 @@ def dbshell(context, db_name="", input_file="", output_file="", query=""):
 )
 def import_db(context, input_file="dump.sql"):
     """Stop Nautobot containers and replace the current database with the dump into the running `db` container."""
-    docker_compose(context, "stop -- nautobot worker")
+    docker_compose(context, "stop -- nautobot worker beat")
+    start(context, "db")
+    _await_healthy_service(context, "db")
 
     command = ["exec -- db sh -c '"]
 
