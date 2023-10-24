@@ -4,7 +4,7 @@
 
 > NOTE: If you're just getting started with using Cookiecutter, please refer back to the main [README](../README.md) to understand how Cookiecutter works.
 
-This folder provides Cookiecutter template for Nautobot App that adheres to Network to Code's Development Standards. The cookie provides a development environment to develop and test your Nautobot App with that is provided by Docker Compose.
+This folder provides a Cookiecutter template for a Nautobot App that adheres to Network to Code's Development Standards. The cookie provides a development environment to develop and test your Nautobot App with, which is provided by Docker Compose.
 
 ### IMPORTANT Cookie Notes
 
@@ -14,7 +14,7 @@ This folder provides Cookiecutter template for Nautobot App that adheres to Netw
 
 ## Getting Started
 
-To use this template, follow the [instructions in README](../README.md).
+To use this template, follow the [instructions in the README](../README.md).
 
 Once the cookie is generated the next step is to start developing the App! If you're not familiar with the development environment provided by this cookie, we recommend checking out the Development Environment guide located in the documentation tree at `docs/dev/dev_environment.md`.
 
