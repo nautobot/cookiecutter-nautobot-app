@@ -441,11 +441,7 @@ def import_db(context, input_file="dump.sql"):
             "--password=$MYSQL_PASSWORD",
         ]
     elif _is_compose_included(context, "postgres"):
-        command += [
-            "psql",
-            "--username=$POSTGRES_USER",
-            "postgres",
-        ]
+        command += ["psql"]
     else:
         raise ValueError("Unsupported database backend.")
 
