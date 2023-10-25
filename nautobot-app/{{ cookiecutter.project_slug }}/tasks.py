@@ -483,6 +483,9 @@ def import_db(context, input_file="dump.sql"):
 )
 def backup_db(context, db_name="", output_file="dump.sql", readable=True):
     """Dump database into `output_file` file from running `db` container."""
+    start(context, "db")
+    _await_healthy_service(context, "db")
+
     command = ["exec -- db sh -c '"]
 
     if _is_compose_included(context, "mysql"):
