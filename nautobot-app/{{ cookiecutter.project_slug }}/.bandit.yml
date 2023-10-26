@@ -1,1 +1,6 @@
-../../files/.bandit.yml
+---
+skips: []
+# No need to check for security issues in the test scripts!
+exclude_dirs:
+  - "./tests/"
+  - "./.venv/"
