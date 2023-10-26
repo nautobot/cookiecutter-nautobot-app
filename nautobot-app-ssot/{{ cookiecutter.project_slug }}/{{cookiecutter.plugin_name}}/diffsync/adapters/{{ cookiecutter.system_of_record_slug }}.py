@@ -6,7 +6,7 @@ from diffsync import DiffSync
 class {{ cookiecutter.system_of_record_camel }}Adapter(DiffSync):
     """DiffSync adapter for {{ cookiecutter.system_of_record }}."""
 
-    top_level = []
+    top_level = ["device"]
 
     def __init__(self, *args, job=None, sync=None, client=None, **kwargs):
         """Initialize {{ cookiecutter.system_of_record }}.

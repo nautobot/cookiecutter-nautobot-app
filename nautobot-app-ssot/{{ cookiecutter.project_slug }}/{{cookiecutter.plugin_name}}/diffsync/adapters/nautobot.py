@@ -6,7 +6,7 @@ from diffsync import DiffSync
 class NautobotAdapter(DiffSync):
     """DiffSync adapter for Nautobot."""
 
-    top_level = []
+    top_level = ["device"]
 
     def __init__(self, *args, job=None, sync=None, **kwargs):
         """Initialize Nautobot.
