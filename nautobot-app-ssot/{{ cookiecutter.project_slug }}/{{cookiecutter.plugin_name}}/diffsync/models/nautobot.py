@@ -26,6 +26,8 @@ class NautobotDevice(Device):
     def update(self, attrs):
         """Update Device in Nautobot from NautobotDevice object."""
         device = NewDevice.objects.get(id=self.uuid)
+        if "model" in attrs:
+            device.device_type = DeviceType.objects.get_or_create(model=attrs["model"])[0]
         if "status" in attrs:
             device.status = Status.objects.get_or_create(name=attrs["status"])[0]
         if "role" in attrs:
