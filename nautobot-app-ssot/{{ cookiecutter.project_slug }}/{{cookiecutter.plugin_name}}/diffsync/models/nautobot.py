@@ -1,6 +1,4 @@
 """Nautobot DiffSync models for {{ cookiecutter.system_of_record }} SSoT."""
-from diffsync import DiffSyncModel
-
 from nautobot.dcim.models import Device as NewDevice
 from nautobot.dcim.models import DeviceType, Location
 from nautobot.extras.models import Role, Status
