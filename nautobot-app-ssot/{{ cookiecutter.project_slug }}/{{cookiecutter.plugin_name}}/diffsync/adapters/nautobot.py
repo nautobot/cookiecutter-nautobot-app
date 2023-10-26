@@ -7,7 +7,7 @@ from {{ cookiecutter.plugin_name }}.diffsync.models.nautobot import NautobotDevi
 class NautobotAdapter(DiffSync):
     """DiffSync adapter for Nautobot."""
 
-    device = {{ cookiecutter.system_of_record_camel }}Device
+    device = NautobotDevice
 
     top_level = ["device"]
 
