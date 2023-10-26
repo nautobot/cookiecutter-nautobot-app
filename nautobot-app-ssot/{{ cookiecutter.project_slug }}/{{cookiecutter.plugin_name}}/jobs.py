@@ -15,12 +15,6 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource):
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
 
-    def __init__(self):
-        """Initialize {{ cookiecutter.system_of_record }} Data Source."""
-        super().__init__()
-        # pylint: disable-next=unsupported-binary-operation
-        self.diffsync_flags = self.diffsync_flags | DiffSyncFlags.CONTINUE_ON_FAILURE
-
     class Meta:  # pylint: disable=too-few-public-methods
         """Meta data for {{ cookiecutter.system_of_record }}."""
 
@@ -64,11 +58,6 @@ class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
     """{{ cookiecutter.system_of_record }} SSoT Data Target."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
-
-    def __init__(self):
-        """Initialize {{ cookiecutter.system_of_record }} Data Target."""
-        super().__init__()
-        self.diffsync_flags = int(self.diffsync_flags) | DiffSyncFlags.CONTINUE_ON_FAILURE
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Meta data for {{ cookiecutter.system_of_record }}."""
