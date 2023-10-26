@@ -1,7 +1,8 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
 from diffsync import DiffSyncFlags
-from nautobot.extras.jobs import BooleanVar, Job
+from nautobot.core.celery import register_jobs
+from nautobot.extras.jobs import BooleanVar
 from nautobot_ssot.jobs.base import DataSource, DataTarget
 from {{ cookiecutter.plugin_name }}.diffsync.adapters import {{ cookiecutter.system_of_record_slug }}, nautobot
 
@@ -9,7 +10,7 @@ from {{ cookiecutter.plugin_name }}.diffsync.adapters import {{ cookiecutter.sys
 name = "{{ cookiecutter.system_of_record }} SSoT"  # pylint: disable=invalid-name
 
 
-class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource, Job):
+class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource):
     """{{ cookiecutter.system_of_record }} SSoT Data Source."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
@@ -48,8 +49,18 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource, Job):
         self.target_adapter = nautobot.NautobotAdapter(job=self, sync=self.sync)
         self.target_adapter.load()
 
+    def run(  # pylint: disable=arguments-differ, too-many-arguments
+        self, dryrun, memory_profiling, debug, *args, **kwargs
+    ):
+        """Perform data synchronization."""
+        self.debug = debug
+        self.dryrun = dryrun
+        self.memory_profiling = memory_profiling
+        super().run(dryrun=self.dryrun, memory_profiling=self.memory_profiling, *args, **kwargs)
 
-class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget, Job):
+
+
+class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
     """{{ cookiecutter.system_of_record }} SSoT Data Target."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
@@ -87,5 +98,15 @@ class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget, Job):
         self.target_adapter = {{ cookiecutter.system_of_record_slug }}.{{ cookiecutter.system_of_record_camel }}Adapter(job=self, sync=self.sync)
         self.target_adapter.load()
 
+    def run(  # pylint: disable=arguments-differ, too-many-arguments
+        self, dryrun, memory_profiling, debug, *args, **kwargs
+    ):
+        """Perform data synchronization."""
+        self.debug = debug
+        self.dryrun = dryrun
+        self.memory_profiling = memory_profiling
+        super().run(dryrun=self.dryrun, memory_profiling=self.memory_profiling, *args, **kwargs)
+
 
 jobs = [{{ cookiecutter.system_of_record_camel }}DataSource, {{ cookiecutter.system_of_record_camel }}DataTarget]
+register_jobs(*jobs)
