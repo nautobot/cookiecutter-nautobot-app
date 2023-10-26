@@ -33,7 +33,7 @@ packages = [
 python = ">=3.8,<3.12"
 # Used for local development
 nautobot = "^{{cookiecutter.min_nautobot_version}}"
-nautobot-ssot = "^1.1.0"
+nautobot-ssot = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
