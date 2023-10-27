@@ -52,7 +52,6 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource):
         super().run(dryrun=self.dryrun, memory_profiling=self.memory_profiling, *args, **kwargs)
 
 
-
 class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
     """{{ cookiecutter.system_of_record }} SSoT Data Target."""
 
