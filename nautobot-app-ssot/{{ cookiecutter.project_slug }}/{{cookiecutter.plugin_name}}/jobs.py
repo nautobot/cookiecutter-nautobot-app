@@ -1,6 +1,5 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
-from diffsync import DiffSyncFlags
 from nautobot.core.celery import register_jobs
 from nautobot.extras.jobs import BooleanVar
 from nautobot_ssot.jobs.base import DataSource, DataTarget
