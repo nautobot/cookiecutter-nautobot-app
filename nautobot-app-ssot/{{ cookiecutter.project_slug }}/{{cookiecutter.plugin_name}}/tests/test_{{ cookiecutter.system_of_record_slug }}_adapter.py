@@ -15,7 +15,7 @@ def load_json(path):
         return json.loads(file.read())
 
 
-DEVICE_FIXTURE = []
+DEVICE_FIXTURE = load_json("./{{ cookiecutter.plugin_name }}/tests/fixtures/get_devices.json")
 
 
 class Test{{ cookiecutter.system_of_record_camel }}AdapterTestCase(TransactionTestCase):
