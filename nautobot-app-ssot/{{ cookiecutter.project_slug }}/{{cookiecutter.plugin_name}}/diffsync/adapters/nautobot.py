@@ -1,12 +1,15 @@
 """Nautobot Adapter for {{ cookiecutter.system_of_record }} SSoT plugin."""
 
 from diffsync import DiffSync
+from {{ cookiecutter.plugin_name }}.diffsync.models.nautobot import NautobotDevice
 
 
 class NautobotAdapter(DiffSync):
     """DiffSync adapter for Nautobot."""
 
-    top_level = []
+    device = NautobotDevice
+
+    top_level = ["device"]
 
     def __init__(self, *args, job=None, sync=None, **kwargs):
         """Initialize Nautobot.
