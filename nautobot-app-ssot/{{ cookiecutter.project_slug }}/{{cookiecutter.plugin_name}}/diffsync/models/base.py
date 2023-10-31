@@ -23,6 +23,6 @@ class Device(DiffSyncModel):
     role: Optional[str]
     model: Optional[str]
     site: Optional[str]
-    ip_address = Optional[str]
+    ip_address: Optional[str]
 
-    uuid = Optional[UUID]
+    uuid: Optional[UUID]
