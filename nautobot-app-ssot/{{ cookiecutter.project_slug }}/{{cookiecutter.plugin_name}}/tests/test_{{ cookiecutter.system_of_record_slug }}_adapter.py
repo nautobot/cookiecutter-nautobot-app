@@ -17,7 +17,7 @@ def load_json(path):
         return json.loads(file.read())
 
 
-SITE_FIXTURE = []
+DEVICE_FIXTURE = load_json("./{{ cookiecutter.plugin_name }}/tests/fixtures/fixtures/get_devices.json")
 
 
 class Test{{ cookiecutter.system_of_record_camel }}AdapterTestCase(TransactionTestCase):
@@ -28,7 +28,7 @@ class Test{{ cookiecutter.system_of_record_camel }}AdapterTestCase(TransactionTe
     def setUp(self):
         """Initialize test case."""
         self.{{ cookiecutter.system_of_record_slug }}_client = MagicMock()
-        self.{{ cookiecutter.system_of_record_slug }}_client.get_sites.return_value = SITE_FIXTURE
+        self.{{ cookiecutter.system_of_record_slug }}_client.get_devices.return_value = DEVICE_FIXTURE
 
         self.job = {{ cookiecutter.system_of_record_camel }}DataSource()
         self.job.job_result = JobResult.objects.create(
@@ -40,6 +40,6 @@ class Test{{ cookiecutter.system_of_record_camel }}AdapterTestCase(TransactionTe
         """Test {{ cookiecutter.verbose_name }} load() function."""
         # self.{{ cookiecutter.system_of_record_slug }}.load()
         # self.assertEqual(
-        #     {site["name"] for site in SITE_FIXTURE},
-        #     {site.get_unique_id() for site in self.{{ cookiecutter.system_of_record_slug }}.get_all("site")},
+        #     {dev["name"] for dev in DEVICE_FIXTURE},
+        #     {dev.get_unique_id() for dev in self.{{ cookiecutter.system_of_record_slug }}.get_all("device")},
         # )
