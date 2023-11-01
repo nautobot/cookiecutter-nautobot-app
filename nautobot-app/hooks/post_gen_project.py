@@ -31,6 +31,7 @@ if __name__ == "__main__":
             "api/views.py",
             "filters.py",
             "forms.py",
+            "migrations/__init__.py",
             "models.py",
             "navigation.py",
             "tables.py",
