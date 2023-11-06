@@ -58,7 +58,9 @@ if __name__ == "__main__":
             (_ADDONS_PATH / folder).rmdir()
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file or for the drift management.
-    cookie = {{ cookiecutter }}
-    (_PROJECT_PATH / ".cookiecutter.json").write_text(json.dumps({"cookiecutter": cookie}, indent=4) + "\n", encoding="utf-8")
+    cookie = {{cookiecutter}}
+    (_PROJECT_PATH / ".cookiecutter.json").write_text(
+        json.dumps({"cookiecutter": cookie}, indent=4) + "\n", encoding="utf-8"
+    )
 
     print(_CONGRATS)
