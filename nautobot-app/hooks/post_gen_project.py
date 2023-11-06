@@ -24,12 +24,14 @@ if __name__ == "__main__":
 
     if "{{ cookiecutter.model_class_name }}" == "None":
         files_to_remove = [
+            "api/__init__.py",
             "api/nested_serializers.py",
             "api/serializers.py",
             "api/urls.py",
             "api/views.py",
             "filters.py",
             "forms.py",
+            "migrations/__init__.py",
             "models.py",
             "navigation.py",
             "tables.py",
@@ -45,9 +47,20 @@ if __name__ == "__main__":
         ]
         for file in files_to_remove:
             (_ADDONS_PATH / file).unlink()
+        folders_to_remove = [
+            "api",
+            "migrations",
+            "templates/{{ cookiecutter.plugin_name }}",
+            "templates",
+            "views",
+        ]
+        for folder in folders_to_remove:
+            (_ADDONS_PATH / folder).rmdir()
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file or for the drift management.
-    cookie = {{ cookiecutter }}
-    (_PROJECT_PATH / ".cookiecutter.json").write_text(json.dumps({"cookiecutter": cookie}, indent=4) + "\n", encoding="utf-8")
+    cookie = {{cookiecutter}}
+    (_PROJECT_PATH / ".cookiecutter.json").write_text(
+        json.dumps({"cookiecutter": cookie}, indent=4) + "\n", encoding="utf-8"
+    )
 
     print(_CONGRATS)

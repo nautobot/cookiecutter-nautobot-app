@@ -8,13 +8,13 @@ class {{ cookiecutter.system_of_record_camel }}Device(Device):
 
     @classmethod
     def create(cls, diffsync, ids, attrs):
-        """Create Device in {{ cookiecutter.system_of_record }} from {{ cookiecutter.camel_name }}Device object."""
+        """Create Device in {{ cookiecutter.system_of_record }} from {{ cookiecutter.system_of_record_camel }}Device object."""
         return super().create(diffsync=diffsync, ids=ids, attrs=attrs)
 
     def update(self, attrs):
-        """Update Device in {{ cookiecutter.system_of_record }} from {{ cookiecutter.camel_name }}Device object."""
+        """Update Device in {{ cookiecutter.system_of_record }} from {{ cookiecutter.system_of_record_camel }}Device object."""
         return super().update(attrs)
 
     def delete(self):
-        """Delete Device in {{ cookiecutter.system_of_record }} from {{ cookiecutter.camel_name }}Device object."""
+        """Delete Device in {{ cookiecutter.system_of_record }} from {{ cookiecutter.system_of_record_camel }}Device object."""
         return self
