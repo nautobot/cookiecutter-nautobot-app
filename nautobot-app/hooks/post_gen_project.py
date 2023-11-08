@@ -25,7 +25,6 @@ if __name__ == "__main__":
     if "{{ cookiecutter.model_class_name }}" == "None":
         files_to_remove = [
             "api/__init__.py",
-            "api/nested_serializers.py",
             "api/serializers.py",
             "api/urls.py",
             "api/views.py",
@@ -35,7 +34,7 @@ if __name__ == "__main__":
             "models.py",
             "navigation.py",
             "tables.py",
-            "templates/{{ cookiecutter.plugin_name }}/{{ cookiecutter.model_class_name.lower() }}.html",
+            "templates/{{ cookiecutter.plugin_name }}/{{ cookiecutter.model_class_name.lower() }}_retrieve.html",
             "tests/fixtures.py",
             "tests/test_api_views.py",
             "tests/test_filter_{{ cookiecutter.model_class_name.lower() }}.py",
@@ -43,7 +42,7 @@ if __name__ == "__main__":
             "tests/test_model_{{ cookiecutter.model_class_name.lower() }}.py",
             "tests/test_views.py",
             "urls.py",
-            "views/{{ cookiecutter.model_class_name.lower() }}.py",
+            "views.py",
         ]
         for file in files_to_remove:
             (_ADDONS_PATH / file).unlink()
@@ -52,13 +51,12 @@ if __name__ == "__main__":
             "migrations",
             "templates/{{ cookiecutter.plugin_name }}",
             "templates",
-            "views",
         ]
         for folder in folders_to_remove:
             (_ADDONS_PATH / folder).rmdir()
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file or for the drift management.
-    cookie = {{cookiecutter}}
+    cookie = {{ cookiecutter }}
     (_PROJECT_PATH / ".cookiecutter.json").write_text(
         json.dumps({"cookiecutter": cookie}, indent=4) + "\n", encoding="utf-8"
     )
