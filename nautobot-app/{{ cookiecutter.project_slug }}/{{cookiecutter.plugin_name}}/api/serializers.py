@@ -1,17 +1,11 @@
 """API serializers for {{ cookiecutter.plugin_name }}."""
-from rest_framework import serializers
-
-from nautobot.core.api.serializers import ValidatedModelSerializer
+from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
 from {{ cookiecutter.plugin_name }} import models
 
-from . import nested_serializers  # noqa: F401, pylint: disable=unused-import
 
-
-class {{ cookiecutter.model_class_name }}Serializer(ValidatedModelSerializer):
+class {{ cookiecutter.model_class_name }}Serializer(NautobotModelSerializer, TaggedModelSerializerMixin):
     """{{ cookiecutter.model_class_name }} Serializer."""
-
-    url = serializers.HyperlinkedIdentityField(view_name="plugins-api:{{ cookiecutter.plugin_name }}-api:{{ cookiecutter.model_class_name | lower }}-detail")
 
     class Meta:
         """Meta attributes."""

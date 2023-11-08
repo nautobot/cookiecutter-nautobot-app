@@ -4,7 +4,7 @@ from importlib import metadata
 
 __version__ = metadata.version(__name__)
 
-from nautobot.extras.plugins import NautobotAppConfig
+from nautobot.apps import NautobotAppConfig
 
 
 class {{cookiecutter.camel_name}}Config(NautobotAppConfig):

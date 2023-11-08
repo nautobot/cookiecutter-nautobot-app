@@ -11,7 +11,6 @@ class {{ cookiecutter.model_class_name }}Test(TestCase):
         form = forms.{{ cookiecutter.model_class_name }}Form(
             data={
                 "name": "Development",
-                "slug": "development",
                 "description": "Development Testing",
             }
         )
@@ -22,7 +21,6 @@ class {{ cookiecutter.model_class_name }}Test(TestCase):
         form = forms.{{ cookiecutter.model_class_name }}Form(
             data={
                 "name": "Development",
-                "slug": "development",
             }
         )
         self.assertTrue(form.is_valid())

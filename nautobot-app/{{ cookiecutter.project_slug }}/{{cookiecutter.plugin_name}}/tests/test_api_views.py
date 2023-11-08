@@ -1,5 +1,5 @@
 """Unit tests for {{cookiecutter.plugin_name}}."""
-from nautobot.utilities.testing import APIViewTestCases
+from nautobot.apps.testing import APIViewTestCases
 
 from {{ cookiecutter.plugin_name }} import models
 from {{ cookiecutter.plugin_name }}.tests import fixtures
@@ -13,15 +13,13 @@ class {{ cookiecutter.model_class_name }}APIViewTest(APIViewTestCases.APIViewTes
     create_data = [
         {
             "name": "Test Model 1",
-            "slug": "test-model-1",
+            "description": "test description",
         },
         {
             "name": "Test Model 2",
-            "slug": "test-model-2",
         },
     ]
     bulk_update_data = {"description": "Test Bulk Update"}
-    brief_fields = ["created", "description", "display", "id", "last_updated", "name", "slug", "url"]
 
     @classmethod
     def setUpTestData(cls):

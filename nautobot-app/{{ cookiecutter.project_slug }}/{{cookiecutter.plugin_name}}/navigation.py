@@ -1,21 +1,25 @@
 """Menu items."""
 
-from nautobot.extras.plugins import PluginMenuButton, PluginMenuItem
+from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMenuTab
 from nautobot.utilities.choices import ButtonColorChoices
 
-menu_items = (
-    PluginMenuItem(
+items = (
+    NavMenuItem(
         link="plugins:{{ cookiecutter.plugin_name }}:{{ cookiecutter.model_class_name.lower() }}_list",
         link_text="{{ cookiecutter.verbose_name }}",
         permissions=["{{ cookiecutter.plugin_name }}.view_{{ cookiecutter.model_class_name.lower() }}"],
         buttons=(
-            PluginMenuButton(
+            NavMenuAddButton(
                 link="plugins:{{ cookiecutter.plugin_name }}:{{ cookiecutter.model_class_name.lower() }}_add",
-                title="Add",
-                icon_class="mdi mdi-plus-thick",
-                color=ButtonColorChoices.GREEN,
                 permissions=["{{ cookiecutter.plugin_name }}.add_{{ cookiecutter.model_class_name.lower() }}"],
             ),
         ),
+    ),
+)
+
+menu_items = (
+    NavMenuTab(
+        name="Plugins",
+        groups=(NavMenuGroup(name="{{cookiecutter.verbose_name}}", items=tuple(items)),),
     ),
 )

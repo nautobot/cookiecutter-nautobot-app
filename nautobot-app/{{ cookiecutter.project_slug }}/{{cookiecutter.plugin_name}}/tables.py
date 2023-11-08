@@ -1,7 +1,7 @@
 """Tables for {{ cookiecutter.plugin_name }}."""
 
 import django_tables2 as tables
-from nautobot.utilities.tables import BaseTable, ButtonsColumn, ToggleColumn
+from nautobot.apps.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 from {{ cookiecutter.plugin_name }} import models
 

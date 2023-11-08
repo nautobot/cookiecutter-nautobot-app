@@ -1,18 +1,12 @@
 """Forms for {{ cookiecutter.plugin_name }}."""
 from django import forms
-from nautobot.utilities.forms import (
-    BootstrapMixin,
-    BulkEditForm,
-    SlugField,
-)
+from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin
 
 from {{ cookiecutter.plugin_name }} import models
 
 
-class {{ cookiecutter.model_class_name }}Form(BootstrapMixin, forms.ModelForm):
+class {{ cookiecutter.model_class_name }}Form(NautobotModelForm):
     """{{ cookiecutter.model_class_name }} creation/edit form."""
-
-    slug = SlugField()
 
     class Meta:
         """Meta attributes."""
@@ -20,12 +14,11 @@ class {{ cookiecutter.model_class_name }}Form(BootstrapMixin, forms.ModelForm):
         model = models.{{ cookiecutter.model_class_name }}
         fields = [
             "name",
-            "slug",
             "description",
         ]
 
 
-class {{ cookiecutter.model_class_name }}BulkEditForm(BootstrapMixin, BulkEditForm):
+class {{ cookiecutter.model_class_name }}BulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):
     """{{ cookiecutter.model_class_name }} bulk edit form."""
 
     pk = forms.ModelMultipleChoiceField(queryset=models.{{ cookiecutter.model_class_name }}.objects.all(), widget=forms.MultipleHiddenInput)
@@ -39,8 +32,11 @@ class {{ cookiecutter.model_class_name }}BulkEditForm(BootstrapMixin, BulkEditFo
         ]
 
 
-class {{ cookiecutter.model_class_name }}FilterForm(BootstrapMixin, forms.ModelForm):
+class {{ cookiecutter.model_class_name }}FilterForm(NautobotFilterForm):
     """Filter form to filter searches."""
+
+    model = models.{{ cookiecutter.model_class_name }}
+    field_order = ["q", "name"]
 
     q = forms.CharField(
         required=False,
@@ -48,16 +44,3 @@ class {{ cookiecutter.model_class_name }}FilterForm(BootstrapMixin, forms.ModelF
         help_text="Search within Name or Slug.",
     )
     name = forms.CharField(required=False, label="Name")
-    slug = forms.CharField(required=False, label="Slug")
-
-    class Meta:
-        """Meta attributes."""
-
-        model = models.{{ cookiecutter.model_class_name }}
-        # Define the fields above for ordering and widget purposes
-        fields = [
-            "q",
-            "name",
-            "slug",
-            "description",
-        ]

@@ -1,13 +1,12 @@
 """API views for {{ cookiecutter.plugin_name }}."""
 
-from nautobot.core.api.views import ModelViewSet
+from nautobot.apps.api import NautobotModelViewSet
 
 from {{cookiecutter.plugin_name }} import filters, models
-
 from {{ cookiecutter.plugin_name }}.api import serializers
 
 
-class {{ cookiecutter.model_class_name }}ViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
+class {{ cookiecutter.model_class_name }}ViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ancestors
     """{{ cookiecutter.model_class_name }} viewset."""
 
     queryset = models.{{ cookiecutter.model_class_name }}.objects.all()

@@ -2,11 +2,9 @@
 
 # Django imports
 from django.db import models
-from django.urls import reverse
 
 # Nautobot imports
-from nautobot.core.models import BaseModel
-from nautobot.extras.models.change_logging import ChangeLoggedModel
+from nautobot.apps.models import PrimaryModel
 
 
 # from nautobot.extras.utils import extras_features
@@ -17,11 +15,10 @@ from nautobot.extras.models.change_logging import ChangeLoggedModel
 
 # If you want to choose a specific model to overload in your class declaration, please reference the following documentation:
 # how to chose a database model: https://docs.nautobot.com/projects/core/en/stable/plugins/development/#database-models
-class {{ cookiecutter.model_class_name }}(BaseModel, ChangeLoggedModel):
+class {{ cookiecutter.model_class_name }}(PrimaryModel):
     """Base model for {{ cookiecutter.verbose_name }} plugin."""
 
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
     description = models.CharField(max_length=200, blank=True)
     # additional model fields
 
@@ -35,10 +32,6 @@ class {{ cookiecutter.model_class_name }}(BaseModel, ChangeLoggedModel):
 
         # Option for fixing plural name (i.e. "Chicken Tenders" vs "Chicken Tendies")
         # verbose_name_plural = "{{ cookiecutter.verbose_name }}s"
-
-    def get_absolute_url(self):
-        """Return detail view for {{ cookiecutter.model_class_name }}."""
-        return reverse("plugins:{{ cookiecutter.plugin_name }}:{{ cookiecutter.model_class_name.lower() }}", args=[self.slug])
 
     def __str__(self):
         """Stringify instance."""
