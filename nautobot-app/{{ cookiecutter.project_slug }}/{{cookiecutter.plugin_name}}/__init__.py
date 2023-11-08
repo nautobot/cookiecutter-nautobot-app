@@ -1,10 +1,9 @@
 """Plugin declaration for {{cookiecutter.plugin_name}}."""
-# Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
-__version__ = metadata.version(__name__)
-
 from nautobot.extras.plugins import NautobotAppConfig
+
+__version__ = metadata.version(__name__)
 
 
 class {{cookiecutter.camel_name}}Config(NautobotAppConfig):
