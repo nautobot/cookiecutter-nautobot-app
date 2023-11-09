@@ -20,5 +20,5 @@ Remove the configuration you added in `nautobot_config.py` from `PLUGINS` & `PLU
 ## Uninstall the package
 
 ```bash
-$ pip3 uninstall nautobot-{{ cookiecutter.project_slug }}
+$ pip3 uninstall {{ cookiecutter.plugin_slug }}
 ```
