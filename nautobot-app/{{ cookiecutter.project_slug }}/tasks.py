@@ -77,7 +77,7 @@ def _await_healthy_service(context, service):
 def _await_healthy_container(context, container_id):
     while True:
         result = context.run(
-            f"docker inspect --format='{% raw %}{{.State.Health.Status}}{% endraw %}' {container_id}",
+            "docker inspect --format='{% raw %}{{.State.Health.Status}}{% endraw %}' " + container_id,
             pty=False,
             echo=False,
             hide=True,
@@ -247,7 +247,7 @@ def stop(context, service=""):
 def destroy(context, volumes=True, import_db_file=""):
     """Destroy all containers and volumes."""
     print("Destroying Nautobot...")
-    docker_compose(context, "down --remove-orphans {'--volumes' if volumes else ''}")
+    docker_compose(context, f"down --remove-orphans {'--volumes' if volumes else ''}")
 
     if not import_db_file:
         return
