@@ -26,6 +26,14 @@ pytest-cookies = "*"
 ruff = "*"
 yamllint = "*"
 
+[tool.poetry.group.docs.dependencies]
+# Rendering docs to HTML
+mkdocs = "1.5.2"
+# Material for MkDocs theme
+mkdocs-material = "9.1.15"
+# Render custom markdown for version added/changed/remove notes
+mkdocs-version-annotations = "1.0.0"
+
 [tool.black]
 line-length = 120
 target-version = ['py38']
