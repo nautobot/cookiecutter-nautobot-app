@@ -1,1 +1,1 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/images/icon-{{cookiecutter.plugin_slug}}.png
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/images/icon-{{ cookiecutter.plugin_slug }}.png

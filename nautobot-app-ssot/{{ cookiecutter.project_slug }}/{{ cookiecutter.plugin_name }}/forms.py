@@ -1,1 +1,1 @@
-../../../nautobot-app/{{ cookiecutter.project_slug }}/{{cookiecutter.plugin_name}}/forms.py
+../../../nautobot-app/{{ cookiecutter.project_slug }}/{{ cookiecutter.plugin_name }}/forms.py

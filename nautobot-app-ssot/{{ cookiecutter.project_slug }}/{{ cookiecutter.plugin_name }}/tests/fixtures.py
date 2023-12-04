@@ -1,1 +1,1 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/{{cookiecutter.plugin_name}}/tests/fixtures.py
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/{{ cookiecutter.plugin_name }}/tests/fixtures.py
