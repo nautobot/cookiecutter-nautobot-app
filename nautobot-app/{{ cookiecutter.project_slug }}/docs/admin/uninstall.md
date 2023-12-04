@@ -7,7 +7,7 @@ Here you will find any steps necessary to cleanly remove the App from your Nauto
 Prior to removing the plugin from the `nautobot_config.py`, run the following command to roll back any migration specific to this plugin.
 
 ```shell
-nautobot-server migrate {{ cookiecutter.project_slug.replace('-', '_') }} zero
+nautobot-server migrate {{ cookiecutter.plugin_name }} zero
 ```
 
 !!! warning "Developer Note - Remove Me!"
@@ -16,3 +16,9 @@ nautobot-server migrate {{ cookiecutter.project_slug.replace('-', '_') }} zero
 ## Remove App configuration
 
 Remove the configuration you added in `nautobot_config.py` from `PLUGINS` & `PLUGINS_CONFIG`.
+
+## Uninstall the package
+
+```bash
+$ pip3 uninstall {{ cookiecutter.plugin_slug }}
+```
