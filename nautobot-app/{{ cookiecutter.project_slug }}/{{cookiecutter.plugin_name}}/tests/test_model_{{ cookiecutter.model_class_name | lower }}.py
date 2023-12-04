@@ -17,8 +17,6 @@ class Test{{ cookiecutter.model_class_name }}(TestCase):
 
     def test_create_{{ cookiecutter.model_class_name.lower() }}_all_fields_success(self):
         """Create {{ cookiecutter.model_class_name }} with all fields."""
-        {{ cookiecutter.model_class_name.lower() }} = models.{{ cookiecutter.model_class_name }}.objects.create(
-            name="Development", description="Development Test"
-        )
+        {{ cookiecutter.model_class_name.lower() }} = models.{{ cookiecutter.model_class_name }}.objects.create(name="Development", description="Development Test")
         self.assertEqual({{ cookiecutter.model_class_name.lower() }}.name, "Development")
         self.assertEqual({{ cookiecutter.model_class_name.lower() }}.description, "Development Test")

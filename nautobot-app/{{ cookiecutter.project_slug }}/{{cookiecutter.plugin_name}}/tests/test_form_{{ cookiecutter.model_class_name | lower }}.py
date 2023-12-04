@@ -27,11 +27,6 @@ class {{ cookiecutter.model_class_name }}Test(TestCase):
         self.assertTrue(form.save())
 
     def test_validate_name_{{ cookiecutter.model_class_name.lower() }}_is_required(self):
-        form = forms.{{ cookiecutter.model_class_name }}Form(data={"slug": "development"})
+        form = forms.{{ cookiecutter.model_class_name }}Form(data={"description": "Development Testing"})
         self.assertFalse(form.is_valid())
         self.assertIn("This field is required.", form.errors["name"])
-
-    def test_validate_slug_is_required(self):
-        form = forms.{{ cookiecutter.model_class_name }}Form(data={"name": "Development"})
-        self.assertFalse(form.is_valid())
-        self.assertIn("This field is required.", form.errors["slug"])

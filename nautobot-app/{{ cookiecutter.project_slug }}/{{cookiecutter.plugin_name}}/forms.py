@@ -5,7 +5,7 @@ from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, Nautob
 from {{ cookiecutter.plugin_name }} import models
 
 
-class {{ cookiecutter.model_class_name }}Form(NautobotModelForm):
+class {{ cookiecutter.model_class_name }}Form(NautobotModelForm):  # pylint: disable=too-many-ancestors
     """{{ cookiecutter.model_class_name }} creation/edit form."""
 
     class Meta:
@@ -18,7 +18,7 @@ class {{ cookiecutter.model_class_name }}Form(NautobotModelForm):
         ]
 
 
-class {{ cookiecutter.model_class_name }}BulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):
+class {{ cookiecutter.model_class_name }}BulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # pylint: disable=too-many-ancestors
     """{{ cookiecutter.model_class_name }} bulk edit form."""
 
     pk = forms.ModelMultipleChoiceField(queryset=models.{{ cookiecutter.model_class_name }}.objects.all(), widget=forms.MultipleHiddenInput)

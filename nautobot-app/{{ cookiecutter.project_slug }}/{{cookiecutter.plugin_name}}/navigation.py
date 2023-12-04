@@ -6,7 +6,7 @@ from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMen
 items = (
     NavMenuItem(
         link="plugins:{{ cookiecutter.plugin_name }}:{{ cookiecutter.model_class_name.lower() }}_list",
-        link_text="{{ cookiecutter.verbose_name }}",
+        name="{{ cookiecutter.verbose_name }}",
         permissions=["{{ cookiecutter.plugin_name }}.view_{{ cookiecutter.model_class_name.lower() }}"],
         buttons=(
             NavMenuAddButton(

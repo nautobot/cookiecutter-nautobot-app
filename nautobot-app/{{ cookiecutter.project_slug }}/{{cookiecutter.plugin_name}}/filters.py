@@ -1,11 +1,11 @@
 """Filtering for {{ cookiecutter.plugin_name }}."""
 
-from nautobot.apps.filters import NautobotFilterSet
+from nautobot.apps.filters import NautobotFilterSet, NameSearchFilterSet
 
 from {{ cookiecutter.plugin_name }} import models
 
 
-class {{ cookiecutter.model_class_name }}FilterSet(NautobotFilterSet):
+class {{ cookiecutter.model_class_name }}FilterSet(NautobotFilterSet, NameSearchFilterSet):  # pylint: disable=too-many-ancestors
     """Filter for {{ cookiecutter.model_class_name }}."""
 
     class Meta:

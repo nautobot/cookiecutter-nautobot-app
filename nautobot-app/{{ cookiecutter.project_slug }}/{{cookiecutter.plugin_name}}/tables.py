@@ -17,7 +17,7 @@ class {{ cookiecutter.model_class_name }}Table(BaseTable):
         # Option for modifying the default action buttons on each row:
         # buttons=("changelog", "edit", "delete"),
         # Option for modifying the pk for the action buttons:
-        pk_field="slug",
+        pk_field="pk",
     )
 
     class Meta(BaseTable.Meta):

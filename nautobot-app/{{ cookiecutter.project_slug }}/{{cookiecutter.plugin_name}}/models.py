@@ -13,9 +13,10 @@ from nautobot.apps.models import PrimaryModel
 # Then based on your reading you may decide to put the following decorator before the declaration of your class
 # @extras_features("custom_fields", "custom_validators", "relationships", "graphql")
 
+
 # If you want to choose a specific model to overload in your class declaration, please reference the following documentation:
 # how to chose a database model: https://docs.nautobot.com/projects/core/en/stable/plugins/development/#database-models
-class {{ cookiecutter.model_class_name }}(PrimaryModel):
+class {{ cookiecutter.model_class_name }}(PrimaryModel):  # pylint: disable=too-many-ancestors
     """Base model for {{ cookiecutter.verbose_name }} plugin."""
 
     name = models.CharField(max_length=100, unique=True)

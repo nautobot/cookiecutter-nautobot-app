@@ -15,6 +15,12 @@ class {{ cookiecutter.model_class_name }}ViewTest(ViewTestCases.PrimaryObjectVie
         "name": "Test 1",
         "description": "Initial model",
     }
+    csv_data = (
+        "name",
+        "Test csv1",
+        "Test csv2",
+        "Test csv3",
+    )
 
     @classmethod
     def setUpTestData(cls):

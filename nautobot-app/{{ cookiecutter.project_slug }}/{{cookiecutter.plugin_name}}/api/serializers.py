@@ -4,7 +4,7 @@ from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixi
 from {{ cookiecutter.plugin_name }} import models
 
 
-class {{ cookiecutter.model_class_name }}Serializer(NautobotModelSerializer, TaggedModelSerializerMixin):
+class {{ cookiecutter.model_class_name }}Serializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
     """{{ cookiecutter.model_class_name }} Serializer."""
 
     class Meta:
