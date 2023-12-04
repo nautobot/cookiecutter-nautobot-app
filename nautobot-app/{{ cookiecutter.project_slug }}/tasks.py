@@ -13,6 +13,8 @@ limitations under the License.
 """
 
 import os
+from pathlib import Path
+from time import sleep
 
 from invoke.collection import Collection
 from invoke.tasks import task as invoke_task
@@ -65,6 +67,25 @@ namespace.configure(
 
 def _is_compose_included(context, name):
     return f"docker-compose.{name}.yml" in context.{{cookiecutter.plugin_name}}.compose_files
+
+
+def _await_healthy_service(context, service):
+    container_id = docker_compose(context, f"ps -q -- {service}", pty=False, echo=False, hide=True).stdout.strip()
+    _await_healthy_container(context, container_id)
+
+
+def _await_healthy_container(context, container_id):
+    while True:
+        result = context.run(
+            "docker inspect --format='{% raw %}{{.State.Health.Status}}{% endraw %}' " + container_id,
+            pty=False,
+            echo=False,
+            hide=True,
+        )
+        if result.stdout.strip() == "healthy":
+            break
+        print(f"Waiting for `{container_id}` container to become healthy ...")
+        sleep(1)
 
 
 def task(function=None, *args, **kwargs):
@@ -216,11 +237,46 @@ def stop(context, service=""):
     docker_compose(context, "stop" if service else "down --remove-orphans", service=service)
 
 
-@task
-def destroy(context):
+@task(
+    aliases=("down",),
+    help={
+        "volumes": "Remove Docker compose volumes (default: True)",
+        "import-db-file": "Import database from `import-db-file` file into the fresh environment (default: empty)",
+    },
+)
+def destroy(context, volumes=True, import_db_file=""):
     """Destroy all containers and volumes."""
     print("Destroying Nautobot...")
-    docker_compose(context, "down --remove-orphans --volumes")
+    docker_compose(context, f"down --remove-orphans {'--volumes' if volumes else ''}")
+
+    if not import_db_file:
+        return
+
+    if not volumes:
+        raise ValueError("Cannot specify `--no-volumes` and `--import-db-file` arguments at the same time.")
+
+    print(f"Importing database file: {import_db_file}...")
+
+    input_path = Path(import_db_file).absolute()
+    if not input_path.is_file():
+        raise ValueError(f"File not found: {input_path}")
+
+    command = [
+        "run",
+        "--rm",
+        "--detach",
+        f"--volume='{input_path}:/docker-entrypoint-initdb.d/dump.sql'",
+        "--",
+        "db",
+    ]
+
+    container_id = docker_compose(context, " ".join(command), pty=False, echo=False, hide=True).stdout.strip()
+    _await_healthy_container(context, container_id)
+    print("Stopping database container...")
+    context.run(f"docker stop {container_id}", pty=False, echo=False, hide=True)
+
+    print("Database import complete, you can start Nautobot with the following command:")
+    print("invoke start")
 
 
 @task
@@ -424,27 +480,43 @@ def dbshell(context, db_name="", input_file="", output_file="", query=""):
 
 @task(
     help={
+        "db-name": "Database name to create (default: Nautobot database)",
         "input-file": "SQL dump file to replace the existing database with. This can be generated using `invoke backup-db` (default: `dump.sql`).",
     }
 )
-def import_db(context, input_file="dump.sql"):
-    """Stop Nautobot containers and replace the current database with the dump into the running `db` container."""
-    docker_compose(context, "stop -- nautobot worker")
+def import_db(context, db_name="", input_file="dump.sql"):
+    """Stop Nautobot containers and replace the current database with the dump into `db` container."""
+    docker_compose(context, "stop -- nautobot worker beat")
+    start(context, "db")
+    _await_healthy_service(context, "db")
 
     command = ["exec -- db sh -c '"]
 
     if _is_compose_included(context, "mysql"):
+        if not db_name:
+            db_name = "$MYSQL_DATABASE"
         command += [
+            "mysql --user root --password=$MYSQL_ROOT_PASSWORD",
+            '--execute="',
+            f"DROP DATABASE IF EXISTS {db_name};",
+            f"CREATE DATABASE {db_name};",
+            ""
+            if db_name == "$MYSQL_DATABASE"
+            else f"GRANT ALL PRIVILEGES ON {db_name}.* TO $MYSQL_USER; FLUSH PRIVILEGES;",
+            '"',
+            "&&",
             "mysql",
-            "--database=$MYSQL_DATABASE",
+            f"--database={db_name}",
             "--user=$MYSQL_USER",
             "--password=$MYSQL_PASSWORD",
         ]
     elif _is_compose_included(context, "postgres"):
+        if not db_name:
+            db_name = "$POSTGRES_DB"
         command += [
-            "psql",
-            "--username=$POSTGRES_USER",
-            "postgres",
+            f"dropdb --if-exists --user=$POSTGRES_USER {db_name} &&",
+            f"createdb --user=$POSTGRES_USER {db_name} &&",
+            f"psql --user=$POSTGRES_USER --dbname={db_name}",
         ]
     else:
         raise ValueError("Unsupported database backend.")
@@ -467,7 +539,10 @@ def import_db(context, input_file="dump.sql"):
     }
 )
 def backup_db(context, db_name="", output_file="dump.sql", readable=True):
-    """Dump database into `output_file` file from running `db` container."""
+    """Dump database into `output_file` file from `db` container."""
+    start(context, "db")
+    _await_healthy_service(context, "db")
+
     command = ["exec -- db sh -c '"]
 
     if _is_compose_included(context, "mysql"):
@@ -475,17 +550,12 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
             "mysqldump",
             "--user=root",
             "--password=$MYSQL_ROOT_PASSWORD",
-            "--add-drop-database",
             "--skip-extended-insert" if readable else "",
-            "--databases",
             db_name if db_name else "$MYSQL_DATABASE",
         ]
     elif _is_compose_included(context, "postgres"):
         command += [
             "pg_dump",
-            "--clean",
-            "--create",
-            "--if-exists",
             "--username=$POSTGRES_USER",
             f"--dbname={db_name or '$POSTGRES_DB'}",
             "--inserts" if readable else "",
