@@ -1,4 +1,4 @@
-"""Views for FloorPlan."""
+"""Views for {{ cookiecutter.plugin_name }}."""
 from nautobot.apps.viewsets import NautobotUIViewSet
 
 from {{ cookiecutter.plugin_name }} import filters, forms, models, tables
