@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 from django.contrib.contenttypes.models import ContentType
 from nautobot.extras.models import Job, JobResult
-from nautobot.utilities.testing import TransactionTestCase
+from nautobot.core.testing import TransactionTestCase
 from {{ cookiecutter.plugin_name }}.diffsync.adapters.{{ cookiecutter.system_of_record_slug }} import {{ cookiecutter.system_of_record_camel }}Adapter
 from {{ cookiecutter.plugin_name }}.jobs import {{ cookiecutter.system_of_record_camel }}DataSource
 
@@ -25,7 +25,7 @@ class Test{{ cookiecutter.system_of_record_camel }}AdapterTestCase(TransactionTe
 
     databases = ("default", "job_logs")
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """Initialize test case."""
         self.{{ cookiecutter.system_of_record_slug }}_client = MagicMock()
         self.{{ cookiecutter.system_of_record_slug }}_client.get_devices.return_value = DEVICE_FIXTURE
