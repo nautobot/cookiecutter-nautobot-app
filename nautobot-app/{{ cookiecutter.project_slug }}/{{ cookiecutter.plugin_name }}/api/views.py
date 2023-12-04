@@ -2,7 +2,7 @@
 
 from nautobot.apps.api import NautobotModelViewSet
 
-from {{cookiecutter.plugin_name }} import filters, models
+from {{ cookiecutter.plugin_name }} import filters, models
 from {{ cookiecutter.plugin_name }}.api import serializers
 
 

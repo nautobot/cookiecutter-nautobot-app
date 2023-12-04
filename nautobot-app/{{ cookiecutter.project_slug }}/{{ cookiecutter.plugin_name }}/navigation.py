@@ -20,6 +20,6 @@ items = (
 menu_items = (
     NavMenuTab(
         name="Plugins",
-        groups=(NavMenuGroup(name="{{cookiecutter.verbose_name}}", items=tuple(items)),),
+        groups=(NavMenuGroup(name="{{ cookiecutter.verbose_name }}", items=tuple(items)),),
     ),
 )

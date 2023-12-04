@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "{{cookiecutter.plugin_slug}}"
+name = "{{ cookiecutter.plugin_slug }}"
 version = "0.1.0"
-description = "{{cookiecutter.project_short_description}}"
-authors = ["{{cookiecutter.full_name}} <{{cookiecutter.email}}>"]
+description = "{{ cookiecutter.project_short_description }}"
+authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
 {%- if cookiecutter.open_source_license == 'Apache-2.0' %}
-license = "{{cookiecutter.open_source_license}}"
+license = "{{ cookiecutter.open_source_license }}"
 {%- endif %}
 readme = "README.md"
-homepage = "{{cookiecutter.repo_url}}"
-repository = "{{cookiecutter.repo_url}}"
+homepage = "{{ cookiecutter.repo_url }}"
+repository = "{{ cookiecutter.repo_url }}"
 keywords = ["nautobot", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
@@ -26,13 +26,13 @@ include = [
     "README.md",
 ]
 packages = [
-    { include = "{{cookiecutter.plugin_name}}" },
+    { include = "{{ cookiecutter.plugin_name }}" },
 ]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 # Used for local development
-nautobot = "^{{cookiecutter.min_nautobot_version}}"
+nautobot = "^{{ cookiecutter.min_nautobot_version }}"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
@@ -107,7 +107,7 @@ notes = """,
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = [
-    "{{cookiecutter.min_nautobot_version}}"
+    "{{ cookiecutter.min_nautobot_version }}"
 ]
 
 [tool.pydocstyle]

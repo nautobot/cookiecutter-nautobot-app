@@ -131,7 +131,7 @@ if not _TESTING:
 # Enable installed Apps. Add the name of each App to the list.
 PLUGINS = [
     "nautobot_ssot",
-    "{{cookiecutter.plugin_name}}",
+    "{{ cookiecutter.plugin_name }}",
 ]
 
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
@@ -140,7 +140,7 @@ PLUGINS_CONFIG = {
     "nautobot_ssot": {
         "hide_example_jobs": True,
     },
-    # '{{cookiecutter.plugin_name}}': {
+    # '{{ cookiecutter.plugin_name }}': {
     #     'foo': 'bar',
     #     'buzz': 'bazz',
     # },

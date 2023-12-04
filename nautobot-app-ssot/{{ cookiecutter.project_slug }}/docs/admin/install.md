@@ -7,7 +7,7 @@ Here you will find detailed instructions on how to **install** and **configure**
 
 ## Prerequisites
 
-- The plugin is compatible with Nautobot {{cookiecutter.min_nautobot_version}} and higher.
+- The plugin is compatible with Nautobot {{ cookiecutter.min_nautobot_version }} and higher.
 - Databases supported: PostgreSQL, MySQL
 
 !!! note
@@ -21,37 +21,37 @@ Here you will find detailed instructions on how to **install** and **configure**
 ## Install Guide
 
 !!! note
-    Plugins can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this plugin is [`{{cookiecutter.plugin_slug}}`](https://pypi.org/project/{{cookiecutter.plugin_slug}}/).
+    Plugins can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this plugin is [`{{ cookiecutter.plugin_slug }}`](https://pypi.org/project/{{ cookiecutter.plugin_slug }}/).
 
 The plugin is available as a Python package via PyPI and can be installed with `pip`:
 
 ```shell
-pip install {{cookiecutter.plugin_slug}}
+pip install {{ cookiecutter.plugin_slug }}
 ```
 
-To ensure {{cookiecutter.verbose_name}} is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `{{cookiecutter.plugin_slug}}` package:
+To ensure {{ cookiecutter.verbose_name }} is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `{{ cookiecutter.plugin_slug }}` package:
 
 ```shell
-echo {{cookiecutter.plugin_slug}} >> local_requirements.txt
+echo {{ cookiecutter.plugin_slug }} >> local_requirements.txt
 ```
 
 Once installed, the plugin needs to be enabled in your Nautobot configuration. The following block of code below shows the additional configuration required to be added to your `nautobot_config.py` file:
 
-- Append `"{{cookiecutter.plugin_name}}"` to the `PLUGINS` list.
-- Append the `"{{cookiecutter.plugin_name}}"` dictionary to the `PLUGINS_CONFIG` dictionary and override any defaults.
+- Append `"{{ cookiecutter.plugin_name }}"` to the `PLUGINS` list.
+- Append the `"{{ cookiecutter.plugin_name }}"` dictionary to the `PLUGINS_CONFIG` dictionary and override any defaults.
 
 ```python
 # In your nautobot_config.py
 PLUGINS = [
     "nautobot_ssot",
-    "{{cookiecutter.plugin_name}}",
+    "{{ cookiecutter.plugin_name }}",
 ]
 
 PLUGINS_CONFIG = {
     "nautobot_ssot": {
         "hide_example_jobs": True,
     },
-    '{{cookiecutter.plugin_name}}': {
+    '{{ cookiecutter.plugin_name }}': {
     #     ADD YOUR SETTINGS HERE
     },
 }

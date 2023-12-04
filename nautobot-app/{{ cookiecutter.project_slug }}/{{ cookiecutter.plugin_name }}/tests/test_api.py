@@ -1,4 +1,4 @@
-"""Unit tests for {{cookiecutter.plugin_name}}."""
+"""Unit tests for {{ cookiecutter.plugin_name }}."""
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class PlaceholderAPITest(TestCase):
-    """Test the {{cookiecutter.camel_name}} API."""
+    """Test the {{ cookiecutter.camel_name }} API."""
 
     def setUp(self):
         """Create a superuser and token for API calls."""
