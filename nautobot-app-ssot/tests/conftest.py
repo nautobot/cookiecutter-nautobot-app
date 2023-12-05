@@ -51,6 +51,7 @@ def cookies_baked_nautobot_app_ssot(cookies):
     environ["COOKIECUTTER_CONFIG"] = str(cookies._config_file)
     for plugin_slug, extra_context in extra_contexts.items():
         results[plugin_slug] = cookies.bake(extra_context=extra_context)
+
         assert results[plugin_slug].exception is None
 
         examples_projects[plugin_slug] = init_examples_project(plugin_slug)
