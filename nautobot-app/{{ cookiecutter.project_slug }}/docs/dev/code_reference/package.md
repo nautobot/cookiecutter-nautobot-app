@@ -1,1 +1,1 @@
-::: {{cookiecutter.plugin_name}}
+::: {{ cookiecutter.plugin_name }}

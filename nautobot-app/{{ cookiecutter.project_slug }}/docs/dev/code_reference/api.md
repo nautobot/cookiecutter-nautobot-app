@@ -1,5 +1,5 @@
-# {{cookiecutter.verbose_name}} API Package
+# {{ cookiecutter.verbose_name }} API Package
 
-::: {{cookiecutter.plugin_name}}.api
+::: {{ cookiecutter.plugin_name }}.api
     options:
         show_submodules: True

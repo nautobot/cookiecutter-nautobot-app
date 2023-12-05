@@ -1,0 +1,26 @@
+{% raw %}
+{% extends 'generic/object_retrieve.html' %}
+{% load helpers %}
+
+{% block content_left_page %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+			<strong>{% endraw %}{{ cookiecutter.model_class_name }}{% raw %}</strong>
+		</div>
+		<table class="table table-hover panel-body attr-table">
+			<tr>
+				<td>Name</td>
+				<td>
+					<a href="{{ object | hyperlinked_object }}">{{ object.name }}</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>
+					{{ object.description|placeholder }}
+				</td>
+			</tr>
+		</table>
+	</div>
+{% endblock %}
+{% endraw %}

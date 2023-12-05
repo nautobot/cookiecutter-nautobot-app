@@ -6,8 +6,8 @@
 # -------------------------------------------------------------------------------------
 # !!! USE CAUTION WHEN MODIFYING LINES BELOW
 
-# Accepts a desired Nautobot version as build argument, default to {{cookiecutter.min_nautobot_version}}
-ARG NAUTOBOT_VER="{{cookiecutter.min_nautobot_version}}"
+# Accepts a desired Nautobot version as build argument, default to {{ cookiecutter.min_nautobot_version }}
+ARG NAUTOBOT_VER="{{ cookiecutter.min_nautobot_version }}"
 
 # Accepts a desired Python version as build argument, default to 3.11
 ARG PYTHON_VER="3.11"

@@ -5,8 +5,8 @@ about: Propose a new feature or enhancement
 ---
 
 ### Environment
-* Nautobot version:  <!-- Example: {{cookiecutter.min_nautobot_version}} -->
-* {{cookiecutter.plugin_slug}} version:  <!-- Example: 1.0.0 -->
+* Nautobot version:  <!-- Example: {{ cookiecutter.min_nautobot_version }} -->
+* {{ cookiecutter.plugin_slug }} version:  <!-- Example: 1.0.0 -->
 
 <!--
     Describe in detail the new functionality you are proposing.
