@@ -14,7 +14,7 @@ limitations under the License.
 
 import os
 from pathlib import Path
-import sleep
+from time import sleep
 
 from invoke.collection import Collection
 from invoke.tasks import task as invoke_task
@@ -66,23 +66,12 @@ namespace.configure(
 )
 
 
-def _await_healthy_service(context, service):
-    container_id = docker_compose(context, f"ps -q -- {service}", pty=False, echo=False, hide=True).stdout.strip()
-    _await_healthy_container(context, container_id)
-
-
-def _await_healthy_container(context, container_id):
-    while True:
-        result = context.run(
-            "docker inspect --format='{% raw %}{{.State.Health.Status}}{% endraw %}' " + container_id,
-            pty=False,
-            echo=False,
-            hide=True,
-        )
-        if result.stdout.strip() == "healthy":
-            break
-        print(f"Waiting for `{container_id}` container to become healthy ...")
-        sleep(1)
+def collect_files(context):
+    "Helper method for collecting applicable python files."
+    patterns = ["*.py"]
+    for template in context.cookiecutter_nautobot_app.templates:
+        patterns.append(f"{template}/tests")
+    return " ".join(patterns)
 
 
 def task(function=None, *args, **kwargs):
@@ -144,7 +133,7 @@ def docker_compose(context, command, **kwargs):
 
 def run_command(context, command, **kwargs):
     """Wrapper to run a command locally or inside the nautobot container."""
-    if is_truthy(context.nautobot_golden_config.local):
+    if is_truthy(context.cookiecutter_nautobot_app.local):
         context.run(command, **kwargs)
     else:
         # Check if nautobot is running, no need to start another nautobot container to run a command
@@ -202,28 +191,6 @@ def lock(context, check=False):
     run_command(context, f"poetry {'check' if check else 'lock --no-update'}")
 
 
-@task(
-    help={
-        "template": "Name of the cookiecutter template to test",
-    }
-)
-def test_template(context, template=""):
-    """Test a specific cookiecutter template."""
-    test_dir = _PATH / template / "tests"
-    if not test_dir.exists():
-        sys.exit(f"No Test found for {template}")
-
-    print(f"Starting Test for {template}")
-    command = [
-        *_prefix_command(context),
-        "pytest",
-        str(test_dir),
-        "-v",
-        f"--template={template}",
-    ]
-    context.run(" ".join(command))
-
-
 # ------------------------------------------------------------------------------
 # START / STOP / DEBUG
 # ------------------------------------------------------------------------------
@@ -257,14 +224,13 @@ def stop(context, service=""):
 
 @task(
     aliases=("down",),
-    help={
-        "volumes": "Remove Docker compose volumes (default: True)"
-    },
+    help={"volumes": "Remove Docker compose volumes (default: True)"},
 )
 def destroy(context, volumes=True, import_db_file=""):
     """Destroy all containers and volumes."""
     print("Destroying container...")
     docker_compose(context, f"down --remove-orphans {'--volumes' if volumes else ''}")
+
 
 @task
 def export(context):
@@ -330,7 +296,7 @@ def docs(context):
     """Build and serve docs locally for development."""
     command = "mkdocs serve -v"
 
-    if is_truthy(context.nautobot_golden_config.local):
+    if is_truthy(context.cookiecutter_nautobot_app.local):
         print(">>> Serving Documentation at http://localhost:8001")
         run_command(context, command)
     else:
@@ -355,31 +321,30 @@ def help_task(context):
         print(f"invoke {task_name} --help")
         context.run(f"invoke {task_name} --help")
 
-# ------------
+
 # ------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 @task(
     help={
-        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect.",
+        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect."
     }
 )
-def black(context, autoformat=False):
+def black(context, autoformat=False, template=""):
     """Check Python code style with Black."""
     if autoformat:
         black_command = "black"
     else:
         black_command = "black --check --diff"
 
-    command = f"{black_command} ."
-
+    command = f"{black_command} {collect_files(context)}"
     run_command(context, command)
 
 
 @task
-def flake8(context):
-    """Check for PEP8 compliance and other style issues."""
-    command = "flake8 . --config .flake8"
+def pylint(context):
+    """Run pylint code analysis."""
+    command = f"pylint --rcfile pyproject.toml {collect_files(context)}"
     run_command(context, command)
 
 
@@ -387,28 +352,6 @@ def flake8(context):
 def hadolint(context):
     """Check Dockerfile for hadolint compliance and other style issues."""
     command = "hadolint development/Dockerfile"
-    run_command(context, command)
-
-
-@task
-def pylint(context):
-    """Run pylint code analysis."""
-    command = 'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml {{cookiecutter.plugin_name}}'
-    run_command(context, command)
-
-
-@task
-def pydocstyle(context):
-    """Run pydocstyle to validate docstring formatting adheres to NTC defined standards."""
-    # We exclude the /migrations/ directory since it is autogenerated code
-    command = "pydocstyle ."
-    run_command(context, command)
-
-
-@task
-def bandit(context):
-    """Run bandit to validate basic static code security analysis."""
-    command = "bandit --recursive . --configfile .bandit.yml"
     run_command(context, command)
 
 
@@ -427,38 +370,25 @@ def yamllint(context):
     help={
         "label": "specify a directory or template to test instead of running all tests for all templates",
         "failfast": "fail as soon as a single test fails don't run the entire test suite",
-        "buffer": "Discard output from passing tests",
         "pattern": "Run specific test methods, classes, or modules instead of all tests",
         "verbose": "Enable verbose test output.",
     }
 )
-def unittest(
-    context,
-    label="}",
-    failfast=False,
-    buffer=True,
-    pattern="",
-    verbose=False,
-):
+def unittest(context, label="", failfast=False, pattern="", verbose=False, templates=[]):
     """Run Nautobot unit tests."""
-    command = f"coverage run --module nautobot.core.cli test {label}"
+    command = f"coverage run --module pytest"
+    templates = templates if templates else context.cookiecutter_nautobot_app.templates
+    for template in templates:
+        command += f" --template={template}"
 
     if failfast:
         command += " --failfast"
-    if buffer:
-        command += " --buffer"
     if pattern:
         command += f" -k='{pattern}'"
     if verbose:
         command += " --verbosity 2"
-
-    run_command(context, command)
-
-
-@task
-def unittest_coverage(context):
-    """Report on code test coverage as measured by 'invoke unittest'."""
-    command = "coverage report --skip-covered --include '{{cookiecutter.plugin_name}}/*' --omit *migrations*"
+    if label:
+        command += f" {label}"
 
     run_command(context, command)
 
@@ -473,198 +403,24 @@ def unittest_coverage(context):
 def tests(context, failfast=False, keepdb=False, lint_only=False):
     """Run all tests for this plugin."""
     # If we are not running locally, start the docker containers so we don't have to for each test
-    if not is_truthy(context.{{cookiecutter.plugin_name}}.local):
+    if not is_truthy(context.cookiecutter_nautobot_app.local):
         print("Starting Docker Containers...")
         start(context)
     # Sorted loosely from fastest to slowest
     print("Running black...")
     black(context)
-    print("Running flake8...")
-    flake8(context)
-    print("Running bandit...")
-    bandit(context)
-    print("Running pydocstyle...")
-    pydocstyle(context)
     print("Running yamllint...")
     yamllint(context)
-    print("Running poetry check...")
-    lock(context, check=True)
-    print("Running migrations check...")
-    check_migrations(context)
+    # print("Running poetry check...")
+    # lock(context, check=True)
     print("Running pylint...")
     pylint(context)
     print("Running mkdocs...")
     build_and_check_docs(context)
     if not lint_only:
         print("Running unit tests...")
-        unittest(context, failfast=failfast, keepdb=keepdb)
-        unittest_coverage(context)
+        unittest(context, failfast=failfast)
     print("All tests have passed!")
-
-
-
-
-
-
-@task(
-    help={
-        "service": "Name of the service to run command in",
-    }
-)
-def bandit(context, service=_DEFAULT_SERVICE):
-    """Run bandit to validate basic static code security analysis."""
-    command = [
-        *_prefix_command(context, service=service),
-        "bandit",
-        "--configfile=.bandit.yml",
-        "--recursive",
-        "*.py",
-    ]
-    context.run(" ".join(command))
-
-
-@task(
-    help={
-        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect.",
-        "service": "Name of the service to run command in",
-    }
-)
-def isort(context, autoformat=False, service=_DEFAULT_SERVICE):
-    """Check Python code style with isort."""
-    command = [
-        *_prefix_command(context, service=service),
-        "isort",
-        "--force-single-line-imports",
-        "" if autoformat else "--check --diff",
-        *_PYTHON_NAMES_TO_CHECK,
-    ]
-    context.run(" ".join(command))
-
-
-@task(
-    help={
-        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect.",
-        "service": "Name of the service to run command in",
-    }
-)
-def black(context, autoformat=False, service=_DEFAULT_SERVICE):
-    """Check Python code style with black."""
-    command = [
-        *_prefix_command(context, service=service),
-        "black",
-        "" if autoformat else "--check --diff",
-        *_PYTHON_NAMES_TO_CHECK,
-    ]
-    context.run(" ".join(command))
-
-
-@task(name="autoformat", aliases=("a",))
-def autoformat_task(context):
-    """Autoformat Python code with isort, black and ruff."""
-    if not _LOCAL:
-        command = [
-            *_prefix_command(
-                context,
-            ),
-            "invoke",
-            "autoformat",
-        ]
-        context.run(" ".join(command), pty=True)
-        return
-
-    isort(context, autoformat=True)
-    black(context, autoformat=True)
-    ruff(context, autoformat=True)
-
-
-@task(
-    help={
-        "service": "Name of the service to run command in",
-    }
-)
-def pylint(context, service=_DEFAULT_SERVICE):
-    """Run pylint code analysis."""
-    command = [
-        *_prefix_command(context, service=service),
-        "pylint",
-        "--rcfile=pyproject.toml",
-        *_PYTHON_NAMES_TO_CHECK,
-    ]
-    context.run(" ".join(command))
-
-
-@task(
-    help={
-        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect.",
-        "service": "Name of the service to run command in",
-    }
-)
-def ruff(context, service=_DEFAULT_SERVICE, autoformat=False):
-    """Run ruff code analysis."""
-    command = [
-        *_prefix_command(context, service=service),
-        "ruff",
-        "check",
-        "--fix" if autoformat else "",
-        *_PYTHON_NAMES_TO_CHECK,
-    ]
-    context.run(" ".join(command))
-
-
-@task(
-    help={
-        "service": "Name of the service to run command in",
-    }
-)
-def yamllint(context, service=_DEFAULT_SERVICE):
-    """Run yamllint to validate formatting adheres to NTC defined YAML standards."""
-    command = [
-        *_prefix_command(context, service=service),
-        "yamllint",
-        "./",
-        "--format=standard",
-    ]
-    context.run(" ".join(command))
-
-
-@task(
-    aliases=("qa",),
-    help={
-        "lint_only": "Only run linting, not tests, (default: False)",
-        "service": "Name of the service to run command in",
-    },
-)
-def tests(context, lint_only=False, service="qa"):
-    """Run all tests."""
-    if not _LOCAL:
-        command = [
-            *_prefix_command(context, service=service),
-            "invoke tests",
-        ]
-        context.run(" ".join(command), pty=True)
-        return
-
-    ruff(context, service=service)
-    isort(context, service=service)
-    black(context, service=service)
-    bandit(context, service=service)
-    yamllint(context, service=service)
-    pylint(context, service=service)
-    lock_poetry(context, service=service, check=True)
-
-    if not lint_only:
-        for template in _TEMPLATES:
-            test_template(context, template=template)
-
-    print("All tests have passed!")
-
-
-@task(name="help")
-def help_task(context):
-    """Print the help of available tasks."""
-    for task_name in sorted(ns.task_names):
-        print(50 * "-")
-        context.run(f"invoke {task_name} --help", echo=True)
 
 
 @task(
@@ -682,7 +438,6 @@ def bake(context, _debug=False, _input=True, json_file="", output_dir="./outputs
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     command = [
-        *_prefix_command(context),
         "cookiecutter",
         f"--output-dir={output_dir}",
         f"--replay-file={json_file}" if json_file else "",
@@ -698,23 +453,4 @@ def bake(context, _debug=False, _input=True, json_file="", output_dir="./outputs
 
     command.append(template)
 
-    context.run(" ".join(command), pty=True)
-
-
-def _read_invoke_kwargs():
-    result = {}
-
-    # True if not specified
-    echo = getenv("INVOKE_ECHO", None)
-    result["echo"] = (echo is None) or _jsontobool(echo)
-
-    dry = getenv("INVOKE_DRY")
-    if dry:
-        result["dry"] = _jsontobool(dry)
-
-    return result
-
-
-# Must be on the end of the module
-ns = Collection.from_module(sys.modules[__name__])
-ns.configure({"run": _read_invoke_kwargs()})
+    run_command(context, " ".join(command))
