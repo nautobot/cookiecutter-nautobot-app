@@ -12,115 +12,194 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import json
-import sys
-from os import environ
-from os import getenv
-from os import getuid
+import os
 from pathlib import Path
-from pwd import getpwuid
-from typing import Generator
+import sleep
 
 from invoke.collection import Collection
-from invoke.tasks import task
-
-_PATH = Path(__file__).parent.absolute()
+from invoke.tasks import task as invoke_task
 
 
-def _jsontobool(value: str) -> bool:
-    return bool(json.loads(value.lower()))
+def is_truthy(arg):
+    """Convert "truthy" strings into Booleans.
 
+    Examples:
+        >>> is_truthy('yes')
+        True
+    Args:
+        arg (str): Truthy string (True values are y, yes, t, true, on and 1; false values are n, no,
+        f, false, off and 0. Raises ValueError if val is anything else.
+    """
+    if isinstance(arg, bool):
+        return arg
 
-def _setup_env():
-    def setenv(key, value):
-        if key not in environ:
-            environ[key] = str(value)
-
-    setenv("TARGET_WORKDIR", _PATH)
-
-    uid = getuid()
-    setenv("USER_UID", uid)
-    setenv("USER_NAME", getpwuid(uid).pw_name)
-
-    setenv("COMPOSE_FILE", "development/compose.yaml")
-    setenv("COMPOSE_PROJECT_NAME", "cookiecutter-nautobot-app")
-    setenv("FROM_IMAGE", "python:3.11-slim")
-    setenv("IMAGE_PREFIX", f"localhost/{environ['COMPOSE_PROJECT_NAME']}")
-    setenv("IMAGE_TAG", "latest")
-
-
-_setup_env()
-
-_DEFAULT_EXEC = _jsontobool(getenv("INVOKE_DEFAULT_EXEC", "False"))
-_DEFAULT_SERVICE = getenv("INVOKE_DEFAULT_SERVICE", "dev")
-_LOCAL = _jsontobool(getenv("INVOKE_LOCAL", "False"))
-
-_TEMPLATES = [
-    "nautobot-app",
-    # "nautobot-app-chatops",
-    "nautobot-app-ssot",
-]
-
-_PYTHON_NAMES_TO_CHECK = [
-    "*.py",
-    *[f"{template}/tests" for template in _TEMPLATES],
-]
-
-
-def _prefix_command(
-    context,
-    _exec=_DEFAULT_EXEC,
-    root=False,
-    service=_DEFAULT_SERVICE,
-    entrypoint=None,
-    build=None,
-) -> Generator[str, None, None]:
-    if _LOCAL:
-        return
-
-    # Autobuild qa, if not prohibited
-    if build or (service == "qa" and build is None):
-        build_task(context, service=service)
-
-    yield "docker compose"
-
-    if _exec:
-        yield "exec"
+    val = str(arg).lower()
+    if val in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    elif val in ("n", "no", "f", "false", "off", "0"):
+        return False
     else:
-        yield "run"
-        yield "--rm"
-        if entrypoint is not None:
-            yield f"--entrypoint='{entrypoint}'"
+        raise ValueError(f"Invalid truthy value: `{arg}`")
 
-    if root:
-        yield "--user=root"
 
-    yield "--"
-    yield service
+# Use pyinvoke configuration for default values, see http://docs.pyinvoke.org/en/stable/concepts/configuration.html
+# Variables may be overwritten in invoke.yml or by the environment variables INVOKE_COOKIECUTTER_NAUTOBOT_APP_xxx
+namespace = Collection("cookiecutter_nautobot_app")
+namespace.configure(
+    {
+        "cookiecutter_nautobot_app": {
+            "project_name": "cookiecutter-nautobot-app",
+            "python_ver": "3.11",
+            "local": True,
+            "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
+            "compose_files": [
+                "docker-compose.yml",
+            ],
+            "templates": [
+                "nautobot-app",
+                # "nautobot-app-chatops",
+                "nautobot-app-ssot",
+            ],
+            "compose_http_timeout": "86400",
+        }
+    }
+)
+
+
+def _await_healthy_service(context, service):
+    container_id = docker_compose(context, f"ps -q -- {service}", pty=False, echo=False, hide=True).stdout.strip()
+    _await_healthy_container(context, container_id)
+
+
+def _await_healthy_container(context, container_id):
+    while True:
+        result = context.run(
+            "docker inspect --format='{% raw %}{{.State.Health.Status}}{% endraw %}' " + container_id,
+            pty=False,
+            echo=False,
+            hide=True,
+        )
+        if result.stdout.strip() == "healthy":
+            break
+        print(f"Waiting for `{container_id}` container to become healthy ...")
+        sleep(1)
+
+
+def task(function=None, *args, **kwargs):
+    """Task decorator to override the default Invoke task decorator and add each task to the invoke namespace."""
+
+    def task_wrapper(function=None):
+        """Wrapper around invoke.task to add the task to the namespace as well."""
+        if args or kwargs:
+            task_func = invoke_task(*args, **kwargs)(function)
+        else:
+            task_func = invoke_task(function)
+        namespace.add_task(task_func)
+        return task_func
+
+    if function:
+        # The decorator was called with no arguments
+        return task_wrapper(function)
+    # The decorator was called with arguments
+    return task_wrapper
+
+
+def docker_compose(context, command, **kwargs):
+    """Helper function for running a specific docker compose command with all appropriate parameters and environment.
+
+    Args:
+        context (obj): Used to run specific commands
+        command (str): Command string to append to the "docker compose ..." command, such as "build", "up", etc.
+        **kwargs: Passed through to the context.run() call.
+    """
+    build_env = {
+        # Note: 'docker compose logs' will stop following after 60 seconds by default,
+        # so we are overriding that by setting this environment variable.
+        "COMPOSE_HTTP_TIMEOUT": context.cookiecutter_nautobot_app.compose_http_timeout,
+        "PYTHON_VER": context.cookiecutter_nautobot_app.python_ver,
+        **kwargs.pop("env", {}),
+    }
+    compose_command_tokens = [
+        "docker compose",
+        f"--project-name {context.cookiecutter_nautobot_app.project_name}",
+        f'--project-directory "{context.cookiecutter_nautobot_app.compose_dir}"',
+    ]
+
+    for compose_file in context.cookiecutter_nautobot_app.compose_files:
+        compose_file_path = os.path.join(context.cookiecutter_nautobot_app.compose_dir, compose_file)
+        compose_command_tokens.append(f' -f "{compose_file_path}"')
+
+    compose_command_tokens.append(command)
+
+    # If `service` was passed as a kwarg, add it to the end.
+    service = kwargs.pop("service", None)
+    if service is not None:
+        compose_command_tokens.append(service)
+
+    print(f'Running docker compose command "{command}"')
+    compose_command = " ".join(compose_command_tokens)
+
+    return context.run(compose_command, env=build_env, **kwargs)
+
+
+def run_command(context, command, **kwargs):
+    """Wrapper to run a command locally or inside the nautobot container."""
+    if is_truthy(context.nautobot_golden_config.local):
+        context.run(command, **kwargs)
+    else:
+        # Check if nautobot is running, no need to start another nautobot container to run a command
+        docker_compose_status = "ps --services --filter status=running"
+        results = docker_compose(context, docker_compose_status, hide="out")
+        if "nautobot" in results.stdout:
+            compose_command = f"exec nautobot {command}"
+        else:
+            compose_command = f"run --rm --entrypoint '{command}' nautobot"
+
+        pty = kwargs.pop("pty", True)
+
+        docker_compose(context, compose_command, pty=pty, **kwargs)
+
+
+# ------------------------------------------------------------------------------
+# BUILD
+# ------------------------------------------------------------------------------
+@task(
+    help={
+        "force_rm": "Always remove intermediate containers",
+        "cache": "Whether to use Docker's cache when building the image (defaults to enabled)",
+    }
+)
+def build(context, force_rm=False, cache=True):
+    """Build QA docker image."""
+    command = "build"
+
+    if not cache:
+        command += " --no-cache"
+    if force_rm:
+        command += " --force-rm"
+
+    print(f"Building QA with Python {context.cookiecutter_nautobot_app.python_ver}...")
+    docker_compose(context, command)
+
+
+@task
+def generate_packages(context):
+    """Generate all Python packages inside docker and copy the file locally under dist/."""
+    command = "poetry build"
+    run_command(context, command)
 
 
 @task(
-    name="build",
     help={
-        "service": "Service to build container for (defaults to all)",
-        "cache": "Whether to use Docker's cache when building the image (defaults to enabled)",
-        "force_rm": "Always remove intermediate containers (defaults to disabled)",
-        "pull": "Always attempt to pull a newer version of the image (defaults to disabled)",
-    },
+        "check": (
+            "If enabled, check for outdated dependencies in the poetry.lock file, "
+            "instead of generating a new one. (default: disabled)"
+        )
+    }
 )
-def build_task(context, service="", cache=True, force_rm=False, pull=False):
-    """Build Docker image."""
-    command = [
-        "docker compose",
-        "build",
-        "--pull" if pull else "",
-        "--progress=plain",
-        "" if cache else "--no-cache",
-        "--force-rm" if force_rm else "",
-        "--",
-        service,
-    ]
-    context.run(" ".join(command), pty=True)
+def lock(context, check=False):
+    """Generate poetry.lock inside the container."""
+    run_command(context, f"poetry {'check' if check else 'lock --no-update'}")
 
 
 @task(
@@ -145,56 +224,47 @@ def test_template(context, template=""):
     context.run(" ".join(command))
 
 
-@task(
-    help={
-        "check": "Whether to run poetry check or lock (defaults to False)",
-    }
-)
-def lock_poetry(context, service=_DEFAULT_SERVICE, check=False):
-    """Generate poetry.lock, or run poetry check."""
-    command = [
-        *_prefix_command(context, service=service, build=check),
-        "poetry",
-        "check" if check else "lock --no-update",
-    ]
-    context.run(" ".join(command))
-
-
+# ------------------------------------------------------------------------------
+# START / STOP / DEBUG
+# ------------------------------------------------------------------------------
 @task(help={"service": "If specified, only affect this service."})
 def debug(context, service=""):
     """Start specified or all services and its dependencies in debug mode."""
-    context.run(f"docker compose up -- {service}", pty=True)
+    print(f"Starting {service} in debug mode...")
+    docker_compose(context, "up", service=service)
 
 
 @task(help={"service": "If specified, only affect this service."})
 def start(context, service=""):
     """Start specified or all services and its dependencies in detached mode."""
-    context.run(f"docker compose up --detach -- {service}", pty=True)
+    print("Starting container in detached mode...")
+    docker_compose(context, "up --detach", service=service)
 
 
 @task(help={"service": "If specified, only affect this service."})
 def restart(context, service=""):
     """Gracefully restart specified or all services."""
-    context.run(f"docker compose restart -- {service}", pty=True)
+    print("Restarting container...")
+    docker_compose(context, "restart", service=service)
 
 
 @task(help={"service": "If specified, only affect this service."})
 def stop(context, service=""):
     """Stop specified or all services, if service is not specified, remove all containers."""
-    command = [
-        "docker compose",
-        "stop" if service else "down --remove-orphans",
-        "--",
-        service,
-    ]
-    context.run(" ".join(command), pty=True)
+    print("Stopping container...")
+    docker_compose(context, "stop" if service else "down --remove-orphans", service=service)
 
 
-@task
-def destroy(context):
+@task(
+    aliases=("down",),
+    help={
+        "volumes": "Remove Docker compose volumes (default: True)"
+    },
+)
+def destroy(context, volumes=True, import_db_file=""):
     """Destroy all containers and volumes."""
-    context.run("docker compose down --remove-orphans --volumes")
-
+    print("Destroying container...")
+    docker_compose(context, f"down --remove-orphans {'--volumes' if volumes else ''}")
 
 @task
 def export(context):
@@ -205,16 +275,21 @@ def export(context):
     - Debug docker compose configuration.
     - Allow using `docker compose` command directly without invoke.
     """
-    context.run("docker compose convert > compose.yaml")
-    print("Exported docker compose configuration to `compose.yaml` file.")
-    print("\nBEWARE:\n")
-    print("`compose.yaml` can contain credentials. Do not expose it to the editors whispering tools.")
+    docker_compose(context, "convert > compose.yaml")
 
 
 @task(name="ps", help={"all": "Show all, including stopped containers"})
-def ps_task(context, _all=False):
+def ps_task(context, all=False):
     """List containers."""
-    context.run(f"docker compose ps {'--all' if _all else ''}")
+    docker_compose(context, f"ps {'--all' if all else ''}")
+
+
+@task
+def vscode(context):
+    """Launch Visual Studio Code with the appropriate Environment variables to run in a container."""
+    command = "code nautobot.code-workspace"
+
+    context.run(command)
 
 
 @task(
@@ -226,103 +301,209 @@ def ps_task(context, _all=False):
 )
 def logs(context, service="", follow=False, tail=0):
     """View the logs of a docker compose service."""
-    command = [
-        "docker compose",
-        "logs",
-        "--follow" if follow else "",
-        f"--tail={tail}" if tail else "",
-        "--",
-        service,
-    ]
-    context.run(" ".join(command), pty=True)
+    command = "logs "
+
+    if follow:
+        command += "--follow "
+    if tail:
+        command += f"--tail={tail} "
+
+    docker_compose(context, command, service=service)
 
 
+# ------------------------------------------------------------------------------
+# ACTIONS
+# ------------------------------------------------------------------------------
+
+
+@task
+def cli(context):
+    """Launch a bash shell inside the container."""
+    run_command(context, "bash")
+
+
+# ------------------------------------------------------------------------------
+# DOCS
+# ------------------------------------------------------------------------------
+@task
+def docs(context):
+    """Build and serve docs locally for development."""
+    command = "mkdocs serve -v"
+
+    if is_truthy(context.nautobot_golden_config.local):
+        print(">>> Serving Documentation at http://localhost:8001")
+        run_command(context, command)
+    else:
+        start(context, service="docs")
+
+
+@task
+def build_and_check_docs(context):
+    """Build documentation to be available within the container."""
+    command = "mkdocs build --no-directory-urls --strict"
+    run_command(context, command)
+
+
+@task(name="help")
+def help_task(context):
+    """Print the help of available tasks."""
+    import tasks  # pylint: disable=all
+
+    root = Collection.from_module(tasks)
+    for task_name in sorted(root.task_names):
+        print(50 * "-")
+        print(f"invoke {task_name} --help")
+        context.run(f"invoke {task_name} --help")
+
+# ------------
+# ------------------------------------------------------------------
+# TESTS
+# ------------------------------------------------------------------------------
 @task(
     help={
-        "command": "Command to be run inside container",
-        "exec": "Use existing container using `docker exec` or run in the new one with `docker run`",
-        "root": "Run as root or default user",
-        "service": "Name of the service to run command in",
-        "input": "Input file to run command with (default: empty)",
-        "output": "Ouput file, overwrite if exists (default: empty)",
+        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect.",
     }
 )
-# pylint: disable-next=too-many-arguments
-def cli(
-    context,
-    command="bash -l",
-    _exec=False,
-    root=False,
-    service=_DEFAULT_SERVICE,
-    _input="",
-    output="",
-):
-    """Launch a bash shell (or other) inside service container."""
-    cmd = [
-        *_prefix_command(context, _exec, root, service),
-        command,
-        f"< '{_input}'" if _input else "",
-        f"> '{output}'" if output else "",
-    ]
-    context.run(" ".join(cmd), pty=True)
+def black(context, autoformat=False):
+    """Check Python code style with Black."""
+    if autoformat:
+        black_command = "black"
+    else:
+        black_command = "black --check --diff"
+
+    command = f"{black_command} ."
+
+    run_command(context, command)
+
+
+@task
+def flake8(context):
+    """Check for PEP8 compliance and other style issues."""
+    command = "flake8 . --config .flake8"
+    run_command(context, command)
+
+
+@task
+def hadolint(context):
+    """Check Dockerfile for hadolint compliance and other style issues."""
+    command = "hadolint development/Dockerfile"
+    run_command(context, command)
+
+
+@task
+def pylint(context):
+    """Run pylint code analysis."""
+    command = 'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml {{cookiecutter.plugin_name}}'
+    run_command(context, command)
+
+
+@task
+def pydocstyle(context):
+    """Run pydocstyle to validate docstring formatting adheres to NTC defined standards."""
+    # We exclude the /migrations/ directory since it is autogenerated code
+    command = "pydocstyle ."
+    run_command(context, command)
+
+
+@task
+def bandit(context):
+    """Run bandit to validate basic static code security analysis."""
+    command = "bandit --recursive . --configfile .bandit.yml"
+    run_command(context, command)
+
+
+@task
+def yamllint(context):
+    """Run yamllint to validate formatting adheres to NTC defined YAML standards.
+
+    Args:
+        context (obj): Used to run specific commands
+    """
+    command = "yamllint . --format standard"
+    run_command(context, command)
 
 
 @task(
-    name="exec",
     help={
-        "command": "Command to be run inside container",
-        "root": "Run as root or default user",
-        "service": "Name of the service to run command in",
-        "input": "Input file to run command with (default: empty)",
-        "output": "Ouput file, overwrite if exists (default: empty)",
-    },
-)
-# pylint: disable-next=too-many-arguments
-def exec_task(
-    context,
-    command="bash",
-    root=False,
-    service=_DEFAULT_SERVICE,
-    _input="",
-    output="",
-):
-    """Execute command inside running service container."""
-    cmd = [
-        *_prefix_command(context, True, root, service),
-        command,
-        f"< '{_input}'" if _input else "",
-        f"> '{output}'" if output else "",
-    ]
-    context.run(" ".join(cmd), pty=True)
-
-
-@task(
-    help={
-        "command": "Command to be run inside container",
-        "root": "Run as root or default user",
-        "service": "Name of the service to run command in",
-        "input": "Input file to run command with (default: empty)",
-        "output": "Ouput file, overwrite if exists (default: empty)",
+        "label": "specify a directory or template to test instead of running all tests for all templates",
+        "failfast": "fail as soon as a single test fails don't run the entire test suite",
+        "buffer": "Discard output from passing tests",
+        "pattern": "Run specific test methods, classes, or modules instead of all tests",
+        "verbose": "Enable verbose test output.",
     }
 )
-# pylint: disable-next=too-many-arguments
-def run(
+def unittest(
     context,
-    command="bash",
-    root=False,
-    service=_DEFAULT_SERVICE,
-    entrypoint=None,
-    _input="",
-    output="",
+    label="}",
+    failfast=False,
+    buffer=True,
+    pattern="",
+    verbose=False,
 ):
-    """Run new service container with command."""
-    cmd = [
-        *_prefix_command(context, False, root, service, entrypoint=entrypoint),
-        command,
-        f"< '{_input}'" if _input else "",
-        f"> '{output}'" if output else "",
-    ]
-    context.run(" ".join(cmd), pty=True)
+    """Run Nautobot unit tests."""
+    command = f"coverage run --module nautobot.core.cli test {label}"
+
+    if failfast:
+        command += " --failfast"
+    if buffer:
+        command += " --buffer"
+    if pattern:
+        command += f" -k='{pattern}'"
+    if verbose:
+        command += " --verbosity 2"
+
+    run_command(context, command)
+
+
+@task
+def unittest_coverage(context):
+    """Report on code test coverage as measured by 'invoke unittest'."""
+    command = "coverage report --skip-covered --include '{{cookiecutter.plugin_name}}/*' --omit *migrations*"
+
+    run_command(context, command)
+
+
+@task(
+    help={
+        "failfast": "fail as soon as a single test fails don't run the entire test suite. (default: False)",
+        "keepdb": "Save and re-use test database between test runs for faster re-testing. (default: False)",
+        "lint-only": "Only run linters; unit tests will be excluded. (default: False)",
+    }
+)
+def tests(context, failfast=False, keepdb=False, lint_only=False):
+    """Run all tests for this plugin."""
+    # If we are not running locally, start the docker containers so we don't have to for each test
+    if not is_truthy(context.{{cookiecutter.plugin_name}}.local):
+        print("Starting Docker Containers...")
+        start(context)
+    # Sorted loosely from fastest to slowest
+    print("Running black...")
+    black(context)
+    print("Running flake8...")
+    flake8(context)
+    print("Running bandit...")
+    bandit(context)
+    print("Running pydocstyle...")
+    pydocstyle(context)
+    print("Running yamllint...")
+    yamllint(context)
+    print("Running poetry check...")
+    lock(context, check=True)
+    print("Running migrations check...")
+    check_migrations(context)
+    print("Running pylint...")
+    pylint(context)
+    print("Running mkdocs...")
+    build_and_check_docs(context)
+    if not lint_only:
+        print("Running unit tests...")
+        unittest(context, failfast=failfast, keepdb=keepdb)
+        unittest_coverage(context)
+    print("All tests have passed!")
+
+
+
+
 
 
 @task(
