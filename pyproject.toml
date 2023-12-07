@@ -26,14 +26,16 @@ pytest = "*"
 pytest-cookies = "*"
 ruff = "*"
 yamllint = "*"
-
-[tool.poetry.group.docs.dependencies]
+Markdown = "*"
 # Rendering docs to HTML
 mkdocs = "1.5.2"
 # Material for MkDocs theme
 mkdocs-material = "9.1.15"
 # Render custom markdown for version added/changed/remove notes
 mkdocs-version-annotations = "1.0.0"
+# Automatic documentation from sources, for MkDocs
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.5.2"
 
 [tool.black]
 line-length = 120
