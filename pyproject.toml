@@ -88,3 +88,4 @@ testpaths = [
     # "nautobot-app-chatops/tests",
     "nautobot-app-ssot/tests",
 ]
+addopts = "--color=yes"

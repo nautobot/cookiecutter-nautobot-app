@@ -368,18 +368,15 @@ def yamllint(context):
 
 @task(
     help={
-        "label": "specify a directory or template to test instead of running all tests for all templates",
+        "label": "specify a directory with tests directory instead of running all tests for all templates (e.g. -l='nautobot-app/tests')",
         "failfast": "fail as soon as a single test fails don't run the entire test suite",
         "pattern": "Run specific test methods, classes, or modules instead of all tests",
         "verbose": "Enable verbose test output.",
     }
 )
-def unittest(context, label="", failfast=False, pattern="", verbose=False, templates=[]):
-    """Run Nautobot unit tests."""
-    command = f"coverage run --module pytest"
-    templates = templates if templates else context.cookiecutter_nautobot_app.templates
-    for template in templates:
-        command += f" --template={template}"
+def unittest(context, label="", failfast=False, pattern="", verbose=False):
+    """Run Cookie bake unit tests."""
+    command = f"pytest"
 
     if failfast:
         command += " --failfast"
@@ -411,8 +408,8 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     black(context)
     print("Running yamllint...")
     yamllint(context)
-    # print("Running poetry check...")
-    # lock(context, check=True)
+    print("Running poetry check...")
+    lock(context, check=True)
     print("Running pylint...")
     pylint(context)
     print("Running mkdocs...")
