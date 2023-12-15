@@ -3,15 +3,15 @@
     "full_name": "Network to Code, LLC",
     "email": "info@networktocode.com",
     "github_org": "nautobot",
-    "plugin_name": "my_app",
-    "verbose_name": "{{ cookiecutter.plugin_name.title().replace('_', ' ') }}",
-    "plugin_slug": "{{ cookiecutter.plugin_name.lower().replace(' ', '-').replace('_', '-') }}",
-    "project_slug": "nautobot-app-{{ cookiecutter.plugin_slug }}",
+    "app_name": "my_app",
+    "verbose_name": "{{ cookiecutter.app_name.title().replace('_', ' ') }}",
+    "app_slug": "{{ cookiecutter.app_name.lower().replace(' ', '-').replace('_', '-') }}",
+    "project_slug": "nautobot-app-{{ cookiecutter.app_slug }}",
     "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
-    "base_url": "{{ cookiecutter.plugin_slug }}",
+    "base_url": "{{ cookiecutter.app_slug }}",
     "min_nautobot_version": "2.0.0",
     "max_nautobot_version": "2.9999",
-    "camel_name": "{{ cookiecutter.plugin_slug.title().replace(' ', '').replace('-', '') }}",
+    "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",
     "model_class_name": "None",
     "open_source_license": [
@@ -19,5 +19,5 @@
         "Not open source"
     ],
     "docs_base_url": "https://docs.nautobot.com",
-    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.plugin_slug }}/en/latest"
+    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest"
 }

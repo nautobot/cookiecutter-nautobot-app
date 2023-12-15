@@ -306,4 +306,4 @@ invoke.yml
 public
 /compose.yaml
 /dump.sql
-/{{ cookiecutter.plugin_name }}/static/{{ cookiecutter.plugin_name }}/docs
+/{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs

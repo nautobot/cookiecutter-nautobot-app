@@ -1,7 +1,7 @@
 ---
 dev_addr: "127.0.0.1:8001"
 edit_uri: "edit/main/{{ cookiecutter.project_slug }}/docs"
-site_dir: "{{ cookiecutter.plugin_name }}/static/{{ cookiecutter.plugin_name }}/docs"
+site_dir: "{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs"
 site_name: "{{ cookiecutter.verbose_name }} Documentation"
 site_url: "{{ cookiecutter.docs_app_url }}/"
 repo_url: "{{ cookiecutter.repo_url }}"

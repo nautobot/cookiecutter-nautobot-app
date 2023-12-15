@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "{{ cookiecutter.plugin_slug }}"
+name = "{{ cookiecutter.app_slug }}"
 version = "0.1.0"
 description = "{{ cookiecutter.project_short_description }}"
 authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
@@ -20,7 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 packages = [
-    { include = "{{ cookiecutter.plugin_name }}" },
+    { include = "{{ cookiecutter.app_name }}" },
 ]
 
 [tool.poetry.dependencies]

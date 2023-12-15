@@ -38,23 +38,23 @@ def cookies_baked_nautobot_app(cookies):
     examples_projects = {}
     results = {}
     extra_contexts = {
-        "nautobot-plugin": {
+        "nautobot-app": {
             "open_source_license": "Not open source",
-            "plugin_name": "nautobot_plugin",
+            "app_name": "nautobot_app",
         },
-        "my-plugin": {
+        "my-app": {
             "open_source_license": "Apache-2.0",
-            "plugin_name": "my_plugin",
+            "app_name": "my_app",
         },
     }
     # pylint: disable-next=protected-access
     environ["COOKIECUTTER_CONFIG"] = str(cookies._config_file)
-    for plugin_slug, extra_context in extra_contexts.items():
-        results[plugin_slug] = cookies.bake(extra_context=extra_context, template="nautobot-app")
+    for app_slug, extra_context in extra_contexts.items():
+        results[app_slug] = cookies.bake(extra_context=extra_context, template="nautobot-app")
 
-        assert results[plugin_slug].exception is None
+        assert results[app_slug].exception is None
 
-        examples_projects[plugin_slug] = init_examples_project(plugin_slug)
-        shutil.move(results[plugin_slug].project_path, examples_projects[plugin_slug])
+        examples_projects[app_slug] = init_examples_project(app_slug)
+        shutil.move(results[app_slug].project_path, examples_projects[app_slug])
 
     return results, examples_projects

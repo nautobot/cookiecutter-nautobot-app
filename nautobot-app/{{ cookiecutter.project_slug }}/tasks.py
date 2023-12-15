@@ -43,13 +43,13 @@ def is_truthy(arg):
 
 
 # Use pyinvoke configuration for default values, see http://docs.pyinvoke.org/en/stable/concepts/configuration.html
-# Variables may be overwritten in invoke.yml or by the environment variables INVOKE_{{ cookiecutter.plugin_name.upper() }}_xxx
-namespace = Collection("{{ cookiecutter.plugin_name }}")
+# Variables may be overwritten in invoke.yml or by the environment variables INVOKE_{{ cookiecutter.app_name.upper() }}_xxx
+namespace = Collection("{{ cookiecutter.app_name }}")
 namespace.configure(
     {
-        "{{ cookiecutter.plugin_name }}": {
+        "{{ cookiecutter.app_name }}": {
             "nautobot_ver": "{{ cookiecutter.min_nautobot_version }}",
-            "project_name": "{{ cookiecutter.plugin_slug }}",
+            "project_name": "{{ cookiecutter.app_slug }}",
             "python_ver": "3.11",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
@@ -66,7 +66,7 @@ namespace.configure(
 
 
 def _is_compose_included(context, name):
-    return f"docker-compose.{name}.yml" in context.{{ cookiecutter.plugin_name }}.compose_files
+    return f"docker-compose.{name}.yml" in context.{{ cookiecutter.app_name }}.compose_files
 
 
 def _await_healthy_service(context, service):
@@ -118,19 +118,19 @@ def docker_compose(context, command, **kwargs):
     build_env = {
         # Note: 'docker compose logs' will stop following after 60 seconds by default,
         # so we are overriding that by setting this environment variable.
-        "COMPOSE_HTTP_TIMEOUT": context.{{ cookiecutter.plugin_name }}.compose_http_timeout,
-        "NAUTOBOT_VER": context.{{ cookiecutter.plugin_name }}.nautobot_ver,
-        "PYTHON_VER": context.{{ cookiecutter.plugin_name }}.python_ver,
+        "COMPOSE_HTTP_TIMEOUT": context.{{ cookiecutter.app_name }}.compose_http_timeout,
+        "NAUTOBOT_VER": context.{{ cookiecutter.app_name }}.nautobot_ver,
+        "PYTHON_VER": context.{{ cookiecutter.app_name }}.python_ver,
         **kwargs.pop("env", {}),
     }
     compose_command_tokens = [
         "docker compose",
-        f"--project-name {context.{{ cookiecutter.plugin_name }}.project_name}",
-        f'--project-directory "{context.{{ cookiecutter.plugin_name }}.compose_dir}"',
+        f"--project-name {context.{{ cookiecutter.app_name }}.project_name}",
+        f'--project-directory "{context.{{ cookiecutter.app_name }}.compose_dir}"',
     ]
 
-    for compose_file in context.{{ cookiecutter.plugin_name }}.compose_files:
-        compose_file_path = os.path.join(context.{{ cookiecutter.plugin_name }}.compose_dir, compose_file)
+    for compose_file in context.{{ cookiecutter.app_name }}.compose_files:
+        compose_file_path = os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, compose_file)
         compose_command_tokens.append(f' -f "{compose_file_path}"')
 
     compose_command_tokens.append(command)
@@ -148,7 +148,7 @@ def docker_compose(context, command, **kwargs):
 
 def run_command(context, command, **kwargs):
     """Wrapper to run a command locally or inside the nautobot container."""
-    if is_truthy(context.{{ cookiecutter.plugin_name }}.local):
+    if is_truthy(context.{{ cookiecutter.app_name }}.local):
         context.run(command, **kwargs)
     else:
         # Check if nautobot is running, no need to start another nautobot container to run a command
@@ -182,7 +182,7 @@ def build(context, force_rm=False, cache=True):
     if force_rm:
         command += " --force-rm"
 
-    print(f"Building Nautobot with Python {context.{{ cookiecutter.plugin_name }}.python_ver}...")
+    print(f"Building Nautobot with Python {context.{{ cookiecutter.app_name }}.python_ver}...")
     docker_compose(context, command)
 
 
@@ -370,7 +370,7 @@ def createsuperuser(context, user="admin"):
 )
 def makemigrations(context, name=""):
     """Perform makemigrations operation in Django."""
-    command = "nautobot-server makemigrations {{ cookiecutter.plugin_name }}"
+    command = "nautobot-server makemigrations {{ cookiecutter.app_name }}"
 
     if name:
         command += f" --name {name}"
@@ -586,7 +586,7 @@ def docs(context):
     """Build and serve docs locally for development."""
     command = "mkdocs serve -v"
 
-    if is_truthy(context.{{ cookiecutter.plugin_name }}.local):
+    if is_truthy(context.{{ cookiecutter.app_name }}.local):
         print(">>> Serving Documentation at http://localhost:8001")
         run_command(context, command)
     else:
@@ -649,7 +649,7 @@ def hadolint(context):
 @task
 def pylint(context):
     """Run pylint code analysis."""
-    command = 'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml {{ cookiecutter.plugin_name }}'
+    command = 'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml {{ cookiecutter.app_name }}'
     run_command(context, command)
 
 
@@ -700,7 +700,7 @@ def check_migrations(context):
 def unittest(
     context,
     keepdb=False,
-    label="{{ cookiecutter.plugin_name }}",
+    label="{{ cookiecutter.app_name }}",
     failfast=False,
     buffer=True,
     pattern="",
@@ -726,7 +726,7 @@ def unittest(
 @task
 def unittest_coverage(context):
     """Report on code test coverage as measured by 'invoke unittest'."""
-    command = "coverage report --skip-covered --include '{{ cookiecutter.plugin_name }}/*' --omit *migrations*"
+    command = "coverage report --skip-covered --include '{{ cookiecutter.app_name }}/*' --omit *migrations*"
 
     run_command(context, command)
 
@@ -739,9 +739,9 @@ def unittest_coverage(context):
     }
 )
 def tests(context, failfast=False, keepdb=False, lint_only=False):
-    """Run all tests for this plugin."""
+    """Run all tests for this app."""
     # If we are not running locally, start the docker containers so we don't have to for each test
-    if not is_truthy(context.{{ cookiecutter.plugin_name }}.local):
+    if not is_truthy(context.{{ cookiecutter.app_name }}.local):
         print("Starting Docker Containers...")
         start(context)
     # Sorted loosely from fastest to slowest

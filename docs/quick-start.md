@@ -54,25 +54,25 @@ docker compose run --rm -- dev cookiecutter --output-dir=./outputs   ./nautobot-
   [2/18] full_name (Network to Code, LLC):
   [3/18] email (info@networktocode.com):
   [4/18] github_org (nautobot):
-  [5/18] plugin_name (my_plugin):
-  [6/18] verbose_name (My Plugin):
-  [7/18] plugin_slug (my-plugin):
-  [8/18] project_slug (nautobot-plugin-my-plugin):
-  [9/18] repo_url (https://github.com/nautobot/nautobot-plugin-my-plugin):
-  [10/18] base_url (my-plugin):
+  [5/18] app_name (my_app):
+  [6/18] verbose_name (My App):
+  [7/18] app_slug (my-app):
+  [8/18] project_slug (nautobot-app-my-app):
+  [9/18] repo_url (https://github.com/nautobot/nautobot-app-my-app):
+  [10/18] base_url (my-app):
   [11/18] min_nautobot_version (1.6.0):
   [12/18] max_nautobot_version (1.9999):
-  [13/18] camel_name (MyPlugin):
-  [14/18] project_short_description (My Plugin):
+  [13/18] camel_name (MyApp):
+  [14/18] project_short_description (My App):
   [15/18] model_class_name (None):
   [16/18] Select open_source_license
     1 - Apache-2.0
     2 - Not open source
     Choose from [1/2] (1):
   [17/18] docs_base_url (https://docs.nautobot.com):
-  [18/18] docs_app_url (https://docs.nautobot.com/projects/my-plugin/en/latest):
+  [18/18] docs_app_url (https://docs.nautobot.com/projects/my-app/en/latest):
 
-Congratulations! Your cookie has now been baked. It is located at /opt/ntc/nautobot/cookiecutter-nautobot-app/outputs/nautobot-plugin-my-plugin.
+Congratulations! Your cookie has now been baked. It is located at /opt/ntc/nautobot/cookiecutter-nautobot-app/outputs/nautobot-app-my-app.
 
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
@@ -127,11 +127,11 @@ First create the `my-app.json` file:
         "full_name": "Network to Code, LLC",
         "email": "info@networktocode.com",
         "github_org": "nautobot",
-        "plugin_name": "my_app",
+        "app_name": "my_app",
         "verbose_name": "My App",
-        "plugin_slug": "my-app",
-        "project_slug": "nautobot-plugin-my-app",
-        "repo_url": "https://github.com/nautobot/nautobot-plugin-my-app",
+        "app_slug": "my-app",
+        "project_slug": "nautobot-app-my-app",
+        "repo_url": "https://github.com/nautobot/nautobot-app-my-app",
         "base_url": "my-app",
         "min_nautobot_version": "2.0.0",
         "max_nautobot_version": "2.9999",
@@ -156,7 +156,7 @@ Output:
 ```shell
 docker compose run --rm -- dev cookiecutter --output-dir=./outputs  --replay-file=my-app.json ./nautobot-app
 
-Congratulations! Your cookie has now been baked. It is located at /opt/ntc/nautobot/cookiecutter-nautobot-app/outputs/nautobot-plugin-my-app.
+Congratulations! Your cookie has now been baked. It is located at /opt/ntc/nautobot/cookiecutter-nautobot-app/outputs/nautobot-app-my-app.
 
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 

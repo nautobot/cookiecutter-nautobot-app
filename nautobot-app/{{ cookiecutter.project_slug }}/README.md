@@ -5,18 +5,18 @@ Developer Note - Remove Me!
 
 The README will have certain links/images broken until the PR is merged into `develop`. Update the GitHub links with whichever branch you're using (main etc.) if different.
 
-The logo of the project is a placeholder (docs/images/icon-{{ cookiecutter.plugin_slug }}.png) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
+The logo of the project is a placeholder (docs/images/icon-{{ cookiecutter.app_slug }}.png) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
 
 To avoid extra work and temporary links, make sure that publishing docs (or merging a PR) is done at the same time as setting up the docs site on RTD, then test everything.
 -->
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/icon-{{ cookiecutter.plugin_slug }}.png" class="logo" height="200px">
+  <img src="https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/icon-{{ cookiecutter.app_slug }}.png" class="logo" height="200px">
   <br>
   <a href="{{ cookiecutter.repo_url }}/actions"><img src="{{ cookiecutter.repo_url }}/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="{{ cookiecutter.docs_app_url }}"><img src="https://readthedocs.org/projects/{{ cookiecutter.project_slug }}/badge/"></a>
-  <a href="https://pypi.org/project/{{ cookiecutter.plugin_slug }}/"><img src="https://img.shields.io/pypi/v/{{ cookiecutter.plugin_slug }}"></a>
-  <a href="https://pypi.org/project/{{ cookiecutter.plugin_slug }}/"><img src="https://img.shields.io/pypi/dm/{{ cookiecutter.plugin_slug }}"></a>
+  <a href="https://pypi.org/project/{{ cookiecutter.app_slug }}/"><img src="https://img.shields.io/pypi/v/{{ cookiecutter.app_slug }}"></a>
+  <a href="https://pypi.org/project/{{ cookiecutter.app_slug }}/"><img src="https://img.shields.io/pypi/dm/{{ cookiecutter.app_slug }}"></a>
   <br>
   An <a href="https://www.networktocode.com/nautobot/apps/">App</a> for <a href="https://nautobot.com/">Nautobot</a>.
 </p>
@@ -29,9 +29,9 @@ To avoid extra work and temporary links, make sure that publishing docs (or merg
 
 > Developer Note: Add any representative screenshots of the App in action. These images should also be added to the `docs/user/app_use_cases.md` section.
 
-> Developer Note: Place the files in the `docs/images/` folder and link them using only full URLs from GitHub, for example: `![Overview](https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/plugin-overview.png)`. This absolute static linking is required to ensure the README renders properly in GitHub, the docs site, and any other external sites like PyPI.
+> Developer Note: Place the files in the `docs/images/` folder and link them using only full URLs from GitHub, for example: `![Overview](https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/app-overview.png)`. This absolute static linking is required to ensure the README renders properly in GitHub, the docs site, and any other external sites like PyPI.
 
-More screenshots can be found in the [Using the App]({{ cookiecutter.docs_app_url }}/user/app_use_cases/) page in the documentation. Here's a quick overview of some of the plugin's added functionality:
+More screenshots can be found in the [Using the App]({{ cookiecutter.docs_app_url }}/user/app_use_cases/) page in the documentation. Here's a quick overview of some of the app's added functionality:
 
 ![](https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/placeholder.png)
 

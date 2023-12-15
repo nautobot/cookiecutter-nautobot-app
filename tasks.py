@@ -398,7 +398,7 @@ def unittest(context, label="", failfast=False, pattern="", verbose=False):
     }
 )
 def tests(context, failfast=False, keepdb=False, lint_only=False):
-    """Run all tests for this plugin."""
+    """Run all tests for this app."""
     # If we are not running locally, start the docker containers so we don't have to for each test
     if not is_truthy(context.cookiecutter_nautobot_app.local):
         print("Starting Docker Containers...")
