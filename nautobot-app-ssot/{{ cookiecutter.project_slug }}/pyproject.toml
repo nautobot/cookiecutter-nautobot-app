@@ -9,7 +9,7 @@ license = "{{ cookiecutter.open_source_license }}"
 readme = "README.md"
 homepage = "{{ cookiecutter.repo_url }}"
 repository = "{{ cookiecutter.repo_url }}"
-keywords = ["nautobot", "nautobot-plugin"]
+keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
@@ -18,12 +18,6 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-]
-include = [
-{%- if cookiecutter.open_source_license == 'Apache-2.0' %}
-    "LICENSE",
-{%- endif %}
-    "README.md",
 ]
 packages = [
     { include = "{{ cookiecutter.plugin_name }}" },
