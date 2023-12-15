@@ -6,7 +6,7 @@ from os import environ
 def test_bake_project(cookies):
     # pylint: disable-next=protected-access
     environ["COOKIECUTTER_CONFIG"] = str(cookies._config_file)
-    result = cookies.bake()
+    result = cookies.bake(template="nautobot-app-ssot")
 
     assert result.exit_code == 0
     assert result.exception is None

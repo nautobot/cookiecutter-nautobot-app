@@ -1,0 +1,19 @@
+---
+x-base: &base
+  image: "cookiecutter-nautobot-app:${PYTHON_VER}"
+  tty: true
+  build:
+    args:
+      PYTHON_VER: "${PYTHON_VER}"
+    context: "../"
+    dockerfile: "development/Dockerfile"
+  volumes:
+    - "../:/source"
+services:
+  cookiecutter:
+    <<: *base
+  docs:
+    entrypoint: "mkdocs serve -v -a 0.0.0.0:8080"
+    ports:
+      - "8001:8080"
+    <<: *base

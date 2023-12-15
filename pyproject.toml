@@ -18,6 +18,7 @@ pyyaml = "*"
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
 black = "*"
+coverage = "^7.3.2"
 invoke = "*"
 isort = "*"
 pylint = "*"
@@ -25,14 +26,16 @@ pytest = "*"
 pytest-cookies = "*"
 ruff = "*"
 yamllint = "*"
-
-[tool.poetry.group.docs.dependencies]
+Markdown = "*"
 # Rendering docs to HTML
 mkdocs = "1.5.2"
 # Material for MkDocs theme
 mkdocs-material = "9.1.15"
 # Render custom markdown for version added/changed/remove notes
 mkdocs-version-annotations = "1.0.0"
+# Automatic documentation from sources, for MkDocs
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.5.2"
 
 [tool.black]
 line-length = 120
@@ -58,11 +61,11 @@ exclude = '''
 '''
 
 [tool.pylint.master]
-ignore=".venv"
+ignore = ".venv"
 
 [tool.pylint.basic]
 # No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
-no-docstring-rgx="^(_|test_|Meta$)"
+no-docstring-rgx = "^(_|test_|Meta$)"
 
 [tool.pylint.messages_control]
 # Line length is enforced by Black, so pylint doesn't need to check it.
@@ -83,5 +86,8 @@ line-length = 120
 
 [tool.pytest.ini_options]
 testpaths = [
-    "tests"
+    "nautobot-app/tests",
+    # "nautobot-app-chatops/tests",
+    "nautobot-app-ssot/tests",
 ]
+addopts = "--color=yes"
