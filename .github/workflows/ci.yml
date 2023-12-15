@@ -28,5 +28,7 @@ jobs:
         run: "poetry run invoke pylint"
       - name: "Docs: mkdocs build check"
         run: "poetry run invoke build-and-check-docs"
+      - name: "Testing: poetry lock"
+        run: "poetry run invoke lock --check"
       - name: "Testing: unittest"
         run: "poetry run invoke unittest"

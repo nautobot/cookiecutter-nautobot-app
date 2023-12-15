@@ -1,24 +1,19 @@
 ---
-x-common-build: &common-build
-  context: ".."
-  dockerfile: "development/Dockerfile"
-  args:
-    FROM_IMAGE:
-    TARGET_WORKDIR:
-    USER_NAME:
-    USER_UID:
+x-base: &base
+  image: "cookiecutter-nautobot-app:${PYTHON_VER}"
+  tty: true
+  build:
+    args:
+      PYTHON_VER: "${PYTHON_VER}"
+    context: "../"
+    dockerfile: "development/Dockerfile"
+  volumes:
+    - "../:/source"
 services:
-  dev:
-    image: "$IMAGE_PREFIX/dev:$IMAGE_TAG"
-    hostname: "dev"
-    build:
-      <<: *common-build
-      target: "dev"
-    volumes:
-      - "$PWD:$TARGET_WORKDIR"
-  qa:
-    image: "$IMAGE_PREFIX/qa:$IMAGE_TAG"
-    hostname: "qa"
-    build:
-      <<: *common-build
-      target: "qa"
+  cookiecutter:
+    <<: *base
+  docs:
+    entrypoint: "mkdocs serve -v -a 0.0.0.0:8080"
+    ports:
+      - "8001:8080"
+    <<: *base

@@ -50,7 +50,7 @@ namespace.configure(
         "cookiecutter_nautobot_app": {
             "project_name": "cookiecutter-nautobot-app",
             "python_ver": "3.11",
-            "local": True,
+            "local": "True",
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
                 "docker-compose.yml",
@@ -66,9 +66,8 @@ namespace.configure(
 )
 
 
-def collect_files(context):
+def collect_files(context, patterns=["*.py"]):
     "Helper method for collecting applicable python files."
-    patterns = ["*.py"]
     for template in context.cookiecutter_nautobot_app.templates:
         patterns.append(f"{template}/tests")
     return " ".join(patterns)
@@ -136,13 +135,12 @@ def run_command(context, command, **kwargs):
     if is_truthy(context.cookiecutter_nautobot_app.local):
         context.run(command, **kwargs)
     else:
-        # Check if nautobot is running, no need to start another nautobot container to run a command
         docker_compose_status = "ps --services --filter status=running"
         results = docker_compose(context, docker_compose_status, hide="out")
-        if "nautobot" in results.stdout:
-            compose_command = f"exec nautobot {command}"
+        if "cookiecutter" in results.stdout:
+            compose_command = f"exec cookiecutter {command}"
         else:
-            compose_command = f"run --rm --entrypoint '{command}' nautobot"
+            compose_command = f"run --rm --entrypoint '{command}' cookiecutter"
 
         pty = kwargs.pop("pty", True)
 
@@ -285,7 +283,9 @@ def logs(context, service="", follow=False, tail=0):
 @task
 def cli(context):
     """Launch a bash shell inside the container."""
-    run_command(context, "bash")
+    compose_command = f"run --rm --entrypoint bash cookiecutter"
+
+    docker_compose(context, compose_command, pty=True)
 
 
 # ------------------------------------------------------------------------------
@@ -337,7 +337,7 @@ def black(context, autoformat=False, template=""):
     else:
         black_command = "black --check --diff"
 
-    command = f"{black_command} {collect_files(context)}"
+    command = f"{black_command} {collect_files(context, patterns=[])}"
     run_command(context, command)
 
 
