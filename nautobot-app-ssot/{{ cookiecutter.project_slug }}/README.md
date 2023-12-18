@@ -1,6 +1,6 @@
 # {{ cookiecutter.verbose_name }} SSoT
 
-A app for [Nautobot](https://github.com/nautobot/nautobot).
+An app for [Nautobot](https://github.com/nautobot/nautobot).
 
 The term SSoT, or Single Source of Truth, refers to the intention of using Nautobot to consolidate data from disparate Systems of Record to create a single resource for all automation needs. This is done by extending the [Nautobot SSoT framework](https://github.com/nautobot/nautobot-plugin-ssot) which uses the DiffSync library. This plug-in is built with the capability in mind to import and export data from your desired System of Record.
 
