@@ -13,13 +13,13 @@ on: # yamllint disable-line rule:truthy rule:comments
   pull_request: ~
 
 env:
-  PLUGIN_NAME: "{{ cookiecutter.project_slug }}"
+  APP_NAME: "{{ cookiecutter.project_slug }}"
 
 jobs:
   black:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL: "True"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -30,7 +30,7 @@ jobs:
   bandit:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL: "True"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -41,7 +41,7 @@ jobs:
   pydocstyle:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL: "True"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -52,7 +52,7 @@ jobs:
   check-docs-build:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{cookiecutter.plugin_name.upper()}}_LOCAL: "True"
+      INVOKE_{{cookiecutter.app_name.upper()}}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -63,7 +63,7 @@ jobs:
   flake8:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL: "True"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -74,7 +74,7 @@ jobs:
   poetry:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL: "True"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -85,7 +85,7 @@ jobs:
   yamllint:
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL: "True"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -108,8 +108,8 @@ jobs:
         python-version: ["3.11"]
         nautobot-version: ["{{ cookiecutter.min_nautobot_version }}"]
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -125,7 +125,7 @@ jobs:
           context: "./"
           push: false
           load: true
-          tags: "{% raw %}${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
+          tags: "{% raw %}${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           file: "./development/Dockerfile"
           cache-from: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           cache-to: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
@@ -151,8 +151,8 @@ jobs:
         python-version: ["3.11"]
         nautobot-version: ["{{ cookiecutter.min_nautobot_version }}"]
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -168,7 +168,7 @@ jobs:
           context: "./"
           push: false
           load: true
-          tags: "{% raw %}${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
+          tags: "{% raw %}${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           file: "./development/Dockerfile"
           cache-from: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           cache-to: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
@@ -198,8 +198,8 @@ jobs:
             nautobot-version: "stable"
     runs-on: "ubuntu-22.04"
     env:
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
-      INVOKE_{{ cookiecutter.plugin_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -215,7 +215,7 @@ jobs:
           context: "./"
           push: false
           load: true
-          tags: "{% raw %}${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
+          tags: "{% raw %}${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           file: "./development/Dockerfile"
           cache-from: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
           cache-to: "type=gha,scope={% raw %}${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"

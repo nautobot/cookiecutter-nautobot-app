@@ -20,7 +20,7 @@ ARG NAUTOBOT_ROOT=/opt/nautobot
 
 ENV prometheus_multiproc_dir=/prom_cache
 ENV NAUTOBOT_ROOT=${NAUTOBOT_ROOT}
-ENV INVOKE_{{ cookiecutter.plugin_name.upper() }}_LOCAL=true
+ENV INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL=true
 
 # Install Poetry manually via its installer script;
 # We might be using an older version of Nautobot that includes an older version of Poetry

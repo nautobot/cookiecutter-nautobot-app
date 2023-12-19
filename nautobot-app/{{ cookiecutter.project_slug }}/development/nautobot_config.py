@@ -126,12 +126,12 @@ if not _TESTING:
 #
 
 # Enable installed Apps. Add the name of each App to the list.
-PLUGINS = ["{{ cookiecutter.plugin_name }}"]
+PLUGINS = ["{{ cookiecutter.app_name }}"]
 
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
 # PLUGINS_CONFIG = {
-#     '{{ cookiecutter.plugin_name }}': {
+#     '{{ cookiecutter.app_name }}': {
 #         'foo': 'bar',
 #         'buzz': 'bazz'
 #     }

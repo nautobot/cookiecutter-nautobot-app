@@ -7,7 +7,7 @@ Here you will find detailed instructions on how to **install** and **configure**
 
 ## Prerequisites
 
-- The plugin is compatible with Nautobot {{ cookiecutter.min_nautobot_version }} and higher.
+- The app is compatible with Nautobot {{ cookiecutter.min_nautobot_version }} and higher.
 - Databases supported: PostgreSQL, MySQL
 
 !!! note
@@ -21,31 +21,31 @@ Here you will find detailed instructions on how to **install** and **configure**
 ## Install Guide
 
 !!! note
-    Plugins can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this plugin is [`{{ cookiecutter.plugin_slug }}`](https://pypi.org/project/{{ cookiecutter.plugin_slug }}/).
+    Apps can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this app is [`{{ cookiecutter.app_slug }}`](https://pypi.org/project/{{ cookiecutter.app_slug }}/).
 
-The plugin is available as a Python package via PyPI and can be installed with `pip`:
-
-```shell
-pip install {{ cookiecutter.plugin_slug }}
-```
-
-To ensure {{ cookiecutter.verbose_name }} is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `{{ cookiecutter.plugin_slug }}` package:
+The app is available as a Python package via PyPI and can be installed with `pip`:
 
 ```shell
-echo {{ cookiecutter.plugin_slug }} >> local_requirements.txt
+pip install {{ cookiecutter.app_slug }}
 ```
 
-Once installed, the plugin needs to be enabled in your Nautobot configuration. The following block of code below shows the additional configuration required to be added to your `nautobot_config.py` file:
+To ensure {{ cookiecutter.verbose_name }} is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `{{ cookiecutter.app_slug }}` package:
 
-- Append `"{{ cookiecutter.plugin_name }}"` to the `PLUGINS` list.
-- Append the `"{{ cookiecutter.plugin_name }}"` dictionary to the `PLUGINS_CONFIG` dictionary and override any defaults.
+```shell
+echo {{ cookiecutter.app_slug }} >> local_requirements.txt
+```
+
+Once installed, the app needs to be enabled in your Nautobot configuration. The following block of code below shows the additional configuration required to be added to your `nautobot_config.py` file:
+
+- Append `"{{ cookiecutter.app_name }}"` to the `PLUGINS` list.
+- Append the `"{{ cookiecutter.app_name }}"` dictionary to the `PLUGINS_CONFIG` dictionary and override any defaults.
 
 ```python
 # In your nautobot_config.py
-PLUGINS = ["{{ cookiecutter.plugin_name }}"]
+PLUGINS = ["{{ cookiecutter.app_name }}"]
 
 # PLUGINS_CONFIG = {
-#   "{{ cookiecutter.plugin_name }}": {
+#   "{{ cookiecutter.app_name }}": {
 #     ADD YOUR SETTINGS HERE
 #   }
 # }
@@ -72,10 +72,10 @@ sudo systemctl restart nautobot nautobot-worker nautobot-scheduler
 !!! warning "Developer Note - Remove Me!"
     Any configuration required to get the App set up. Edit the table below as per the examples provided.
 
-The plugin behavior can be controlled with the following list of settings:
+The app behavior can be controlled with the following list of settings:
 
 | Key     | Example | Default | Description                          |
 | ------- | ------ | -------- | ------------------------------------- |
-| `enable_backup` | `True` | `True` | A boolean to represent whether or not to run backup configurations within the plugin. |
+| `enable_backup` | `True` | `True` | A boolean to represent whether or not to run backup configurations within the app. |
 | `platform_slug_map` | `{"cisco_wlc": "cisco_aireos"}` | `None` | A dictionary in which the key is the platform slug and the value is what netutils uses in any "network_os" parameter. |
 | `per_feature_bar_width` | `0.15` | `0.15` | The width of the table bar within the overview report |

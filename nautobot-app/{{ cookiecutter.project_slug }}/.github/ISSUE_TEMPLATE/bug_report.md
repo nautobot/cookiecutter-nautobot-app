@@ -1,12 +1,12 @@
 ---
 name: 🐛 Bug Report
-about: Report a reproducible bug in the current release of {{ cookiecutter.plugin_slug }}
+about: Report a reproducible bug in the current release of {{ cookiecutter.app_slug }}
 ---
 
 ### Environment
 * Python version:  <!-- Example: 3.11.4 -->
 * Nautobot version:  <!-- Example: {{ cookiecutter.min_nautobot_version }} -->
-* {{ cookiecutter.plugin_slug }} version:  <!-- Example: 1.0.0 -->
+* {{ cookiecutter.app_slug }} version:  <!-- Example: 1.0.0 -->
 
 <!-- What did you expect to happen? -->
 ### Expected Behavior

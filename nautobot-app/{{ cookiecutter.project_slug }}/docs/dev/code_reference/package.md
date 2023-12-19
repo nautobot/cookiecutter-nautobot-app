@@ -1,1 +1,1 @@
-::: {{ cookiecutter.plugin_name }}
+::: {{ cookiecutter.app_name }}

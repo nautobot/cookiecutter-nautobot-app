@@ -3,7 +3,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 _PROJECT_PATH = Path.cwd()
-_ADDONS_PATH = _PROJECT_PATH / "{{ cookiecutter.plugin_name }}"
+_ADDONS_PATH = _PROJECT_PATH / "{{ cookiecutter.app_name }}"
 
 _CONGRATS = f"""
 Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH}.
@@ -35,7 +35,7 @@ if __name__ == "__main__":
             "models.py",
             "navigation.py",
             "tables.py",
-            "templates/{{ cookiecutter.plugin_name }}/{{ cookiecutter.model_class_name.lower() }}_retrieve.html",
+            "templates/{{ cookiecutter.app_name }}/{{ cookiecutter.model_class_name.lower() }}_retrieve.html",
             "tests/fixtures.py",
             "tests/test_api_views.py",
             "tests/test_filter_{{ cookiecutter.model_class_name.lower() }}.py",
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         folders_to_remove = [
             "api",
             "migrations",
-            "templates/{{ cookiecutter.plugin_name }}",
+            "templates/{{ cookiecutter.app_name }}",
             "templates",
         ]
         for folder in folders_to_remove:
