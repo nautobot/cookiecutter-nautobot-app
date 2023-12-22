@@ -57,7 +57,7 @@ namespace.configure(
             ],
             "templates": [
                 "nautobot-app",
-                # "nautobot-app-chatops",
+                "nautobot-app-chatops",
                 "nautobot-app-ssot",
             ],
             "compose_http_timeout": "86400",

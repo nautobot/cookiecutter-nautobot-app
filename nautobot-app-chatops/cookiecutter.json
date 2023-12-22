@@ -1,0 +1,28 @@
+{
+    "codeowner_github_usernames": "",
+    "full_name": "Network to Code, LLC",
+    "email": "info@networktocode.com",
+    "github_org": "nautobot",
+    "chatops_interactive_command": "my_plugin",
+    "app_name": "nautobot_chatops_{{ cookiecutter.chatops_interactive_command.lower().replace('-', '_') }}",
+    "verbose_name": "{{ cookiecutter.app_name.title().replace('_', ' ') }}",
+    "app_slug": "{{ cookiecutter.app_name.lower().replace('_', '-') }}",
+    "project_slug": "nautobot-app-chatops-{{ cookiecutter.chatops_interactive_command.lower().replace('_', '-') }}",
+    "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
+    "base_url": "{{ cookiecutter.chatops_interactive_command.lower().replace(' ', '-').replace('_', '-') }}",
+    "min_nautobot_version": "2.0.0",
+    "max_nautobot_version": "2.9999",
+    "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
+    "project_short_description": "{{ cookiecutter.verbose_name }}",
+    "setup_local_mattermost_dev_env": [
+        "Yes",
+        "No"
+    ],
+    "model_class_name": "None",
+    "open_source_license": [
+        "Apache-2.0",
+        "Not open source"
+    ],
+    "docs_base_url": "https://docs.nautobot.com",
+    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest"
+}

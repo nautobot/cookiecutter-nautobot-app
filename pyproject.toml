@@ -87,7 +87,7 @@ line-length = 120
 [tool.pytest.ini_options]
 testpaths = [
     "nautobot-app/tests",
-    # "nautobot-app-chatops/tests",
+    "nautobot-app-chatops/tests",
     "nautobot-app-ssot/tests",
 ]
 addopts = "--color=yes"

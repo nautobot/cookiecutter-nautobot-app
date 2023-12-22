@@ -1,0 +1,26 @@
+# We can't remove volumes in a compose override, for the test configuration using the final containers
+# we don't want the volumes so this is the default override file to add the volumes in the dev case
+# any override will need to include these volumes to use them.
+# see:  https://github.com/docker/compose/issues/3729
+---
+version: "3.8"
+services:
+  mattermost:
+    build:
+      context: "./"
+      dockerfile: "Dockerfile-mattermost"
+    image: "nautobot_chatops/mattermost:${NAUTOBOT_VER}"
+    restart: "unless-stopped"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./mattermost_config_docker.json:/mm/mattermost/config/config_docker.json"
+      - "mattermost:/mm/mattermost-data:rw"
+      - "mattermost:/var/lib/mysql/:rw"
+    env_file:
+      - "./creds.env"
+      - "./mattermost.env"
+    ports:
+      - "8065:8065"
+
+volumes:
+  mattermost:

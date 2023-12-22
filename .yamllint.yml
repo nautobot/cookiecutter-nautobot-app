@@ -12,5 +12,8 @@ ignore: |
   .venv/
   nautobot-app/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app/{{ cookiecutter.project_slug }}/invoke.example.yml
+  nautobot-app-chatops/{{ cookiecutter.project_slug }}/invoke.mysql.yml
+  nautobot-app-chatops/{{ cookiecutter.project_slug }}/invoke.example.yml
+  nautobot-app-chatops/{{ cookiecutter.project_slug }}/invoke.mattermost.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/invoke.example.yml
