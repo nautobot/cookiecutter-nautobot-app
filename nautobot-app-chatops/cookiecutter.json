@@ -3,7 +3,7 @@
     "full_name": "Network to Code, LLC",
     "email": "info@networktocode.com",
     "github_org": "nautobot",
-    "chatops_interactive_command": "my_plugin",
+    "chatops_interactive_command": "my_app",
     "app_name": "nautobot_chatops_{{ cookiecutter.chatops_interactive_command.lower().replace('-', '_') }}",
     "verbose_name": "{{ cookiecutter.app_name.title().replace('_', ' ') }}",
     "app_slug": "{{ cookiecutter.app_name.lower().replace('_', '-') }}",
