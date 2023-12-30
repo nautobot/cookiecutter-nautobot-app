@@ -6,7 +6,7 @@ _PROJECT_PATH = Path.cwd()
 _ADDONS_PATH = _PROJECT_PATH / "{{ cookiecutter.app_name }}"
 
 _CONGRATS = f"""
-Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH}.
+Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH}
 
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
