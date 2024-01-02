@@ -10,4 +10,4 @@
     - "docker-compose.redis.yml"
     - "docker-compose.postgres.yml"
     - "docker-compose.dev.yml"
-    - "docker-compose.mattermost-dev.yml"
+    - "mattermost/docker-compose.yml"

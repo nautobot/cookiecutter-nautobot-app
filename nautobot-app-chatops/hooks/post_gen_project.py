@@ -25,15 +25,14 @@ if __name__ == "__main__":
 
     if "No" == "{{ cookiecutter.setup_local_mattermost_dev_env }}":
         files_to_remove = [
-            "development/docker-compose.mattermost-dev.yml",
-            "development/configure_chatops.sh",
-            "development/Dockerfile-mattermost",
-            "development/mattermost_config_docker.json",
-            "development/mattermost-docker-entry.sh",
-            "development/mattermost.env",
+            "development/mattermost/docker-compose.yml",
+            "development/mattermost/nautobot_bootstrap.py",
+            "development/mattermost/Dockerfile",
         ]
         for file in files_to_remove:
             (_ADDONS_PATH / file).unlink()
+
+        (_ADDONS_PATH / "development/mattermost").rmdir()
 
     if "{{ cookiecutter.model_class_name }}" == "None":
         files_to_remove = [
