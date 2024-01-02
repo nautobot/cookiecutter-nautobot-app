@@ -2,7 +2,7 @@
 
 from django.conf import settings
 
-from nautobot_chatops.workers.base import subcommand_of, handle_subcommands
+from nautobot_chatops.workers import subcommand_of, handle_subcommands
 from .{{ cookiecutter.chatops_interactive_command }} import {{ cookiecutter.camel_name }}
 
 
