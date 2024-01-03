@@ -1,8 +1,9 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
 from diffsync import DiffSyncFlags
-from nautobot.extras.jobs import BooleanVar, Job
+from nautobot.app.jobs import BooleanVar, Job, register_jobs
 from nautobot_ssot.jobs.base import DataSource, DataTarget
+
 from {{ cookiecutter.app_name }}.diffsync.adapters import {{ cookiecutter.system_of_record_slug }}, nautobot
 
 
@@ -89,3 +90,4 @@ class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget, Job):
 
 
 jobs = [{{ cookiecutter.system_of_record_camel }}DataSource, {{ cookiecutter.system_of_record_camel }}DataTarget]
+register_jobs(*jobs)
