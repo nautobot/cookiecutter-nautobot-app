@@ -84,4 +84,15 @@ watch:
 
 nav:
   - Overview: "index.md"
-  - Quick Start: "quick-start.md"
+  - User Guide:
+      - Quick Start: "user/quick-start.md"
+  - Administrator Guide:
+      - Compatibility Matrix: "admin/compatibility_matrix.md"
+      - Release Notes:
+          - "admin/release_notes/index.md"
+          - v1.0: "admin/release_notes/version_1.0.md"
+          - v2.0: "admin/release_notes/version_2.0.md"
+  - Developer Guide:
+      - Contributing: "dev/contributing.md"
+      - Development Environment: "dev/dev_environment.md"
+  - Nautobot Docs Home ↗︎: "https://docs.nautobot.com"
