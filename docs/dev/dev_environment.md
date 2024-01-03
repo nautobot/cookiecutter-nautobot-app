@@ -302,36 +302,6 @@ Or set the `INVOKE_COOKIECUTTER_NAUTOBOT_APP_PYTHON_VER` variable.
 
 ## Other Miscellaneous Commands To Know
 
-### Python Shell
-
-To drop into a Django shell for Nautobot (in the Docker container) run:
-
-```bash
-➜ invoke nbshell
-```
-
-This is the same as running:
-
-```bash
-➜ invoke cli
-➜ nautobot-server nbshell
-```
-
-### iPython Shell Plus
-
-Django also has a more advanced shell that uses iPython and that will automatically import all the models:
-
-```bash
-➜ invoke shell-plus
-```
-
-This is the same as running:
-
-```bash
-➜ invoke cli
-➜ nautobot-server shell_plus
-```
-
 ### Tests
 
 To run tests against your code, you can run all of the tests that TravisCI runs against any new PR with:
