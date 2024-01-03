@@ -221,11 +221,6 @@ The magic here is the root directory is mounted inside your Docker containers wh
 !!! warning
 	There are a few exceptions to this, as outlined in the section [To Rebuild or Not To Rebuild](#to-rebuild-or-not-to-rebuild).
 
-The back-end Django process is setup to automatically reload itself (it only takes a couple of seconds) every time a file is updated (saved). So for example, if you were to update one of the files like `tables.py`, then save it, the changes will be visible right away in the web browser!
-
-!!! note
-	You may get connection refused while Django reloads, but it should be refreshed fairly quickly.
-
 ### Docker Logs
 
 When trying to debug an issue, one helpful thing you can look at are the logs within the Docker containers.
