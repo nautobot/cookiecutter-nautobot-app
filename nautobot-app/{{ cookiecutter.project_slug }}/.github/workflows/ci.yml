@@ -235,6 +235,8 @@ jobs:
     name: "Publish to GitHub"
     runs-on: "ubuntu-22.04"
     if: "startsWith(github.ref, 'refs/tags/v')"
+    env:
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -268,6 +270,8 @@ jobs:
     name: "Push Package to PyPI"
     runs-on: "ubuntu-22.04"
     if: "startsWith(github.ref, 'refs/tags/v')"
+    env:
+      INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
