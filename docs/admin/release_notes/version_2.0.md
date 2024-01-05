@@ -8,6 +8,7 @@ This document describes all new features and changes in the release `2.0`. The f
 
 - Nautobot `2.0` support
 - Nautobot App ChatOps cookie
+- Changelog fragments using [Towncrier](https://towncrier.readthedocs.io/en/stable/tutorial.html)
 
 ### Changed
 
