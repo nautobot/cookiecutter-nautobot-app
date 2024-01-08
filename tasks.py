@@ -23,7 +23,8 @@ from invoke.tasks import task as invoke_task
 def is_truthy(arg):
     """Convert "truthy" strings into Booleans.
 
-    Examples:
+    Examples
+    --------
         >>> is_truthy('yes')
         True
     Args:
@@ -96,6 +97,7 @@ def docker_compose(context, command, **kwargs):
     """Helper function for running a specific docker compose command with all appropriate parameters and environment.
 
     Args:
+    ----
         context (obj): Used to run specific commands
         command (str): Command string to append to the "docker compose ..." command, such as "build", "up", etc.
         **kwargs: Passed through to the context.run() call.
@@ -360,6 +362,7 @@ def yamllint(context):
     """Run yamllint to validate formatting adheres to NTC defined YAML standards.
 
     Args:
+    ----
         context (obj): Used to run specific commands
     """
     command = "yamllint . --format standard"
@@ -393,11 +396,10 @@ def unittest(context, label="", failfast=False, pattern="", verbose=False):
 @task(
     help={
         "failfast": "fail as soon as a single test fails don't run the entire test suite. (default: False)",
-        "keepdb": "Save and re-use test database between test runs for faster re-testing. (default: False)",
         "lint-only": "Only run linters; unit tests will be excluded. (default: False)",
     }
 )
-def tests(context, failfast=False, keepdb=False, lint_only=False):
+def tests(context, failfast=False, lint_only=False):
     """Run all tests for this app."""
     # If we are not running locally, start the docker containers so we don't have to for each test
     if not is_truthy(context.cookiecutter_nautobot_app.local):

@@ -24,7 +24,6 @@ isort = "*"
 pylint = "*"
 pytest = "*"
 pytest-cookies = "*"
-ruff = "*"
 yamllint = "*"
 Markdown = "*"
 # Rendering docs to HTML
