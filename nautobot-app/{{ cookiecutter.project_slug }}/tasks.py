@@ -535,6 +535,27 @@ def import_db(context, db_name="", input_file="dump.sql"):
 
 @task(
     help={
+        "input-file": "Tar file containing media files from backup. This can be generated using `invoke backup-media` (default: `media.tgz`).",
+    }
+)
+def import_media(context, input_file="media.tgz"):
+    """Start Nautobot containers and restore the media files into `nautobot` container."""
+    start(context, "nautobot")
+    _await_healthy_service(context, "nautobot")
+    command = ["exec -- nautobot sh -c '"]
+    command += [ "tar", "-xzf", "-", "-C", "/" ]
+    command += [
+        "'",
+        f"< '{input_file}'",
+    ]
+
+    docker_compose(context, " ".join(command), pty=False)
+
+    print("Media import complete, all files are now available in Nautobot container.")
+
+
+@task(
+    help={
         "db-name": "Database name to backup (default: Nautobot database)",
         "output-file": "Ouput file, overwrite if exists (default: `dump.sql`)",
         "readable": "Flag to dump database data in more readable format (default: `True`)",
@@ -577,6 +598,34 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
     print(output_file)
     print("You can import this database backup with the following command:")
     print(f"invoke import-db --input-file '{output_file}'")
+    print(50 * "=")
+
+
+@task(
+    help={
+        "media-dir": "Media directory to backup (default: `/opt/nautobot/media`)",
+        "output-file": "Ouput file, overwrite if exists (default: `media.tgz`)",
+    }
+)
+def backup_media(context, media_dir="/opt/nautobot/media", output_file="media.tgz"):
+    """Dump all media files into `output_file` file from `nautobot` container."""
+    start(context, "nautobot")
+    _await_healthy_service(context, "nautobot")
+
+    command = ["exec -- db sh -c '"]
+    command += [ "tar", "-czf", "-", media_dir ]
+    command += [
+        "'",
+        f"> '{output_file}'",
+    ]
+
+    docker_compose(context, " ".join(command), pty=False)
+
+    print(50 * "=")
+    print("The media files backup has been successfully completed and saved to the following file:")
+    print(output_file)
+    print("You can import this media files backup with the following command:")
+    print(f"invoke import-media --input-file '{output_file}'")
     print(50 * "=")
 
 
