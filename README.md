@@ -18,6 +18,7 @@ The following templates are available:
 - [`nautobot-app-ssot`](./nautobot-app-ssot) - A template for creating a new Nautobot App that extends the capabilities of the Nautobot Single Source of Truth (SSoT) App. The [Nautobot SSoT App](https://github.com/nautobot/nautobot-app-ssot) facilitates integration and data synchronization between various "source of truth" (SoT) systems, with Nautobot acting as a central clearinghouse for data.
 - [`nautobot-app-chatops`](./nautobot-app-chatops) - A template for creating a new Nautobot App that extends the capabilities of the Nautobot ChatOps App. The [Nautobot ChatOps App](https://github.com/nautobot/nautobot-app-chatops) provides a multi-chat-vendor framework for developing chat bots for Slack, Microsoft Teams, Cisco WebEx, & Mattermost.
 
+To find out which template version corresponds to which Nautobot version, please check out the [Compatibility Matrix](https://docs.nautobot.com/projects/cookiecutter-nautobot-app/en/latest/admin/compatibility_matrix/) in the online documentation.
 
 ## Usage with Cookiecutter
 
