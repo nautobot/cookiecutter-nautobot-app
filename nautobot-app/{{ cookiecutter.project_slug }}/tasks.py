@@ -540,7 +540,11 @@ def import_db(context, db_name="", input_file="dump.sql"):
 )
 def import_media(context, input_file="media.tgz"):
     """Start Nautobot containers and restore the media files into `nautobot` container."""
-    start(context, "nautobot")
+    # Check if nautobot is running, no need to start another nautobot container to run a command
+    docker_compose_status = "ps --services --filter status=running"
+    results = docker_compose(context, docker_compose_status, hide="out")
+    if "nautobot" not in results.stdout:
+        start(context, "nautobot")
     _await_healthy_service(context, "nautobot")
     command = ["exec -- nautobot sh -c '"]
     command += [ "tar", "-xzf", "-", "-C", "/" ]
@@ -613,7 +617,11 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
 )
 def backup_media(context, media_dir="/opt/nautobot/media", output_file="media.tgz"):
     """Dump all media files into `output_file` file from `nautobot` container."""
-    start(context, "nautobot")
+    # Check if nautobot is running, no need to start another nautobot container to run a command
+    docker_compose_status = "ps --services --filter status=running"
+    results = docker_compose(context, docker_compose_status, hide="out")
+    if "nautobot" not in results.stdout:
+        start(context, "nautobot")
     _await_healthy_service(context, "nautobot")
 
     command = ["exec -- db sh -c '"]
