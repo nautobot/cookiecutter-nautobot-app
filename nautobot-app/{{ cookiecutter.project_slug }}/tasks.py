@@ -563,7 +563,11 @@ def import_media(context, input_file="media.tgz"):
 )
 def backup_db(context, db_name="", output_file="dump.sql", readable=True):
     """Dump database into `output_file` file from `db` container."""
-    start(context, "db")
+    # Check if db is running, no need to start another db container to run a command
+    docker_compose_status = "ps --services --filter status=running"
+    results = docker_compose(context, docker_compose_status, hide="out")
+    if "db" not in results.stdout:
+        start(context, "db")
     _await_healthy_service(context, "db")
 
     command = ["exec -- db sh -c '"]
