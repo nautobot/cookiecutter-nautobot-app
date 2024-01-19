@@ -176,5 +176,5 @@ The file `creds.env` will be ignored by git and can be used to override default 
 The cookiecutter CLI tool uses the default branch when using the above example command, to use a different branch, commit, or tag the `--checkout` command line argument can be used.
 
 - `--checkout=main` will bake the cookie against the main branch
-- `--checkout=v1.0.0` will bake the cookie against the `v1.0.0` tag
+- `--checkout=nautobot-app-v1.0.0` will bake the cookie against the `nautobot-app-v1.0.0` tag
 - `--checkout=6769dee` will bake the cookie against the `6769dee` commit
