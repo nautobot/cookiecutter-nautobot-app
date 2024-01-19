@@ -12,6 +12,7 @@ Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH
 
 * poetry lock
 * cp development/creds.example.env development/creds.env
+* poetry install
 * poetry shell
 * invoke makemigrations
 * black . # this will ensure all python files are formatted correctly, may require `sudo chown -R <my local username> ./` as migrations may be owned by root
