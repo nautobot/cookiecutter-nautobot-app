@@ -1,0 +1,40 @@
+---
+name: "Rebake Tag"
+on:  # yamllint disable-line rule:truthy
+  push:
+    tags:
+      - "nautobot-app-v*"
+jobs:
+  rebake:
+    container: "ghcr.io/nautobot/cookiecutter-nautobot-app-drift-manager/prod:latest"
+    runs-on: "ubuntu-22.04"
+    env:
+      GITHUB_TOKEN: "${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}"
+    strategy:
+      fail-fast: false
+      max-parallel: 5    # Limit of concurrent jobs
+      matrix:
+        name:
+          - "capacity-metrics"
+          - "chatops"
+          - "circuit-maintenance"
+          - "data-validation-engine"
+          - "device-lifecycle-mgmt"
+          - "device-onboarding"
+          - "firewall-models"
+          - "floor-plan"
+          - "golden-config"
+          - "netbox-importer"
+          - "nornir"
+          - "secrets-providers"
+          - "ssot"
+          - "version-control"
+          - "welcome-wizard"
+    steps:
+      - name: "Re-bake"
+        run: |
+          python -m ntc_cookie_drift_manager \
+            rebake \
+            --push \
+            --template-ref="${{ github.ref }}" \
+            https://github.com/nautobot/nautobot-app-${{ matrix.name }}.git
