@@ -624,7 +624,7 @@ def backup_media(context, media_dir="/opt/nautobot/media", output_file="media.tg
         start(context, "nautobot")
     _await_healthy_service(context, "nautobot")
 
-    command = ["exec -- db sh -c '"]
+    command = ["exec -- nautobot sh -c '"]
     command += [ "tar", "-czf", "-", media_dir ]
     command += [
         "'",
