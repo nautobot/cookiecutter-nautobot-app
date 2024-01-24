@@ -159,7 +159,7 @@ def run_command(context, command, **kwargs):
         if "nautobot" in results.stdout:
             compose_command = f"exec nautobot {command}"
         else:
-            compose_command = f"run --rm --entrypoint '{command}' nautobot"
+            compose_command = f"run --rm --entrypoint '' nautobot '{command}'"
 
         pty = kwargs.pop("pty", True)
 
