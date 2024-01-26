@@ -112,16 +112,10 @@ supported_nautobot_versions = [
 [tool.ruff]
 line-length = 120
 target-version = "py38"
-exclude = [
-    "migrations",
-]
 
 [tool.ruff.lint]
 select = [
-    "D1",  # pydocstyle
-    "D2",  # pydocstyle
-    "D3",  # pydocstyle
-    "D4",  # pydocstyle
+    "D",  # pydocstyle
 ]
 ignore = [
     # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
@@ -137,6 +131,19 @@ ignore = [
 
     # Produces a lot of issues in the current codebase.
     "D401",  # First line of docstring should be in imperative mood
+    "D407",  # Missing dashed underline after section
+    "D416",  # Section name ends in colon
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.per-file-ignores]
+"{{ cookiecutter.app_name }}/migrations/*" = [
+    "D",  # pydocstyle
+]
+"{{ cookiecutter.app_name }}/tests/*" = [
+    "D",  # pydocstyle
 ]
 
 [build-system]
