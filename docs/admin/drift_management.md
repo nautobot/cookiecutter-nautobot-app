@@ -1,12 +1,12 @@
 # Drift Management
 
-Drift management is a process that allows semi-automated updates of cookies (Nautobot apps) based on the changes to the cookiecutter template.
+Drift management is a process that allows semi-automated updates of cookies (Nautobot apps) based on the changes to the cookiecutter template. Network to Code has built and maintains a private project that is used for drift management.
 
 This process consists of the steps explained below.
 
 ## Push the Tag to the Repository
 
-Pushing the release tag, e.g., `nautobot-app-v2.X.Y`, to the repository will trigger the GitHub Actions workflow. This workflow uses the latest [Drift Manager](https://github.com/nautobot/cookiecutter-nautobot-app-drift-manager) Docker image to re-bake all the cookies specified in the workflow file.
+Pushing the release tag, e.g., `nautobot-app-v2.X.Y`, to the repository will trigger the GitHub Actions workflow. This workflow uses the latest `Drift Manager` Docker image to re-bake all the cookies specified in the workflow file.
 
 ## Examining the Workflow
 
