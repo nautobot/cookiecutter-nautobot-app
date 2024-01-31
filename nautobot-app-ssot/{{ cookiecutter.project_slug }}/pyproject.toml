@@ -9,6 +9,7 @@ license = "{{ cookiecutter.open_source_license }}"
 readme = "README.md"
 homepage = "{{ cookiecutter.repo_url }}"
 repository = "{{ cookiecutter.repo_url }}"
+documentation = "{{ cookiecutter.docs_app_url }}/"
 keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
