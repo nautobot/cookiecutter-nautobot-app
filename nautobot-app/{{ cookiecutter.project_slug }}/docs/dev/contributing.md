@@ -43,10 +43,11 @@ All pull requests to `next` or `develop` must include a changelog fragment file 
 
 The branching policy includes the following tenets:
 
-- The develop branch is the branch of the next major and minor paired version planned.
-- PRs intended to add new features should be sourced from the develop branch.
+- The `develop` branch is the branch of the next major and minor paired version planned.
+- PRs intended to add new features should be sourced from the `develop` branch.
+- PRs intended to fix issues in the Nautobot LTM compatible release should be sourced from the latest `ltm-<major.minor>` branch instead of `develop`.
 
-{{ cookiecutter.verbose_name }} will observe semantic versioning, as of 1.0. This may result in an quick turn around in minor versions to keep pace with an ever growing feature set.
+{{ cookiecutter.verbose_name }} will observe semantic versioning, as of 1.0. This may result in a quick turnaround in minor versions to keep pace with an ever growing feature set.
 
 ## Release Policy
 
@@ -54,10 +55,10 @@ The branching policy includes the following tenets:
 
 When a new release, from `develop` to `main`, is created the following should happen.
 
-- A release PR is created with:
-  - Update to the changelog in `docs/admin/release_notes/version_<major>.<minor>.md` file to reflect the changes.
-  - Change the version from `<major>.<minor>.<patch>-beta` to `<major>.<minor>.<patch>` in pyproject.toml.
-  - Set the PR to the proper branch `main`.
+- A release PR is created from `develop` with:
+  - Update the release notes in `docs/admin/release_notes/version_<major>.<minor>.md` file to reflect the changes.
+  - Change the version from `<major>.<minor>.<patch>-beta` to `<major>.<minor>.<patch>` in `pyproject.toml`.
+  - Set the PR to the `main` branch.
 - Ensure the tests for the PR pass.
 - Merge the PR.
 - Create a new tag:
