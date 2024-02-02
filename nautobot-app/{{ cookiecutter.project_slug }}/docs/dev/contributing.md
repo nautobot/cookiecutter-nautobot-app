@@ -66,7 +66,7 @@ When a new release, from `develop` to `main`, is created the following should ha
   - The title should be in the form of `v<major>.<minor>.<patch>`.
   - The description should be the changes that were added to the `version_<major>.<minor>.md` document.
 - If merged into `main`, then push from `main` to `develop`, in order to retain the merge commit created when the PR was merged
-- A post release PR is created with.
-  - Change the version from `<major>.<minor>.<patch>` to `<major>.<minor>.<patch + 1>-beta` in both pyproject.toml and `nautobot.__init__.__version__`.
+- A post release PR is created with:
+  - Change the version from `<major>.<minor>.<patch>` to `<major>.<minor>.<patch + 1>-beta` in both `pyproject.toml` and `nautobot.__init__.__version__`.
   - Set the PR to the proper branch, `develop`.
   - Once tests pass, merge.
