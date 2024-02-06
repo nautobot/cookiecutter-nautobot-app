@@ -9,6 +9,7 @@ license = "{{ cookiecutter.open_source_license }}"
 readme = "README.md"
 homepage = "{{ cookiecutter.repo_url }}"
 repository = "{{ cookiecutter.repo_url }}"
+documentation = "{{ cookiecutter.docs_app_url }}/"
 keywords = ["nautobot", "nautobot-app", "nautobot-plugin", "nautobot-chatops"]
 classifiers = [
     "Intended Audience :: Developers",
@@ -161,7 +162,7 @@ requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.towncrier]
-package = "nautobot"
+package = "{{ cookiecutter.app_name }}"
 directory = "changes"
 filename = "docs/admin/release_notes/version_X.Y.md"
 template = "development/towncrier_template.j2"
