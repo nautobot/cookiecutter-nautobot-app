@@ -21,7 +21,7 @@ Here you will find detailed instructions on how to **install** and **configure**
 ## Install Guide
 
 !!! note
-    Apps can be installed manually or using Python's `pip`. See the [nautobot documentation](https://docs.nautobot.com/projects/core/en/stable/plugins/#install-the-package) for more details. The pip package name for this app is [`{{ cookiecutter.app_slug }}`](https://pypi.org/project/{{ cookiecutter.app_slug }}/).
+    Apps can be installed manually or using Python's `pip`. See the [nautobot documentation](https://docs.nautobot.com/projects/core/en/stable/user-guide/administration/installation/app-install/) for more details. The pip package name for this app is [`{{ cookiecutter.app_slug }}`](https://pypi.org/project/{{ cookiecutter.app_slug }}/).
 
 The app is available as a Python package via PyPI and can be installed with `pip`:
 
