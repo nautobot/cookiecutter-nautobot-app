@@ -25,7 +25,7 @@ jobs:
           - "floor-plan"
           - "golden-config"
           - "netbox-importer"
-          - "nornir"
+          # - "nornir"  # Postponed
           - "secrets-providers"
           - "ssot"
           # - "version-control"  # Disabled as not Nautobot 2.0 ready
