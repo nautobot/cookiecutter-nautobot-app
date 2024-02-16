@@ -19,6 +19,7 @@ jobs:
           - "chatops"
           - "circuit-maintenance"
           - "data-validation-engine"
+          - "dev-example"
           - "device-lifecycle-mgmt"
           - "device-onboarding"
           - "firewall-models"
