@@ -694,20 +694,25 @@ def autoformat(context):
 
 @task(
     help={
-        "action": "One of 'lint', 'format', or 'both'",
-        "fix": "Automatically fix selected action. May not be able to fix all.",
-        "output_format": "see https://docs.astral.sh/ruff/settings/#output-format",
+        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `['lint']`)",
+        "fix": "Automatically fix selected actions. May not be able to fix all issues found. (default: False)",
+        "output_format": "See https://docs.astral.sh/ruff/settings/#output-format for details. (default: `full`)",
     },
+    iterable=["action"],
 )
-def ruff(context, action="lint", fix=False, output_format="text"):
+def ruff(context, action=["lint"], fix=False, output_format="full"):
     """Run ruff to perform code formatting and/or linting."""
-    if action != "lint":
+    if not action:
+        action = ["lint"]
+
+    if "format" in action:
         command = "ruff format"
         if not fix:
             command += " --check"
         command += " ."
         run_command(context, command)
-    if action != "format":
+
+    if "lint" in action:
         command = "ruff check"
         if fix:
             command += " --fix"
