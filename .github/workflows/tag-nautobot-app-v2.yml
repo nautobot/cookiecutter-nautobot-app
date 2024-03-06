@@ -3,7 +3,7 @@ name: "Rebake Tag"
 on:  # yamllint disable-line rule:truthy
   push:
     tags:
-      - "nautobot-app-v2*"
+      - "nautobot-app-v2.*"
 jobs:
   rebake:
     container: "ghcr.io/nautobot/cookiecutter-nautobot-app-drift-manager/prod:latest"
@@ -19,16 +19,17 @@ jobs:
           - "chatops"
           - "circuit-maintenance"
           - "data-validation-engine"
+          - "dev-example"
           - "device-lifecycle-mgmt"
           - "device-onboarding"
           - "firewall-models"
           - "floor-plan"
           - "golden-config"
           - "netbox-importer"
-          - "nornir"
+          # - "nornir"  # Postponed
           - "secrets-providers"
           - "ssot"
-          - "version-control"
+          # - "version-control"  # Disabled as not Nautobot 2.0 ready
           - "welcome-wizard"
     steps:
       - name: "Re-bake"
