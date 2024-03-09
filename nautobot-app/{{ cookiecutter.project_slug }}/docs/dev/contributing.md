@@ -56,7 +56,7 @@ The branching policy includes the following tenets:
 When a release is ready to be created from either `develop` or `ltm-x.x`, the following should happen.
 
 - Create a release PR by:
-    - Source from develop or `ltm-<major>.<minor>` and creatch new branch, generally `release/<major>.<minor>.<patch>`.
+    - Source from `develop`` or `ltm-<major>.<minor>` branch and creatch new branch, generally `release/<major>.<minor>.<patch>`.
     - Update the release notes in `docs/admin/release_notes/version_<major>.<minor>.md` file to reflect the changes.
         - You can run `invoke generate-release-notes` to generate these notes and delete the legacy towncrier fragments.
         - Please consider adding changelog's from ltm releases in current release, as applicable.
