@@ -15,6 +15,7 @@ jobs:
       max-parallel: 5    # Limit of concurrent jobs
       matrix:
         name:
+          - "bgp-models"
           - "capacity-metrics"
           - "chatops"
           - "circuit-maintenance"
@@ -29,7 +30,7 @@ jobs:
           # - "nornir"  # Postponed
           - "secrets-providers"
           - "ssot"
-          # - "version-control"  # Disabled as not Nautobot 2.0 ready
+          - "version-control"
           - "welcome-wizard"
     steps:
       - name: "Re-bake"
