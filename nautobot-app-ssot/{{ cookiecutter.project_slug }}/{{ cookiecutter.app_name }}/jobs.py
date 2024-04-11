@@ -1,7 +1,7 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
 
-from nautobot.app.jobs import BooleanVar, Job, register_jobs
+from nautobot.app.jobs import BooleanVar, register_jobs
 from nautobot_ssot.jobs.base import DataSource, DataTarget
 
 from {{ cookiecutter.app_name }}.diffsync.adapters import {{ cookiecutter.system_of_record_slug }}, nautobot
@@ -10,7 +10,7 @@ from {{ cookiecutter.app_name }}.diffsync.adapters import {{ cookiecutter.system
 name = "{{ cookiecutter.system_of_record }} SSoT"  # pylint: disable=invalid-name
 
 
-class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource, Job):
+class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource):
     """{{ cookiecutter.system_of_record }} SSoT Data Source."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
@@ -43,8 +43,7 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource, Job):
         self.target_adapter = nautobot.NautobotAdapter(job=self, sync=self.sync)
         self.target_adapter.load()
 
-
-class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget, Job):
+class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
     """{{ cookiecutter.system_of_record }} SSoT Data Target."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
