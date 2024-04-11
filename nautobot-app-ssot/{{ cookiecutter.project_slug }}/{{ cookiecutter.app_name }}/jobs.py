@@ -1,6 +1,6 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
-from diffsync import DiffSyncFlags
+
 from nautobot.app.jobs import BooleanVar, Job, register_jobs
 from nautobot_ssot.jobs.base import DataSource, DataTarget
 
@@ -14,12 +14,6 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource, Job):
     """{{ cookiecutter.system_of_record }} SSoT Data Source."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
-
-    def __init__(self):
-        """Initialize {{ cookiecutter.system_of_record }} Data Source."""
-        super().__init__()
-        # pylint: disable-next=unsupported-binary-operation
-        self.diffsync_flags = self.diffsync_flags | DiffSyncFlags.CONTINUE_ON_FAILURE
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Meta data for {{ cookiecutter.system_of_record }}."""
@@ -54,11 +48,6 @@ class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget, Job):
     """{{ cookiecutter.system_of_record }} SSoT Data Target."""
 
     debug = BooleanVar(description="Enable for more verbose debug logging", default=False)
-
-    def __init__(self):
-        """Initialize {{ cookiecutter.system_of_record }} Data Target."""
-        super().__init__()
-        self.diffsync_flags = int(self.diffsync_flags) | DiffSyncFlags.CONTINUE_ON_FAILURE
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Meta data for {{ cookiecutter.system_of_record }}."""
