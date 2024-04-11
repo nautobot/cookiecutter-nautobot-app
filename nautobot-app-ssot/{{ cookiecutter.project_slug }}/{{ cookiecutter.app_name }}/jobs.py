@@ -43,6 +43,14 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource):
         self.target_adapter = nautobot.NautobotAdapter(job=self, sync=self.sync)
         self.target_adapter.load()
 
+    def run(self, dryrun, memory_profiling, debug, *args, **kwargs):  # pylint: disable=arguments-differ
+        """Perform data synchronization."""
+        self.debug = debug
+        self.dryrun = dryrun
+        self.memory_profiling = memory_profiling
+        super().run(dryrun=self.dryrun, memory_profiling=self.memory_profiling, *args, **kwargs)
+
+
 class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
     """{{ cookiecutter.system_of_record }} SSoT Data Target."""
 
@@ -75,6 +83,13 @@ class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
         """Load data from {{ cookiecutter.system_of_record }} into DiffSync models."""
         self.target_adapter = {{ cookiecutter.system_of_record_slug }}.{{ cookiecutter.system_of_record_camel }}Adapter(job=self, sync=self.sync)
         self.target_adapter.load()
+
+    def run(self, dryrun, memory_profiling, debug, *args, **kwargs):  # pylint: disable=arguments-differ
+        """Perform data synchronization."""
+        self.debug = debug
+        self.dryrun = dryrun
+        self.memory_profiling = memory_profiling
+        super().run(dryrun=self.dryrun, memory_profiling=self.memory_profiling, *args, **kwargs)
 
 
 jobs = [{{ cookiecutter.system_of_record_camel }}DataSource, {{ cookiecutter.system_of_record_camel }}DataTarget]
