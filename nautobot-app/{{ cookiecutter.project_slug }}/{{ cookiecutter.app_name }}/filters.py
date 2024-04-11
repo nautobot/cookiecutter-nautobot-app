@@ -1,6 +1,6 @@
 """Filtering for {{ cookiecutter.app_name }}."""
 
-from nautobot.apps.filters import NautobotFilterSet, NameSearchFilterSet
+from nautobot.apps.filters import NameSearchFilterSet, NautobotFilterSet
 
 from {{ cookiecutter.app_name }} import models
 

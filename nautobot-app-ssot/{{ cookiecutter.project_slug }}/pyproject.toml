@@ -36,10 +36,8 @@ nautobot-ssot = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
-black = "*"
 coverage = "*"
 django-debug-toolbar = "*"
-flake8 = "*"
 invoke = "*"
 ipython = "*"
 pylint = "*"
@@ -66,29 +64,6 @@ jsonschema = "*"
 all = [
 ]
 
-[tool.black]
-line-length = 120
-target-version = ['py38', 'py39', 'py310', 'py311']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-  | settings.py     # This is where you define files that should not be stylized by black
-                     # the root of the project
-)
-'''
-
 [tool.pylint.master]
 # Include the pylint_django plugin to avoid spurious warnings about Django patterns
 load-plugins="pylint_django, pylint_nautobot"
@@ -99,11 +74,9 @@ ignore=".venv"
 no-docstring-rgx="^(_|test_|Meta$)"
 
 [tool.pylint.messages_control]
-# Line length is enforced by Black, so pylint doesn't need to check it.
-# Pylint and Black disagree about how to format multi-line arrays; Black wins.
 disable = """,
     line-too-long
-    """
+"""
 
 [tool.pylint.miscellaneous]
 # Don't flag TODO as a failure, let us commit with things that still need to be done in the code
@@ -124,6 +97,10 @@ target-version = "py38"
 [tool.ruff.lint]
 select = [
     "D",  # pydocstyle
+    "F", "E", "W",  # flake8
+    "PL",  # pylint
+    "S",  # bandit
+    "I",  # isort
 ]
 ignore = [
     # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
@@ -141,17 +118,22 @@ ignore = [
     "D401",  # First line of docstring should be in imperative mood
     "D407",  # Missing dashed underline after section
     "D416",  # Section name ends in colon
+    "E501",  # Line too long
 ]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "{{ cookiecutter.app_name }}/migrations/*" = [
-    "D",  # pydocstyle
+    "D",
+    "F",
+    "E",
+    "W"
 ]
-"{{ cookiecutter.app_name }}/tests/*" = [
-    "D",  # pydocstyle
+"nautobot_dev_example/tests/*" = [
+    "D",
+    "S"
 ]
 
 [build-system]
