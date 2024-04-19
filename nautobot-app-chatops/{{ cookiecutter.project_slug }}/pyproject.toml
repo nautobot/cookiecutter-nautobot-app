@@ -130,9 +130,6 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "{{ cookiecutter.app_name }}/migrations/*" = [
     "D",
-    "F",
-    "E",
-    "W"
 ]
 "nautobot_dev_example/tests/*" = [
     "D",

@@ -22,4 +22,4 @@ class TestDocsPackaging(unittest.TestCase):
                 package_name, version = pkg.split("==")
             else:
                 version = "*"
-            self.assertEqual(poetry_details[pkg], version)
+            self.assertEqual(poetry_details[package_name], version)

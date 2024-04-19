@@ -85,7 +85,8 @@ jobs:
   check-in-docker:
     needs:
       - "bandit"
-      - "ruff"
+      - "ruff-format"
+      - "ruff-lint"
       - "poetry"
       - "yamllint"
     runs-on: "ubuntu-22.04"
