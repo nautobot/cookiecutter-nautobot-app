@@ -1,7 +1,7 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
 
-from nautobot.app.jobs import BooleanVar, register_jobs
+from nautobot.apps.jobs import BooleanVar, register_jobs
 from nautobot_ssot.jobs.base import DataSource, DataTarget
 
 from {{ cookiecutter.app_name }}.diffsync.adapters import {{ cookiecutter.system_of_record_slug }}, nautobot
