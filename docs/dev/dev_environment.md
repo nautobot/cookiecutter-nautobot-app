@@ -103,9 +103,7 @@ Each command can be executed with `invoke <command>`. All commands support the a
 
 ```
   bandit           Run bandit to validate basic static code security analysis.
-  black            Run black to check that Python files adhere to its style standards.
-  flake8           Run flake8 to check that Python files adhere to its style standards.
-  ruff             Run ruff to validate docstring formatting adheres to NTC defined standards.
+  ruff             Run ruff to perform code formatting and/or linting.
   pylint           Run pylint code analysis.
   tests            Run all tests for this app.
   unittest         Run Django unit tests for the app.
@@ -148,9 +146,6 @@ The development containers are used for running tests & linters.
 
 ```bash
 ➜ invoke tests
-Running black...
-All done! ✨ 🍰 ✨
-6 files would be left unchanged.
 Running yamllint...
 Running poetry check...
 All set!
@@ -310,8 +305,6 @@ To run an individual test, you can run any or all of the following:
 ```bash
 ➜ invoke unittest
 ➜ invoke bandit
-➜ invoke black
-➜ invoke flake8
 ➜ invoke ruff
 ➜ invoke pylint
 ```
