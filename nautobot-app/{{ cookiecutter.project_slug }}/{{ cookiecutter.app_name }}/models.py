@@ -6,7 +6,6 @@ from django.db import models
 # Nautobot imports
 from nautobot.apps.models import PrimaryModel
 
-
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
 # https://docs.nautobot.com/projects/core/en/latest/plugins/development/#using-the-extras_features-decorator-for-graphql

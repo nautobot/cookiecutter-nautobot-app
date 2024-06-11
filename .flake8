@@ -1,8 +1,0 @@
-[flake8]
-ignore =
-    # Black disagrees with this rule, as does PEP 8; Black wins
-    E203,
-    # Line length is enforced by Black, so flake8 doesn't need to check it
-    E501,
-    # Black disagrees with this rule, as does PEP 8; Black wins
-    W503
