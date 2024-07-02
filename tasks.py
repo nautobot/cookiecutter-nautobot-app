@@ -14,7 +14,6 @@ limitations under the License.
 
 import os
 from pathlib import Path
-from time import sleep
 
 from invoke.collection import Collection
 from invoke.tasks import task as invoke_task
@@ -68,7 +67,7 @@ namespace.configure(
 
 
 def collect_files(context, patterns=["*.py"]):
-    "Helper method for collecting applicable python files."
+    """Helper method for collecting applicable python files."""
     for template in context.cookiecutter_nautobot_app.templates:
         patterns.append(f"{template}/tests")
     return " ".join(patterns)
@@ -285,7 +284,7 @@ def logs(context, service="", follow=False, tail=0):
 @task
 def cli(context):
     """Launch a bash shell inside the container."""
-    compose_command = f"run --rm --entrypoint bash cookiecutter"
+    compose_command = "run --rm --entrypoint bash cookiecutter"
 
     docker_compose(context, compose_command, pty=True)
 
@@ -327,27 +326,45 @@ def help_task(context):
 # ------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
-@task(
-    help={
-        "autoformat": "Apply formatting recommendations automatically, rather than failing if formatting is incorrect."
-    }
-)
-def black(context, autoformat=False, template=""):
-    """Check Python code style with Black."""
-    if autoformat:
-        black_command = "black"
-    else:
-        black_command = "black --check --diff"
-
-    command = f"{black_command} {collect_files(context, patterns=[])}"
-    run_command(context, command)
-
-
 @task
 def pylint(context):
     """Run pylint code analysis."""
     command = f"pylint --rcfile pyproject.toml {collect_files(context)}"
     run_command(context, command)
+
+
+@task(aliases=("a",))
+def autoformat(context):
+    """Run code autoformatting."""
+    ruff(context, fix=True)
+
+
+@task(
+    help={
+        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `['lint']`)",
+        "fix": "Automatically fix selected actions. May not be able to fix all issues found. (default: False)",
+        "output_format": "See https://docs.astral.sh/ruff/settings/#output-format for details. (default: `full`)",
+    },
+    iterable=["action"],
+)
+def ruff(context, action=["lint"], fix=False, output_format="full"):
+    """Run ruff to perform code formatting and/or linting."""
+    if not action:
+        action = ["lint"]
+
+    if "format" in action:
+        command = "ruff format"
+        if not fix:
+            command += " --check"
+        command += " ."
+        run_command(context, command)
+
+    if "lint" in action:
+        command = "ruff check"
+        if fix:
+            command += " --fix"
+        command += f" --output-format {output_format} ."
+        run_command(context, command)
 
 
 @task
@@ -379,7 +396,7 @@ def yamllint(context):
 )
 def unittest(context, label="", failfast=False, pattern="", verbose=False):
     """Run Cookie bake unit tests."""
-    command = f"pytest"
+    command = "pytest"
 
     if failfast:
         command += " --failfast"
@@ -406,8 +423,8 @@ def tests(context, failfast=False, lint_only=False):
         print("Starting Docker Containers...")
         start(context)
     # Sorted loosely from fastest to slowest
-    print("Running black...")
-    black(context)
+    print("Running ruff...")
+    ruff(context)
     print("Running yamllint...")
     yamllint(context)
     print("Running poetry check...")
@@ -433,7 +450,6 @@ def tests(context, failfast=False, lint_only=False):
 )
 def bake(context, _debug=False, _input=True, json_file="", output_dir="./outputs", template="./nautobot-app"):
     """Bake a new cookie from the template."""
-
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     command = [

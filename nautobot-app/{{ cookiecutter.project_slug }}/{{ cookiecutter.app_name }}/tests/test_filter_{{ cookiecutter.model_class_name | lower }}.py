@@ -1,7 +1,8 @@
 """Test {{ cookiecutter.model_class_name }} Filter."""
+
 from django.test import TestCase
-from {{ cookiecutter.app_name }} import filters
-from {{ cookiecutter.app_name }} import models
+
+from {{ cookiecutter.app_name }} import filters, models
 from {{ cookiecutter.app_name }}.tests import fixtures
 
 
