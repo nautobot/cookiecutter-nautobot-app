@@ -21,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 packages = [
-    { include = "{{ cookiecutter.app_name }}" }
+    { include = "{{ cookiecutter.app_name }}" },
 ]
 include = [
     # Poetry by default will exclude files that are in .gitignore
