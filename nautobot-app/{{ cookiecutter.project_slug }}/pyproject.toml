@@ -1,13 +1,11 @@
 [tool.poetry]
-
-{%- if cookiecutter.open_source_license == 'Apache-2.0' %}
-
-{%- endif %}
 name = "{{ cookiecutter.app_slug }}"
 version = "0.1.0"
 description = "{{ cookiecutter.project_short_description }}"
 authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
+{%- if cookiecutter.open_source_license == 'Apache-2.0' %}
 license = "{{ cookiecutter.open_source_license }}"
+{%- endif %}
 readme = "README.md"
 homepage = "{{ cookiecutter.repo_url }}"
 repository = "{{ cookiecutter.repo_url }}"
@@ -22,7 +20,9 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-packages = [{ include = "{{ cookiecutter.app_name }}" }]
+packages = [
+    { include = "{{ cookiecutter.app_name }}" }
+]
 include = [
     # Poetry by default will exclude files that are in .gitignore
     "{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs/**/*",
@@ -49,9 +49,9 @@ Markdown = "*"
 # Render custom markdown for version added/changed/remove notes
 markdown-version-annotations = "1.0.1"
 # Rendering docs to HTML
-mkdocs = "~1.6.0"
+mkdocs = "1.6.0"
 # Material for MkDocs theme
-mkdocs-material = "~9.5.25"
+mkdocs-material = "9.5.25"
 # Automatic documentation from sources, for MkDocs
 mkdocstrings = "0.22.0"
 mkdocstrings-python = "1.5.2"
@@ -60,7 +60,8 @@ to-json-schema = "*"
 jsonschema = "*"
 
 [tool.poetry.extras]
-all = []
+all = [
+]
 
 [tool.pylint.master]
 # Include the pylint_django plugin to avoid spurious warnings about Django patterns
@@ -84,7 +85,9 @@ notes = """,
     """
 
 [tool.pylint-nautobot]
-supported_nautobot_versions = ["{{ cookiecutter.min_nautobot_version }}"]
+supported_nautobot_versions = [
+    "{{ cookiecutter.min_nautobot_version }}"
+]
 
 [tool.ruff]
 line-length = 120
@@ -93,9 +96,7 @@ target-version = "py38"
 [tool.ruff.lint]
 select = [
     "D",  # pydocstyle
-    "F",
-    "E",
-    "W",  # flake8
+    "F", "E", "W",  # flake8
     "PL", # pylint
     "S",  # bandit
     "I",  # isort
@@ -123,8 +124,13 @@ ignore = [
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"{{ cookiecutter.app_name }}/migrations/*" = ["D"]
-"{{ cookiecutter.app_name }}/tests/*" = ["D", "S"]
+"{{ cookiecutter.app_name }}/migrations/*" = [
+    "D"
+]
+"{{ cookiecutter.app_name }}/tests/*" = [
+    "D",
+    "S"
+]
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
