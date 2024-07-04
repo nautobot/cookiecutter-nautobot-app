@@ -125,7 +125,7 @@ convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 "{{ cookiecutter.app_name }}/migrations/*" = [
-    "D"
+    "D",
 ]
 "{{ cookiecutter.app_name }}/tests/*" = [
     "D",
