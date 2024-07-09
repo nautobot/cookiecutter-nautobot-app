@@ -32,7 +32,7 @@ class Test{{ cookiecutter.system_of_record_camel }}AdapterTestCase(TransactionTe
 
         self.job = {{ cookiecutter.system_of_record_camel }}DataSource()
         self.job.job_result = JobResult.objects.create(
-            name=self.job.class_path, obj_type=ContentType.objects.get_for_model(Job), user=None, job_id=uuid.uuid4()
+            name=self.job.class_path, user=None, id=uuid.uuid4()
         )
         self.{{ cookiecutter.system_of_record_slug }} = {{ cookiecutter.system_of_record_camel }}Adapter(job=self.job, sync=None, client=self.{{ cookiecutter.system_of_record_slug }}_client)
 
