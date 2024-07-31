@@ -668,7 +668,7 @@ def pylint(context):
 @task(aliases=("a",))
 def autoformat(context):
     """Run code autoformatting."""
-    ruff(context, fix=True)
+    ruff(context, action=["format"], fix=True)
 
 
 @task(

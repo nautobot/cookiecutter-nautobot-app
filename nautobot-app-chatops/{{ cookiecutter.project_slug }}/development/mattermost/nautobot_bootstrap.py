@@ -1,6 +1,5 @@
 """Bootstrap script for Nautobot to allow Mattermost integration."""
 
-
 import contextlib
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist

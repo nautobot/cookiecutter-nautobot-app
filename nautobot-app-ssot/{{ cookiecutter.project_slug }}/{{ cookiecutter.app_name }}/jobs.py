@@ -1,6 +1,5 @@
 """Jobs for {{ cookiecutter.system_of_record }} SSoT integration."""
 
-
 from nautobot.apps.jobs import BooleanVar, register_jobs
 from nautobot_ssot.jobs.base import DataSource, DataTarget
 
