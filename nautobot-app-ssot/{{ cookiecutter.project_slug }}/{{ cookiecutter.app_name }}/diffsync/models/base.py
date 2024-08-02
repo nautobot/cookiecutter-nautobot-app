@@ -1,4 +1,5 @@
 """DiffSyncModel subclasses for Nautobot-to-{{ cookiecutter.system_of_record }} data sync."""
+
 from typing import Optional
 from uuid import UUID
 from diffsync import DiffSyncModel

@@ -336,35 +336,39 @@ def pylint(context):
 @task(aliases=("a",))
 def autoformat(context):
     """Run code autoformatting."""
-    ruff(context, fix=True)
+    ruff(context, action=["format"], fix=True)
 
 
 @task(
     help={
-        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `['lint']`)",
+        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `['lint', 'format']`)",
+        "target": "File or directory to inspect, repeatable (default: all files in the project will be inspected)",
         "fix": "Automatically fix selected actions. May not be able to fix all issues found. (default: False)",
-        "output_format": "See https://docs.astral.sh/ruff/settings/#output-format for details. (default: `full`)",
+        "output_format": "See https://docs.astral.sh/ruff/settings/#output-format for details. (default: `concise`)",
     },
-    iterable=["action"],
+    iterable=["action", "target"],
 )
-def ruff(context, action=["lint"], fix=False, output_format="full"):
+def ruff(context, action=None, target=None, fix=False, output_format="concise"):
     """Run ruff to perform code formatting and/or linting."""
     if not action:
-        action = ["lint"]
+        action = ["lint", "format"]
+    if not target:
+        target = ["."]
 
     if "format" in action:
-        command = "ruff format"
+        command = "ruff format "
         if not fix:
-            command += " --check"
-        command += " ."
-        run_command(context, command)
+            command += "--check "
+        command += " ".join(target)
+        run_command(context, command, warn=True)
 
     if "lint" in action:
-        command = "ruff check"
+        command = "ruff check "
         if fix:
-            command += " --fix"
-        command += f" --output-format {output_format} ."
-        run_command(context, command)
+            command += "--fix "
+        command += f"--output-format {output_format} "
+        command += " ".join(target)
+        run_command(context, command, warn=True)
 
 
 @task
