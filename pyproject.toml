@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cookiecutter-nautobot-app"
-version = "1.0.0"
+version = "2.3.0"
 description = "Cookiecutter template for baking Nautobot App cookies."
 authors = ["Network to Code, LLC <info@networktocode.com>"]
 readme = "README.md"
