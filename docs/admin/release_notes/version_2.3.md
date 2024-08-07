@@ -6,7 +6,7 @@ This document describes all new features and changes in the release `2.3`. The f
 
 ### Changed
 
-- [#112](https://github.com/nautobot/cookiecutter-nautobot-app/pull/112) - Replaced `mkdocs-version-annotations` mkdocs plugin with new `markdown-version-annotations` markdown extension.
+- [#112](https://github.com/nautobot/cookiecutter-nautobot-app/pull/112) - Replaced `mkdocs-version-annotations` mkdocs plugin with new `markdown-version-annotations` markdown extension. No change in functionality, it's the same package.
 - [#106](https://github.com/nautobot/cookiecutter-nautobot-app/pull/106) - Replaced `black` and `flake8` with `ruff` for formatting and linting.
 
 ### Fixed
