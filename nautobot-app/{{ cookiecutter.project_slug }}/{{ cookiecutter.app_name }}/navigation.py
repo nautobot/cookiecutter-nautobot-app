@@ -2,7 +2,6 @@
 
 from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMenuTab
 
-
 items = (
     NavMenuItem(
         link="plugins:{{ cookiecutter.app_name }}:{{ cookiecutter.model_class_name.lower() }}_list",

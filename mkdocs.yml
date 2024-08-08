@@ -65,6 +65,8 @@ extra:
       link: "https://twitter.com/networktocode"
       name: "Network to Code Twitter"
 markdown_extensions:
+  - "markdown_version_annotations":
+      admonition_tag: "???"
   - "admonition"
   - "toc":
       permalink: true
@@ -78,7 +80,6 @@ markdown_extensions:
   - "footnotes"
 plugins:
   - "search"
-  - "mkdocs-version-annotations"
 watch:
   - "README.md"
 
@@ -94,6 +95,7 @@ nav:
           - v2.0: "admin/release_notes/version_2.0.md"
           - v2.1: "admin/release_notes/version_2.1.md"
           - v2.2: "admin/release_notes/version_2.2.md"
+          - v2.3: "admin/release_notes/version_2.3.md"
       - Drift Management: "admin/drift_management.md"
   - Developer Guide:
       - Contributing: "dev/contributing.md"

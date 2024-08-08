@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cookiecutter-nautobot-app"
-version = "1.0.0"
+package-mode = false
 description = "Cookiecutter template for baking Nautobot App cookies."
 authors = ["Network to Code, LLC <info@networktocode.com>"]
 readme = "README.md"
@@ -17,47 +17,24 @@ pyyaml = "*"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
-black = "*"
-coverage = "^7.3.2"
+coverage = "*"
 invoke = "*"
 isort = "*"
 pylint = "*"
 pytest = "*"
 pytest-cookies = "*"
+ruff = "0.5.5"
 yamllint = "*"
 Markdown = "*"
+# Render custom markdown for version added/changed/remove notes
+markdown-version-annotations = "1.0.1"
 # Rendering docs to HTML
 mkdocs = "1.5.2"
 # Material for MkDocs theme
 mkdocs-material = "9.1.15"
-# Render custom markdown for version added/changed/remove notes
-mkdocs-version-annotations = "1.0.0"
 # Automatic documentation from sources, for MkDocs
 mkdocstrings = "0.22.0"
 mkdocstrings-python = "1.5.2"
-
-[tool.black]
-line-length = 120
-target-version = ['py38']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-  | settings.py     # This is where you define files that should not be stylized by black
-                     # the root of the project
-)
-'''
 
 [tool.pylint.master]
 ignore = ".venv"
@@ -67,11 +44,9 @@ ignore = ".venv"
 no-docstring-rgx = "^(_|test_|Meta$)"
 
 [tool.pylint.messages_control]
-# Line length is enforced by Black, so pylint doesn't need to check it.
-# Pylint and Black disagree about how to format multi-line arrays; Black wins.
 disable = """,
-    line-too-long,
-    """
+    line-too-long
+"""
 
 [tool.pylint.miscellaneous]
 # Don't flag TODO as a failure, let us commit with things that still need to be done in the code
@@ -82,6 +57,40 @@ notes = """,
 
 [tool.ruff]
 line-length = 120
+target-version = "py38"
+exclude = [
+  "nautobot-app*",
+]
+
+[tool.ruff.lint]
+select = [
+    "D",  # pydocstyle
+    "F", "E", "W",  # flake8
+    "PL",  # pylint
+    "S",  # bandit
+    "I",  # isort
+]
+ignore = [
+    # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
+    "D203",  # 1 blank line required before class docstring
+
+    # D212 is enabled by default in google convention, and complains if we have a docstring like:
+    # """
+    # My docstring is on the line after the opening quotes instead of on the same line as them.
+    # """
+    # We've discussed and concluded that we consider this to be a valid style choice.
+    "D212",  # Multi-line docstring summary should start at the first line
+    "D213",  # Multi-line docstring summary should start at the second line
+
+    # Produces a lot of issues in the current codebase.
+    "D401",  # First line of docstring should be in imperative mood
+    "D407",  # Missing dashed underline after section
+    "D416",  # Section name ends in colon
+    "E501",  # Line too long
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pytest.ini_options]
 testpaths = [
