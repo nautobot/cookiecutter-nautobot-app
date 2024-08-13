@@ -640,10 +640,11 @@ def help_task(context):
 )
 def generate_release_notes(context, version=""):
     """Generate Release Notes using Towncrier."""
-    command = "env DJANGO_SETTINGS_MODULE=nautobot.core.settings towncrier build"
+    command = "poetry run towncrier build"
     if version:
         command += f" --version {version}"
-    run_command(context, command)
+    # Due to issues with git repo ownership in the containers, this must always run locally.
+    context.run(command)
 
 
 # ------------------------------------------------------------------------------
