@@ -643,6 +643,8 @@ def generate_release_notes(context, version=""):
     command = "poetry run towncrier build"
     if version:
         command += f" --version {version}"
+    else:
+        command += " --version `poetry version -s`"
     # Due to issues with git repo ownership in the containers, this must always run locally.
     context.run(command)
 
