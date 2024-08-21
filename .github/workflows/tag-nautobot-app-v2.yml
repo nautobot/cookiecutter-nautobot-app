@@ -27,7 +27,7 @@ jobs:
           - "floor-plan"
           - "golden-config"
           - "netbox-importer"
-          # - "nornir"  # Postponed
+          - "nornir"
           - "secrets-providers"
           - "ssot"
           - "version-control"

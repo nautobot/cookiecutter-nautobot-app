@@ -23,7 +23,7 @@ isort = "*"
 pylint = "*"
 pytest = "*"
 pytest-cookies = "*"
-ruff = "*"
+ruff = "0.5.5"
 yamllint = "*"
 Markdown = "*"
 # Render custom markdown for version added/changed/remove notes

@@ -1,4 +1,5 @@
 """Nautobot DiffSync models for {{ cookiecutter.system_of_record }} SSoT."""
+
 from django.contrib.contenttypes.models import ContentType
 
 from nautobot.dcim.models import Device as NewDevice, Location, LocationType, DeviceType
@@ -14,12 +15,14 @@ def ensure_location(location_name):
     status = Status.objects.get(name="Active")
     return Location.objects.get_or_create(name=location_name, location_type=location_type, status=status)[0]
 
+
 def ensure_role(role_name):
     """Safely returns a Role that support Devices."""
     content_type = ContentType.objects.get_for_model(NewDevice)
     role, _ = Role.objects.get_or_create(name=role_name)
     role.content_types.add(content_type)
     return role
+
 
 class NautobotDevice(Device):
     """Nautobot implementation of {{ cookiecutter.system_of_record }} Device model."""
