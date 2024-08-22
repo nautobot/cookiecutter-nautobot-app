@@ -1,6 +1,6 @@
 # Release Checklist
 
-This document is intended for app maintainers and covers the steps to perform when releasing new versions of the app.
+This document is intended for app maintainers and outlines the steps to perform when releasing a new version of the app.
 
 !!! important
     Before starting, make sure your **local** `develop`, `main`, and (if applicable) the current LTM branch are all up to date with upstream!
