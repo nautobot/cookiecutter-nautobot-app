@@ -155,6 +155,8 @@ The release notes should look as follows:
 ## New Contributors
 
 * @bob
+
+**Full Changelog**: https://github.com/nautobot/nautobot-app-dev-example/compare/v1.4.1...v1.4.2
 ```
 
 Publish the release!
