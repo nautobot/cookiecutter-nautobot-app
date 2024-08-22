@@ -199,7 +199,7 @@ All done!
 
 For projects maintaining a Nautobot LTM compatible release, all development and release management is done through the `ltm-x.y` branch. The `x.y` relates to the LTM version of Nautobot it's compatible with, for example `1.6`.
 
-The process is similar to releasing from `develop`, but with fewer steps:
+The process is similar to releasing from `develop`, but there is no need for post-release branch syncing because you'll release directly from the LTM branch:
 
 1. Make sure your `ltm-1.6` branch is passing CI.
 2. Bump up the patch version `poetry version patch`. If you're backporting a feature instead of bugfixes, bump the minor version instead with `poetry version minor`.
