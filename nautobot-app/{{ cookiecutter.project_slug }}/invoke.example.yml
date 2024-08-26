@@ -1,12 +1,15 @@
 ---
 {{ cookiecutter.app_name }}:
-  project_name: "{{ cookiecutter.app_slug }}"
   nautobot_ver: "{{ cookiecutter.min_nautobot_version }}"
-  local: false
   python_ver: "3.11"
-  compose_dir: "development"
-  compose_files:
-    - "docker-compose.base.yml"
-    - "docker-compose.redis.yml"
-    - "docker-compose.postgres.yml"
-    - "docker-compose.dev.yml"
+  # local: false
+  # compose_dir: "/full/path/to/{{ cookiecutter.project_slug }}/development"
+
+# The following is an example of using MySQL as the database backend
+# ---
+# {{ cookiecutter.app_name }}:
+#   compose_files:
+#     - "docker-compose.base.yml"
+#     - "docker-compose.redis.yml"
+#     - "docker-compose.mysql.yml"
+#     - "docker-compose.dev.yml"
