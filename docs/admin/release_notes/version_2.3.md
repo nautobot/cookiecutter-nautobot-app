@@ -2,6 +2,24 @@
 
 This document describes all new features and changes in the release `2.3`. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.3.1] - 2024-08-26
+
+### Added
+
+- [#129](https://github.com/nautobot/cookiecutter-nautobot-app/issues/129) - Added support for Python 3.12.
+
+### Fixed
+
+- [#148](https://github.com/nautobot/cookiecutter-nautobot-app/issues/148) - Fixed dependency resolution in development environment docker container builds.
+
+### Dependencies
+
+- [#147](https://github.com/nautobot/cookiecutter-nautobot-app/issues/147) - Pinned `griffe` to `1.1.1` to resolve failures in readthedocs builds.
+- [#147](https://github.com/nautobot/cookiecutter-nautobot-app/issues/147) - Updated `mkdocs` to `1.6.0`.
+- [#147](https://github.com/nautobot/cookiecutter-nautobot-app/issues/147) - Updated `mkdocs-material` to `9.5.32`.
+- [#147](https://github.com/nautobot/cookiecutter-nautobot-app/issues/147) - Updated `mkdocstrings` to `0.25.2`.
+- [#147](https://github.com/nautobot/cookiecutter-nautobot-app/issues/147) - Updated `mkdocstrings-python` to `1.10.8`.
+
 ## [v2.3.0] - 2024-08-06
 
 ### Changed
