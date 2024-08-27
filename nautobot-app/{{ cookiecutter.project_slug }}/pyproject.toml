@@ -35,7 +35,6 @@ python = ">=3.8,<3.13"
 nautobot = "^{{ cookiecutter.min_nautobot_version }}"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "*"
 coverage = "*"
 django-debug-toolbar = "*"
 invoke = "*"
@@ -99,7 +98,6 @@ target-version = "py38"
 select = [
     "D",  # pydocstyle
     "F", "E", "W",  # flake8
-    "PL", # pylint
     "S",  # bandit
     "I",  # isort
 ]
