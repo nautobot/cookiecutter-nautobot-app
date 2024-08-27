@@ -1,6 +1,6 @@
 ---
 dev_addr: "127.0.0.1:8001"
-edit_uri: "edit/main/{{cookiecutter.project_slug}}/docs"
+edit_uri: "edit/main/docs"
 site_dir: "{{cookiecutter.plugin_name}}/static/{{cookiecutter.plugin_name}}/docs"
 site_name: "{{cookiecutter.verbose_name}} Documentation"
 site_url: "{{cookiecutter.docs_app_url}}/"
@@ -72,6 +72,8 @@ extra:
       link: "https://twitter.com/networktocode"
       name: "Network to Code Twitter"
 markdown_extensions:
+  - "markdown_version_annotations":
+      admonition_tag: "???"
   - "admonition"
   - "toc":
       permalink: true
@@ -85,7 +87,6 @@ markdown_extensions:
   - "footnotes"
 plugins:
   - "search"
-  - "mkdocs-version-annotations"
   - "mkdocstrings":
       default_handler: "python"
       handlers:

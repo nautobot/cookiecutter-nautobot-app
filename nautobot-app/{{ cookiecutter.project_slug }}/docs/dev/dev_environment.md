@@ -31,7 +31,7 @@ This project is managed by [Python Poetry](https://python-poetry.org/) and has a
 
 1. Install Poetry, see the [Poetry documentation](https://python-poetry.org/docs/#installation) for your operating system.
 2. Install Docker, see the [Docker documentation](https://docs.docker.com/get-docker/) for your operating system.
-3. Install Docker-compose, see the [Docker-compose documentation](https://github.com/docker/compose) for your operation system.
+3. Install Docker Compose v2, see the [Docker Compose documentation](https://github.com/docker/compose) for your operation system.
 
 Once you have Poetry and Docker installed you can run the following commands (in the root of the repository) to install all other development dependencies in an isolated Python virtual environment:
 
@@ -190,7 +190,7 @@ Next, you need to start up your Docker containers.
 ```bash
 ➜ invoke start
 Starting Nautobot in detached mode...
-Running docker-compose command "up --detach"
+Running docker compose command "up --detach"
 Creating network "{{ cookiecutter.plugin_name }}_default" with the default driver
 Creating volume "{{ cookiecutter.plugin_name }}_postgres_data" with default driver
 Creating {{ cookiecutter.plugin_name }}_redis_1 ...
@@ -241,8 +241,8 @@ If you need to create additional superusers, run the follow commands.
 
 ```bash
 ➜ invoke createsuperuser
-Running docker-compose command "ps --services --filter status=running"
-Running docker-compose command "exec nautobot nautobot-server createsuperuser --username admin"
+Running docker compose command "ps --services --filter status=running"
+Running docker compose command "exec nautobot nautobot-server createsuperuser --username admin"
 Error: That username is already taken.
 Username: ntc
 Email address: ntc@networktocode.com
@@ -258,7 +258,7 @@ The last command to know for now is `invoke stop`.
 ```bash
 ➜ invoke stop
 Stopping Nautobot...
-Running docker-compose command "down"
+Running docker compose command "down"
 Stopping {{ cookiecutter.plugin_name }}_worker_1   ...
 Stopping {{ cookiecutter.plugin_name }}_nautobot_1 ...
 Stopping {{ cookiecutter.plugin_name }}_docs_1     ...

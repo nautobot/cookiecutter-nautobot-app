@@ -45,19 +45,20 @@ ipython = "*"
 pydocstyle = "*"
 pylint = "*"
 pylint-django = "*"
-pylint-nautobot = "*"
+pylint-nautobot = "^0.3.1"
 yamllint = "*"
 toml = "*"
 Markdown = "*"
 # Rendering docs to HTML
-mkdocs = "1.5.2"
+mkdocs = "1.6.0"
 # Material for MkDocs theme
-mkdocs-material = "9.1.15"
+mkdocs-material = "9.5.32"
 # Render custom markdown for version added/changed/remove notes
-mkdocs-version-annotations = "1.0.0"
+rkdown-version-annotations = "1.0.1"
 # Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.5.2"
+mkdocstrings = "0.25.2"
+mkdocstrings-python = "1.10.8"
+griffe = "1.1.1"
 
 [tool.poetry.extras]
 all = [
