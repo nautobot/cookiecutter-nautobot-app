@@ -2,6 +2,12 @@
 
 This document describes all new features and changes in the release `2.3`. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.3.2] - 2024-08-27
+
+### Fixed
+
+- [#155](https://github.com/nautobot/cookiecutter-nautobot-app/pull/155) - Fixed typo in ci.yml.
+
 ## [v2.3.1] - 2024-08-26
 
 ### Added
