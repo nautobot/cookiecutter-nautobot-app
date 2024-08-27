@@ -202,8 +202,8 @@ For projects maintaining a Nautobot LTM compatible release, all development and 
 The process is similar to releasing from `develop`, but there is no need for post-release branch syncing because you'll release directly from the LTM branch:
 
 1. Make sure your `ltm-1.6` branch is passing CI.
-2. Bump up the patch version `poetry version patch`. If you're backporting a feature instead of bugfixes, bump the minor version instead with `poetry version minor`.
-3. Create a release branch from the `ltm-1.6` branch: `git switch -c release-1.2.3 ltm-1.6`.
+2. Create a release branch from the `ltm-1.6` branch: `git switch -c release-1.2.3 ltm-1.6`.
+3. Bump up the patch version `poetry version patch`. If you're backporting a feature instead of bugfixes, bump the minor version instead with `poetry version minor`.
 4. Generate the release notes: `invoke generate-release-notes --version 1.2.3`.
 5. Move the release notes from the generated `docs/admin/release_notes/version_X.Y.md` to `docs/admin/release_notes/version_1.2.md`.
 6. Add all the changes and `git commit -m "Release v1.2.3"`, then `git push`.
