@@ -16,7 +16,6 @@ python = "^3.8"
 pyyaml = "*"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "*"
 coverage = "*"
 invoke = "*"
 isort = "*"

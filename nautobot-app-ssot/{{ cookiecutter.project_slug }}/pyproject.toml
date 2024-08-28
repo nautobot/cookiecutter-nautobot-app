@@ -35,7 +35,6 @@ nautobot = "^{{ cookiecutter.min_nautobot_version }}"
 nautobot-ssot = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "*"
 coverage = "*"
 django-debug-toolbar = "*"
 invoke = "*"
