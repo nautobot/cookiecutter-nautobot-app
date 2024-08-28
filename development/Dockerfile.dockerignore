@@ -1,7 +1,6 @@
 **/*
 
 !/files/
-!/.bandit.yml
 !/.coveragerc
 !/.github/
 !/.yamllint.yml

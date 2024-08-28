@@ -26,9 +26,9 @@ for grant_type in AccessGrantTypeChoices.values():
 
 # The following tokens are for the development only and safe to store in the repo.
 _COMMAND_TOKENS = {
-    "clear": "u7p1an973bd1jqg75i3y7pxj7y",  # nosec
-    "nautobot": "ncygprhkt3rrxr4rkytcaa7c9c",  # nosec
-    "{{ cookiecutter.chatops_interactive_command }}": "fh1kbk45xtgm8r48jzr39ru1ww",  # nosec
+    "clear": "u7p1an973bd1jqg75i3y7pxj7y",
+    "nautobot": "ncygprhkt3rrxr4rkytcaa7c9c",
+    "{{ cookiecutter.chatops_interactive_command }}": "fh1kbk45xtgm8r48jzr39ru1ww",
 }
 
 for command, token in _COMMAND_TOKENS.items():
