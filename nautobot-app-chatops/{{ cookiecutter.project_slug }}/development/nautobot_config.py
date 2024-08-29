@@ -67,7 +67,7 @@ if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": parse_redis_connection(redis_database=0),
+        "LOCATION": parse_redis_connection(redis_database=1),
         "TIMEOUT": 300,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
