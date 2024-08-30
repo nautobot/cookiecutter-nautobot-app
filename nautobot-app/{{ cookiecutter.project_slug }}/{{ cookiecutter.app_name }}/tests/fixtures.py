@@ -1,4 +1,5 @@
 """Create fixtures for tests."""
+
 from {{ cookiecutter.app_name }}.models import {{ cookiecutter.model_class_name }}
 
 

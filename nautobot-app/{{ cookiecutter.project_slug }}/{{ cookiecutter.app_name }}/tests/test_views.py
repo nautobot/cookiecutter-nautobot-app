@@ -1,4 +1,5 @@
 """Unit tests for views."""
+
 from nautobot.apps.testing import ViewTestCases
 
 from {{ cookiecutter.app_name }} import models

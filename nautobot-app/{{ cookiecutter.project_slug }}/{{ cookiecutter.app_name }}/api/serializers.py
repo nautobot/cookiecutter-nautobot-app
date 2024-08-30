@@ -1,4 +1,5 @@
 """API serializers for {{ cookiecutter.app_name }}."""
+
 from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
 from {{ cookiecutter.app_name }} import models

@@ -1,4 +1,5 @@
 """Views for {{ cookiecutter.app_name }}."""
+
 from nautobot.apps.views import NautobotUIViewSet
 
 from {{ cookiecutter.app_name }} import filters, forms, models, tables
