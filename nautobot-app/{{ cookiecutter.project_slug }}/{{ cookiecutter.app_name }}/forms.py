@@ -1,4 +1,5 @@
 """Forms for {{ cookiecutter.app_name }}."""
+
 from django import forms
 from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin
 

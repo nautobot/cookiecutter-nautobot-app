@@ -1,4 +1,5 @@
 """Test {{ cookiecutter.model_class_name.lower() }} forms."""
+
 from django.test import TestCase
 
 from {{ cookiecutter.app_name }} import forms
