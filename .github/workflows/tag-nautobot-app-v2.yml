@@ -38,5 +38,9 @@ jobs:
           python -m ntc_cookie_drift_manager \
             rebake \
             --push \
+            --post-action=ruff \
+            --post-action=poetry \
+            --disable-post-actions=black \
+            --no-draft \
             --template-ref="${{ github.ref }}" \
             https://github.com/nautobot/nautobot-app-${{ matrix.name }}.git
