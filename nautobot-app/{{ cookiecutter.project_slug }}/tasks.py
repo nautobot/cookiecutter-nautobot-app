@@ -14,6 +14,7 @@ limitations under the License.
 
 import os
 import re
+import sys
 from pathlib import Path
 from time import sleep
 
@@ -251,6 +252,9 @@ def lock(context, check=False, constrain_nautobot_ver=False, constrain_python_ve
             command += f" --python {context.{{ cookiecutter.app_name }}.python_ver}"
         try:
             run_command(context, command, hide=True)
+            output = run_command(context, command, hide=True)
+            print(output.stdout, end="")
+            print(output.stderr, file=sys.stderr, end="")
         except UnexpectedExit:
             print("Unable to add Nautobot dependency with version constraint, falling back to git branch.")
             command = f"poetry add --lock git+https://github.com/nautobot/nautobot.git#{context.{{ cookiecutter.app_name }}.nautobot_ver}"
