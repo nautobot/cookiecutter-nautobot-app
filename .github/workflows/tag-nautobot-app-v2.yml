@@ -40,7 +40,7 @@ jobs:
             --push \
             --post-action=ruff \
             --post-action=poetry \
-            --disable-post-actions=black \
+            --disable-post-actions \
             --no-draft \
             --template-ref="${{ github.ref }}" \
             https://github.com/nautobot/nautobot-app-${{ matrix.name }}.git
