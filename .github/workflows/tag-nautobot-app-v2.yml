@@ -30,7 +30,6 @@ jobs:
           - "nornir"
           - "secrets-providers"
           - "ssot"
-          - "version-control"
           - "welcome-wizard"
     steps:
       - name: "Re-bake"
