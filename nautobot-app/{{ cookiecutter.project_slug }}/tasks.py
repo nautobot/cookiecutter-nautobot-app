@@ -157,7 +157,7 @@ def run_command(context, command, **kwargs):
                 **kwargs.get("env", {}),
                 **kwargs.pop("command_env"),
             }
-        context.run(command, **kwargs)
+        return context.run(command, **kwargs)
     else:
         # Check if nautobot is running, no need to start another nautobot container to run a command
         docker_compose_status = "ps --services --filter status=running"
@@ -176,7 +176,7 @@ def run_command(context, command, **kwargs):
 
         pty = kwargs.pop("pty", True)
 
-        docker_compose(context, compose_command, pty=pty, **kwargs)
+        return docker_compose(context, compose_command, pty=pty, **kwargs)
 
 
 # ------------------------------------------------------------------------------
@@ -735,12 +735,15 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
     if not target:
         target = ["."]
 
+    exit_code = 0
+
     if "format" in action:
         command = "ruff format "
         if not fix:
             command += "--check "
         command += " ".join(target)
-        run_command(context, command, warn=True)
+        if not run_command(context, command, warn=True):
+            exit_code = 1
 
     if "lint" in action:
         command = "ruff check "
@@ -748,7 +751,10 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
             command += "--fix "
         command += f"--output-format {output_format} "
         command += " ".join(target)
-        run_command(context, command, warn=True)
+        if not run_command(context, command, warn=True):
+            exit_code = 1
+
+    raise Exit(code=exit_code)
 
 
 @task
