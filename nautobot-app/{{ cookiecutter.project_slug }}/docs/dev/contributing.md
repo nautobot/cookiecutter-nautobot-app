@@ -51,7 +51,9 @@ The branching policy includes the following tenets:
 
 ### Backporting to Older Releases
 
-If you’d like to backport any fixes to prior major or minor versions of an app, please open an issue, comment on an existing issue, or post in the [Network to Code Slack](https://networktocode.slack.com/) (channel `#nautobot`) and we will create a `release-X.Y` branch for you to open your PR against.
+If you are backporting any fixes to a prior major or minor version of this app, please open an issue, comment on an existing issue, or post in the [Network to Code Slack](https://networktocode.slack.com/) (channel `#nautobot`).
+
+We will create a `release-X.Y` branch for you to open your PR against and cut a new release once the PR is successfully merged.
 
 ## Release Policy
 
