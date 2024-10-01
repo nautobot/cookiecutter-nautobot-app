@@ -1,9 +1,8 @@
 """Django urlpatterns declaration for {{ cookiecutter.app_name }} app."""
 
-from django.urls import path
 from django.templatetags.static import static
+from django.urls import path
 from django.views.generic import RedirectView
-
 from nautobot.apps.urls import NautobotUIViewSetRouter
 
 from {{ cookiecutter.app_name }} import views
