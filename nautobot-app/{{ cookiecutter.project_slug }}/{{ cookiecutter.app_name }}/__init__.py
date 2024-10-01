@@ -22,6 +22,7 @@ class {{ cookiecutter.camel_name }}Config(NautobotAppConfig):
     max_version = "{{ cookiecutter.max_nautobot_version }}"
     default_settings = {}
     caching_config = {}
+    docs_view_name = "plugins:{{ cookiecutter.app_name }}:docs"
 
 
 config = {{ cookiecutter.camel_name }}Config  # pylint:disable=invalid-name
