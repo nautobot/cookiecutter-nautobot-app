@@ -9,7 +9,7 @@ This folder provides a Cookiecutter template for a Nautobot App that adheres to 
 ### IMPORTANT Cookie Notes
 
 - The logo of the project is a placeholder (`docs/images/icon-{{ cookiecutter.app_slug }}.png`) - please replace it with your app icon, making sure it's at least 200x200px and has a transparent background!
-- Please resolve and remove **all** of the comments and blocks marked with `Developer Note - Remove Me!` prior to publishing the documentation. Catch'em all with `rgrep "Developer Note"`.
+- Please resolve and remove **all** of the comments and blocks marked with `Developer Note - Remove Me!` prior to publishing the documentation. Catch'em all with `grep -r "Developer Note"`.
 - The documentation website will be built and hosted on `readthedocs.io` for open source projects and follows the standard Network to Code branding for all our open source projects.
 
 ## Getting Started
