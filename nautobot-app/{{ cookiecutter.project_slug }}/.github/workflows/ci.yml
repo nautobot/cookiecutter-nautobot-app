@@ -222,7 +222,6 @@ jobs:
       - name: "Upload binaries to release"
         uses: "svenstaro/upload-release-action@v2"
         with:
-          repo_token: "{% raw %}${{ secrets.NTC_GITHUB_TOKEN }}{% endraw %}"  # use GH_NAUTOBOT_BOT_TOKEN for Nautobot Org repos.
           file: "dist/*"
           tag: "{% raw %}${{ github.ref }}{% endraw %}"
           overwrite: true
