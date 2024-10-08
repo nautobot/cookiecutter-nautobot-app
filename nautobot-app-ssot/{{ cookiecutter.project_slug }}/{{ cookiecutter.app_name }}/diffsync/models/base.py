@@ -20,10 +20,10 @@ class Device(DiffSyncModel):
     _children = {}
 
     name: str
-    status: Optional[str]
-    role: Optional[str]
-    model: Optional[str]
-    location: Optional[str]
-    ip_address: Optional[str]
+    status: Optional[str] = None
+    role: Optional[str] = None
+    model: Optional[str] = None
+    location: Optional[str] = None
+    ip_address: Optional[str] = None
 
-    uuid: Optional[UUID]
+    uuid: Optional[UUID] = None
