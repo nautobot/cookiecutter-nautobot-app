@@ -49,6 +49,12 @@ The branching policy includes the following tenets:
 
 {{ cookiecutter.verbose_name }} will observe semantic versioning, as of 1.0. This may result in a quick turnaround in minor versions to keep pace with an ever-growing feature set.
 
+### Backporting to Older Releases
+
+If you are backporting any fixes to a prior major or minor version of this app, please open an issue, comment on an existing issue, or post in the [Network to Code Slack](https://networktocode.slack.com/) (channel `#nautobot`).
+
+We will create a `release-X.Y` branch for you to open your PR against and cut a new release once the PR is successfully merged.
+
 ## Release Policy
 
 {{ cookiecutter.verbose_name }} has currently no intended scheduled release schedule, and will release new features in minor versions.
