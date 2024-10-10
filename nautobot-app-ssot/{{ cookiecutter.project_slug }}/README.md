@@ -2,7 +2,7 @@
 
 An app for [Nautobot](https://github.com/nautobot/nautobot).
 
-The term SSoT, or Single Source of Truth, refers to the intention of using Nautobot to consolidate data from disparate Systems of Record to create a single resource for all automation needs. This is done by extending the [Nautobot SSoT framework](https://github.com/nautobot/nautobot-plugin-ssot) which uses the DiffSync library. This plug-in is built with the capability in mind to import and export data from your desired System of Record.
+The term SSoT, or Single Source of Truth, refers to the intention of using Nautobot to consolidate data from disparate Systems of Record to create a single resource for all automation needs. This is done by extending the [Nautobot SSoT framework](https://github.com/nautobot/nautobot-app-ssot) which uses the DiffSync library. This app is built with the capability in mind to import and export data from your desired System of Record.
 
 <!--
 Developer Note - Remove Me!
@@ -18,7 +18,7 @@ To avoid extra work and temporary links, make sure that publishing docs (or merg
   <img src="https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/icon-{{ cookiecutter.app_slug }}.png" class="logo" height="200px">
   <br>
   <a href="{{ cookiecutter.repo_url }}/actions"><img src="{{ cookiecutter.repo_url }}/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="{{ cookiecutter.docs_app_url }}/"><img src="https://readthedocs.org/projects/nautobot-plugin-{{ cookiecutter.base_url }}/badge/"></a>
+  <a href="{{ cookiecutter.docs_app_url }}/"><img src="https://readthedocs.org/projects/nautobot-app-{{ cookiecutter.base_url }}/badge/"></a>
   <a href="https://pypi.org/project/{{ cookiecutter.app_slug }}/"><img src="https://img.shields.io/pypi/v/{{ cookiecutter.app_slug }}"></a>
   <a href="https://pypi.org/project/{{ cookiecutter.app_slug }}/"><img src="https://img.shields.io/pypi/dm/{{ cookiecutter.app_slug }}"></a>
   <br>

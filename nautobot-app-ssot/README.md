@@ -6,7 +6,7 @@
 
 This folder provides a Cookiecutter template for a Nautobot Single Source of Truth App that adheres to Network to Code's Development Standards. The cookie provides a development environment to develop and test your Nautobot App with, which is provided by Docker Compose.
 
-The term SSoT, or Single Source of Truth, refers to the intention of using Nautobot to consolidate data from disparate Systems of Record to create a single resource for all automation needs. This is done by extending the [Nautobot SSoT framework](https://github.com/nautobot/nautobot-plugin-ssot) which uses the DiffSync library. This plug-in is built with the capability in mind to import and export data from your desired System of Record.
+The term SSoT, or Single Source of Truth, refers to the intention of using Nautobot to consolidate data from disparate Systems of Record to create a single resource for all automation needs. This is done by extending the [Nautobot SSoT framework](https://github.com/nautobot/nautobot-app-ssot) which uses the DiffSync library. This plug-in is built with the capability in mind to import and export data from your desired System of Record.
 
 ### IMPORTANT Cookie Notes
 

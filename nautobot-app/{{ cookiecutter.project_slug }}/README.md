@@ -14,7 +14,7 @@ To avoid extra work and temporary links, make sure that publishing docs (or merg
   <img src="https://raw.githubusercontent.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}/develop/docs/images/icon-{{ cookiecutter.app_slug }}.png" class="logo" height="200px">
   <br>
   <a href="{{ cookiecutter.repo_url }}/actions"><img src="{{ cookiecutter.repo_url }}/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="{{ cookiecutter.docs_app_url }}/"><img src="https://readthedocs.org/projects/nautobot-plugin-{{ cookiecutter.base_url }}/badge/"></a>
+  <a href="{{ cookiecutter.docs_app_url }}/"><img src="https://readthedocs.org/projects/nautobot-app-{{ cookiecutter.base_url }}/badge/"></a>
   <a href="https://pypi.org/project/{{ cookiecutter.app_slug }}/"><img src="https://img.shields.io/pypi/v/{{ cookiecutter.app_slug }}"></a>
   <a href="https://pypi.org/project/{{ cookiecutter.app_slug }}/"><img src="https://img.shields.io/pypi/dm/{{ cookiecutter.app_slug }}"></a>
   <br>
