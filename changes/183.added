@@ -1,1 +1,0 @@
-Added pylint django migrations checker to the `invoke pylint` command.
