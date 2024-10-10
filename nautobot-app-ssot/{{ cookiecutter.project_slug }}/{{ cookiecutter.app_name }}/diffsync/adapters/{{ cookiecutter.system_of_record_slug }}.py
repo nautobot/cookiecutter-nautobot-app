@@ -1,10 +1,11 @@
 """{{ cookiecutter.verbose_name }} Adapter for {{ cookiecutter.system_of_record }} SSoT app."""
 
-from diffsync import DiffSync
+from diffsync import Adapter
+
 from {{ cookiecutter.app_name }}.diffsync.models.{{ cookiecutter.system_of_record_slug }} import {{ cookiecutter.system_of_record_camel }}Device
 
 
-class {{ cookiecutter.system_of_record_camel }}Adapter(DiffSync):
+class {{ cookiecutter.system_of_record_camel }}Adapter(Adapter):
     """DiffSync adapter for {{ cookiecutter.system_of_record }}."""
 
     device = {{ cookiecutter.system_of_record_camel }}Device
