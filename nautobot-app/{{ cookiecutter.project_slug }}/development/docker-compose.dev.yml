@@ -41,10 +41,13 @@ services:
     entrypoint:
       - "sh"
       - "-c"  # this is to evaluate the $NAUTOBOT_LOG_LEVEL from the env
-      - "watchmedo auto-restart --directory './' --pattern '*.py' --recursive -- nautobot-server celery beat -l $$NAUTOBOT_LOG_LEVEL"  ## $$ because of docker-compose
+      - |
+        python /opt/nautobot/check_migrations.py && \
+        "watchmedo auto-restart --directory './' --pattern '*.py' --recursive -- nautobot-server celery beat -l WARNING"
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
+      - "./check_migrations.py:/opt/nautobot/check_migrations.py"
 # To expose postgres or redis to the host uncomment the following
 # postgres:
 #   ports:
