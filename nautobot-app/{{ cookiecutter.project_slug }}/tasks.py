@@ -149,7 +149,7 @@ def docker_compose(context, command, **kwargs):
     return context.run(compose_command, env=build_env, **kwargs)
 
 
-def run_command(context, command, **kwargs):
+def run_command(context, command, service="nautobot", **kwargs):
     """Wrapper to run a command locally or inside the nautobot container."""
     if is_truthy(context.{{ cookiecutter.app_name }}.local):
         if "command_env" in kwargs:
@@ -159,7 +159,7 @@ def run_command(context, command, **kwargs):
             }
         return context.run(command, **kwargs)
     else:
-        # Check if nautobot is running, no need to start another nautobot container to run a command
+        # Check if service is running, no need to start another container to run a command
         docker_compose_status = "ps --services --filter status=running"
         results = docker_compose(context, docker_compose_status, hide="out")
 
@@ -169,10 +169,10 @@ def run_command(context, command, **kwargs):
             for key, value in command_env.items():
                 command_env_args += f' --env="{key}={value}"'
 
-        if "nautobot" in results.stdout:
-            compose_command = f"exec{command_env_args} nautobot {command}"
+        if service in results.stdout:
+            compose_command = f"exec{command_env_args} {service} {command}"
         else:
-            compose_command = f"run{command_env_args} --rm --entrypoint='{command}' nautobot"
+            compose_command = f"run{command_env_args} --rm --entrypoint='{command}' {service}"
 
         pty = kwargs.pop("pty", True)
 
@@ -413,9 +413,9 @@ def shell_plus(context):
 
 
 @task
-def cli(context):
+def cli(context, service="nautobot"):
     """Launch a bash shell inside the Nautobot container."""
-    run_command(context, "bash")
+    run_command(context, "bash", service=service)
 
 
 @task(
