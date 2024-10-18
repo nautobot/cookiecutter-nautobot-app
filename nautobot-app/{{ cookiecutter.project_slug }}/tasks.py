@@ -415,7 +415,7 @@ def shell_plus(context):
 @task(
     help={
         "service": "Docker compose service name to launch cli in (default: nautobot).",
-    },
+    }
 )
 def cli(context, service="nautobot"):
     """Launch a bash shell inside the container."""
