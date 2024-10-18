@@ -28,7 +28,7 @@ class NautobotDevice(Device):
     """Nautobot implementation of {{ cookiecutter.system_of_record }} Device model."""
 
     @classmethod
-    def create(cls, diffsync, ids, attrs):
+    def create(cls, adapter, ids, attrs):
         """Create Device in Nautobot from NautobotDevice object."""
         new_device = NewDevice(
             name=ids["name"],
@@ -38,7 +38,7 @@ class NautobotDevice(Device):
             location=ensure_location(attrs["location"]),
         )
         new_device.validated_save()
-        return super().create(diffsync=diffsync, ids=ids, attrs=attrs)
+        return super().create(adapter=adapter, ids=ids, attrs=attrs)
 
     def update(self, attrs):
         """Update Device in Nautobot from NautobotDevice object."""
