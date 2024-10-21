@@ -13,11 +13,14 @@
     "max_nautobot_version": "2.9999",
     "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",
-    "model_class_name": "None",
+    "model_class_name": "{{ cookiecutter.camel_name }}ExampleModel",
     "open_source_license": [
         "Apache-2.0",
         "Not open source"
     ],
     "docs_base_url": "https://docs.nautobot.com",
-    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest"
+    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest",
+    "__prompts__": {
+        "model_class_name": "Camel case name of the model class to be created, enter None if no model is needed"
+    }
 }
