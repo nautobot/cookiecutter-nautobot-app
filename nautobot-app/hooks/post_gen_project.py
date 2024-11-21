@@ -43,7 +43,6 @@ if __name__ == "__main__":
             "tests/test_form_{{ cookiecutter.model_class_name.lower() }}.py",
             "tests/test_model_{{ cookiecutter.model_class_name.lower() }}.py",
             "tests/test_views.py",
-            "urls.py",
             "views.py",
         ]
         for file in files_to_remove:
