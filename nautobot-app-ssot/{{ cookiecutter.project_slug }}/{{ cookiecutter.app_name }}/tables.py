@@ -1,1 +1,0 @@
-../../../nautobot-app/{{ cookiecutter.project_slug }}/{{ cookiecutter.app_name }}/tables.py

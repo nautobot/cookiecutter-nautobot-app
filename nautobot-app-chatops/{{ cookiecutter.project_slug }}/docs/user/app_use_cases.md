@@ -1,1 +1,0 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/user/app_use_cases.md

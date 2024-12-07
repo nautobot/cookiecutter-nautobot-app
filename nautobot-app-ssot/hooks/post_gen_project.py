@@ -1,1 +1,0 @@
-../../nautobot-app/hooks/post_gen_project.py

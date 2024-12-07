@@ -1,1 +1,0 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/dev/dev_environment.md

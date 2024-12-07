@@ -1,1 +1,0 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/.github/ISSUE_TEMPLATE/bug_report.md

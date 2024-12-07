@@ -1,1 +1,0 @@
-../../../nautobot-app/{{ cookiecutter.project_slug }}/development/app_config_schema.py
