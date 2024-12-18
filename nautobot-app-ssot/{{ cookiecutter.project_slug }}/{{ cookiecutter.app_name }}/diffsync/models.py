@@ -9,8 +9,8 @@ from nautobot.dcim.models import Device
 from nautobot_ssot.contrib import CustomFieldAnnotation, NautobotModel
 {% endif %}
 
-class DiffsyncDevice({{ "NautobotModel" if cookiecutter.direction_of_sync == "To Nautobot" else "DiffSyncModel" }}):
-    """DiffSync model for {{ cookiecutter.system_of_record }} devices."""
+class DeviceSSoTModel({{ "NautobotModel" if cookiecutter.direction_of_sync == "To Nautobot" else "DiffSyncModel" }}):
+    """SSoT model for {{ cookiecutter.system_of_record }} devices."""
 
     {% if cookiecutter.direction_of_sync == "To Nautobot" %}_model = Device{% endif %}
     _modelname = "device"
