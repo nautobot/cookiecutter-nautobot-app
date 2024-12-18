@@ -2,13 +2,13 @@
 
 from diffsync import Adapter
 
-from {{ cookiecutter.app_name }}.diffsync.models import DiffsyncDevice
+from {{ cookiecutter.app_name }}.diffsync.models import DeviceSSoTModel
 
 
 class {{ cookiecutter.system_of_record_camel }}RemoteAdapter(Adapter):
     """DiffSync adapter for {{ cookiecutter.system_of_record }}."""
 
-    device = DiffsyncDevice
+    device = DeviceSSoTModel
 
     top_level = ["device"]
 
@@ -17,7 +17,7 @@ class {{ cookiecutter.system_of_record_camel }}RemoteAdapter(Adapter):
 
         Args:
             job (object, optional): {{ cookiecutter.system_of_record }} job. Defaults to None.
-            sync (object, optional): {{ cookiecutter.system_of_record }} DiffSync. Defaults to None.
+            sync (object, optional): {{ cookiecutter.system_of_record }} SSoT. Defaults to None.
             client (object): {{ cookiecutter.system_of_record }} API client connection object.
         """
         super().__init__(*args, **kwargs)
@@ -26,19 +26,19 @@ class {{ cookiecutter.system_of_record_camel }}RemoteAdapter(Adapter):
         self.conn = client
 
     def load(self):
-        """Load data from {{ cookiecutter.system_of_record }} into DiffSync models."""
+        """Load data from {{ cookiecutter.system_of_record }} into SSoT models."""
         raise NotImplementedError()
 
 
 class {{ cookiecutter.system_of_record_camel }}NautobotAdapter(NautobotAdapter):
     """DiffSync adapter for Nautobot."""
 
-    device = NautobotDevice
+    device = DeviceSSoTModel
 
     top_level = ["device"]
 
     {% if cookiecutter.direction_of_sync == "From Nautobot" %}
     def load(self):
-        """Load data from Nautobot into DiffSync models."""
+        """Load data from Nautobot into SSoT models."""
         raise NotImplementedError()
     {% endif %}
