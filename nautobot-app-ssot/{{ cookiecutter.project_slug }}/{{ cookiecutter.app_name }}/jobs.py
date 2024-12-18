@@ -3,8 +3,7 @@
 from nautobot.apps.jobs import BooleanVar, register_jobs
 from nautobot_ssot.jobs.base import DataSource, DataTarget
 
-from {{ cookiecutter.app_name }}.diffsync.adapters import {{ cookiecutter.system_of_record_slug }}, nautobot
-
+from {{ cookiecutter.app_name }}.diffsync.adapters import {{ cookiecutter.system_of_record_camel }}RemoteAdapter, {{ cookiecutter.system_of_record_camel }}NautobotAdapter
 
 name = "{{ cookiecutter.system_of_record }} SSoT"  # pylint: disable=invalid-name
 

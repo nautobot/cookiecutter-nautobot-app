@@ -1,14 +1,14 @@
-"""{{ cookiecutter.verbose_name }} Adapter for {{ cookiecutter.system_of_record }} SSoT app."""
+"""Diffsync adapters for {{ cookiecutter.app_name }}."""
 
 from diffsync import Adapter
 
-from {{ cookiecutter.app_name }}.diffsync.models.{{ cookiecutter.system_of_record_slug }} import {{ cookiecutter.system_of_record_camel }}Device
+from {{ cookiecutter.app_name }}.diffsync.models import DiffsyncDevice
 
 
-class {{ cookiecutter.system_of_record_camel }}Adapter(Adapter):
+class {{ cookiecutter.system_of_record_camel }}RemoteAdapter(Adapter):
     """DiffSync adapter for {{ cookiecutter.system_of_record }}."""
 
-    device = {{ cookiecutter.system_of_record_camel }}Device
+    device = DiffsyncDevice
 
     top_level = ["device"]
 
@@ -27,4 +27,18 @@ class {{ cookiecutter.system_of_record_camel }}Adapter(Adapter):
 
     def load(self):
         """Load data from {{ cookiecutter.system_of_record }} into DiffSync models."""
-        raise NotImplementedError
+        raise NotImplementedError()
+
+
+class {{ cookiecutter.system_of_record_camel }}NautobotAdapter(NautobotAdapter):
+    """DiffSync adapter for Nautobot."""
+
+    device = NautobotDevice
+
+    top_level = ["device"]
+
+    {% if cookiecutter.direction_of_sync == "From Nautobot" %}
+    def load(self):
+        """Load data from Nautobot into DiffSync models."""
+        raise NotImplementedError()
+    {% endif %}
