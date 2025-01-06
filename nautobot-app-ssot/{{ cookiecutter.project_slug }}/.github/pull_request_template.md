@@ -1,0 +1,1 @@
+../../../nautobot-app/{{ cookiecutter.project_slug }}/.github/pull_request_template.md
