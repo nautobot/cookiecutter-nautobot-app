@@ -13,13 +13,14 @@ limitations under the License.
 """
 
 import os
+import platform
 import re
 import sys
 from pathlib import Path
 from time import sleep
 
 from invoke.collection import Collection
-from invoke.exceptions import Exit, UnexpectedExit
+from invoke.exceptions import Exit, Failure, UnexpectedExit
 from invoke.tasks import task as invoke_task
 
 
@@ -649,6 +650,22 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
     print("You can import this database backup with the following command:")
     print(f"invoke import-db --input-file '{output_file}'")
     print(50 * "=")
+
+
+@task
+def open_nautobot_web(context):
+    """Open Nautobot web interface in the default browser."""
+    nautobot_raw_uri = docker_compose(context, "port nautobot 8080").stdout.rstrip()
+    nautobot_url = f"http://{nautobot_raw_uri}"
+
+    if platform.system() == "Darwin":
+        open_cmd = "open"
+    else:
+        open_cmd = "xdg-open"
+    try:
+        context.run(f"{open_cmd} {nautobot_url}", hide="err")
+    except Failure:
+        print(f"Unable to open browser. Nautobot interface at {nautobot_url}")
 
 
 # ------------------------------------------------------------------------------
