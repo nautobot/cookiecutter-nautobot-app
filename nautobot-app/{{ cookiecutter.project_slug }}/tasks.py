@@ -853,6 +853,13 @@ def unittest_coverage(context):
     run_command(context, command)
 
 
+@task(pre=[unittest])
+def unittest_xml_coverage(context):
+    """Produce an XML coverage report that can be ingested into other tools."""
+    produce_xml_cmd = "coverage xml"
+    run_command(context, produce_xml_cmd)
+
+
 @task(
     help={
         "failfast": "fail as soon as a single test fails don't run the entire test suite. (default: False)",
