@@ -33,6 +33,8 @@ pip install cookiecutter
 mkdir outputs
 ```
 
+It is recommended that you check out the latest tag with `git checkout nautobot-app-vX.Y.Z` before proceeding so you start your app on the latest, stable state.
+
 Then run the following command:
 
 ```shell
