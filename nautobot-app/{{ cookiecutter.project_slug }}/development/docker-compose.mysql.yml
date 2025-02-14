@@ -31,7 +31,7 @@ services:
       - "development_mysql.env"
     volumes:
       - "mysql_data:/var/lib/mysql"
-      - "./mysql_initdb:/docker-entrypoint-initdb.d"
+      - "./mysql_init.sql:/docker-entrypoint-initdb.d/init.sql"
     healthcheck:
       test:
         - "CMD"
