@@ -11,13 +11,12 @@ Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
 * poetry lock
-* cp development/creds.example.env development/creds.env
 * poetry install
 * poetry shell
 * invoke makemigrations
 * inv ruff --fix # this will ensure all python files are formatted correctly, may require `sudo chown -R $USER ./` as migrations may be owned by root
 
-The file `creds.env` will be ignored by git and can be used to override default environment variables.
+Note: The file `development/creds.env` may be automatically created and ignored by git. It can be used to override default environment variables within the docker containers.
 """
 
 if __name__ == "__main__":

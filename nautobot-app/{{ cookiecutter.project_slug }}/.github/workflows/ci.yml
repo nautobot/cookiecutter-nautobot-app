@@ -125,8 +125,6 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
-      - name: "Copy credentials"
-        run: "cp development/creds.example.env development/creds.env"
       - name: "Linting: pylint"
         run: "poetry run invoke pylint"
       - name: "Checking: App Config"
@@ -182,8 +180,6 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
-      - name: "Copy credentials"
-        run: "cp development/creds.example.env development/creds.env"
       - name: "Use Mysql invoke settings when needed"
         run: "cp invoke.mysql.yml invoke.yml"
         if: "matrix.db-backend == 'mysql'"
