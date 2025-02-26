@@ -12,6 +12,7 @@ from {{ cookiecutter.app_name }} import views
 # from {{ cookiecutter.app_name }} import views
 {% endif %}
 
+app_name = "{{ cookiecutter.app_name }}"
 router = NautobotUIViewSetRouter()
 {% if cookiecutter.model_class_name != "None" %}
 router.register("{{ cookiecutter.model_class_name | lower }}", views.{{ cookiecutter.model_class_name }}UIViewSet)
