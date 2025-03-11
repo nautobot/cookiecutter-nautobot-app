@@ -12,16 +12,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import json
 import os
 import platform
 import re
 import sys
 from pathlib import Path
 from time import sleep
+import time
 
+import concurrent.futures
 from invoke.collection import Collection
 from invoke.exceptions import Exit, Failure, UnexpectedExit
 from invoke.tasks import task as invoke_task
+import yaml
 
 
 def is_truthy(arg):
@@ -56,6 +60,8 @@ namespace.configure(
             "project_name": "{{ cookiecutter.app_slug }}",
             "python_ver": "3.11",
             "local": False,
+            "ephemeral_ports": False,
+            "debugpy_launch": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
                 "docker-compose.base.yml",
@@ -136,6 +142,21 @@ def docker_compose(context, command, **kwargs):
     for compose_file in context.{{ cookiecutter.app_name }}.compose_files:
         compose_file_path = os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, compose_file)
         compose_command_tokens.append(f' -f "{compose_file_path}"')
+
+    # Determine which ports mapping strategy to use
+    if context.{{ cookiecutter.app_name }}.ephemeral_ports:
+        ports_type = "ephemeral"
+    else:
+        ports_type = "static"
+    compose_command_tokens.append(
+        f'-f "{os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, f"docker-compose.{ports_type}-ports.yml")}"'
+    )
+
+    # If detected running in VSCode, add the vscode-rdb compose file
+    if context.{{ cookiecutter.app_name }}.debugpy_launch:
+        compose_command_tokens.append(
+            f'-f "{os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, "docker-compose.debug.yml")}"'
+        )
 
     compose_command_tokens.append(command)
 
@@ -266,6 +287,43 @@ def lock(context, check=False, constrain_nautobot_ver=False, constrain_python_ve
         command = f"poetry {'check' if check else 'lock --no-update'}"
         run_command(context, command)
 
+def dump_service_ports_to_disk(context):
+    """Useful for downstream utilities without direct docker access to determine ports.
+
+    This function will sometimes be called asynchronously while containers are still
+    firing up, hence the `attempt` loop.
+    """
+    service_ports = {}
+
+    for attempt in range(4):  # pylint: disable=unused-variable
+        result = docker_compose(context, "ps --format json", hide=True)
+
+        for line in result.stdout.splitlines():
+            try:
+                service_def = json.loads(line)
+                service_name = re.search(
+                    r"com\.docker\.compose\.service=(?P<service>\w+)", service_def["Labels"]
+                ).group("service")
+
+                ports_found = {}
+                for port in service_def["Publishers"]:
+                    if port.get("PublishedPort", 0):
+                        ports_found[port["TargetPort"]] = port["PublishedPort"]
+
+                if ports_found:
+                    service_ports[service_name] = ports_found
+            except (json.decoder.JSONDecodeError, AttributeError, IndexError, KeyError):
+                continue
+
+        # Confirm required services are started
+        if set(["nautobot", "worker"]).issubset(service_ports.keys()):
+            break
+
+        time.sleep(15)
+
+    with open(".service_ports.json", "w") as f:
+        json.dump(service_ports, f, indent=4)
+
 
 # ------------------------------------------------------------------------------
 # START / STOP / DEBUG
@@ -274,7 +332,10 @@ def lock(context, check=False, constrain_nautobot_ver=False, constrain_python_ve
 def debug(context, service=""):
     """Start specified or all services and its dependencies in debug mode."""
     print(f"Starting {service} in debug mode...")
-    docker_compose(context, "up", service=service)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.submit(dump_service_ports_to_disk, context)
+        docker_compose(context, "up", service=service)
 
 
 @task(help={"service": "If specified, only affect this service."})
@@ -282,6 +343,7 @@ def start(context, service=""):
     """Start specified or all services and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
     docker_compose(context, "up --detach", service=service)
+    dump_service_ports_to_disk(context)
 
 
 @task(help={"service": "If specified, only affect this service."})
@@ -360,10 +422,23 @@ def ps_task(context, all=False):
 
 @task
 def vscode(context):
-    """Launch Visual Studio Code with the appropriate Environment variables to run in a container."""
-    command = "code nautobot.code-workspace"
+    """Additional setup that is helpful for developers running under VSCode.
 
-    context.run(command)
+    This task is automatically run when opening the application from the workspace file."""
+    # Start nautobot services with debugpy enabled
+    try:
+        with open("invoke.yml", "r") as f:
+            invoke_settings = yaml.safe_load(f)
+    except FileNotFoundError:
+        invoke_settings = {"{{ cookiecutter.app_name }}": {}}
+
+
+    # Lets not write to the invoke.yml file if debugpy already enabled.
+    if not invoke_settings.get("{{ cookiecutter.app_name }}",{}).get("debugpy_launch", False):
+        invoke_settings['{{ cookiecutter.app_name }}']['debugpy_launch'] = True
+
+        with open("invoke.yml", "w") as f:
+            yaml.dump(invoke_settings, f)
 
 
 @task(
