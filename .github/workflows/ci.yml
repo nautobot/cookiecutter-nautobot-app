@@ -28,6 +28,8 @@ jobs:
         run: "poetry run invoke yamllint"
       - name: "Linting: pylint"
         run: "poetry run invoke pylint"
+      - name: "Linting: markdownlint"
+        run: "poetry run invoke markdownlint"
       - name: "Docs: mkdocs build check"
         run: "poetry run invoke build-and-check-docs"
       - name: "Testing: poetry lock"
