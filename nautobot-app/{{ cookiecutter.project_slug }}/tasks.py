@@ -607,11 +607,15 @@ def import_db(context, db_name="", input_file="dump.sql"):
 @task(
     help={
         "db-name": "Database name to backup (default: Nautobot database)",
+        "format": (
+            "Database dump format, SQL by default. "
+            "Other valid values for PostgreSQL are: `tar | directory | custom`, for MySQL are: `xml | tab`."
+        ),
         "output-file": "Ouput file, overwrite if exists (default: `dump.sql`)",
         "readable": "Flag to dump database data in more readable format (default: `True`)",
     }
 )
-def backup_db(context, db_name="", output_file="dump.sql", readable=True):
+def backup_db(context, db_name="", format="", output_file="", readable=True):
     """Dump database into `output_file` file from `db` container."""
     start(context, "db")
     _await_healthy_service(context, "db")
@@ -626,15 +630,28 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
             "--skip-extended-insert" if readable else "",
             db_name if db_name else "$MYSQL_DATABASE",
         ]
+
+        if not format:
+            pass
+        elif format == "xml":
+            command += ["--xml"]
+        elif format == "tab":
+            command += ["--tab=/path/to/output/directory", "--fields-terminated-by=,"]
+        else:
+            raise ValueError("Supported formats are: `xml`, `tab`")
     elif _is_compose_included(context, "postgres"):
         command += [
             "pg_dump",
             "--username=$POSTGRES_USER",
             f"--dbname={db_name or '$POSTGRES_DB'}",
+            f"--format={format}" if format else "",
             "--inserts" if readable else "",
         ]
     else:
         raise ValueError("Unsupported database backend.")
+
+    if not output_file:
+        output_file = f"dump.{format or 'sql'}"
 
     command += [
         "'",
