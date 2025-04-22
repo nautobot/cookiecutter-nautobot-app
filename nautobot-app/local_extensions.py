@@ -1,3 +1,4 @@
+"""Local extensions for Nautobot Cookies."""
 import re
 
 from cookiecutter.utils import simple_filter
