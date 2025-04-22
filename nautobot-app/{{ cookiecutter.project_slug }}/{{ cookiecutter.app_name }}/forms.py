@@ -13,10 +13,7 @@ class {{ cookiecutter.model_class_name }}Form(NautobotModelForm):  # pylint: dis
         """Meta attributes."""
 
         model = models.{{ cookiecutter.model_class_name }}
-        fields = [
-            "name",
-            "description",
-        ]
+        fields = "__all__"
 
 
 class {{ cookiecutter.model_class_name }}BulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # pylint: disable=too-many-ancestors
@@ -42,6 +39,6 @@ class {{ cookiecutter.model_class_name }}FilterForm(NautobotFilterForm):
     q = forms.CharField(
         required=False,
         label="Search",
-        help_text="Search within Name or Slug.",
+        help_text="Search within Name.",
     )
     name = forms.CharField(required=False, label="Name")

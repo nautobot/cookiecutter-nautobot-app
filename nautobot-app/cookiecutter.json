@@ -22,5 +22,6 @@
     "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest",
     "__prompts__": {
         "model_class_name": "Camel case name of the model class to be created, enter None if no model is needed"
-    }
+    },
+    "_extensions": ["local_extensions.camel_case_to_kebab"]
 }

@@ -1,16 +1,22 @@
 """Test {{ cookiecutter.model_class_name }} Filter."""
 
-from django.test import TestCase
+from nautobot.apps.testing import FilterTestCases
 
 from {{ cookiecutter.app_name }} import filters, models
 from {{ cookiecutter.app_name }}.tests import fixtures
 
 
-class {{ cookiecutter.model_class_name }}FilterTestCase(TestCase):
+class {{ cookiecutter.model_class_name }}FilterTestCase(FilterTestCases.FilterTestCase):
     """{{ cookiecutter.model_class_name }} Filter Test Case."""
 
     queryset = models.{{ cookiecutter.model_class_name }}.objects.all()
     filterset = filters.{{ cookiecutter.model_class_name }}FilterSet
+    generic_filter_tests = (
+        ("id",),
+        ("created",),
+        ("last_updated",),
+        ("name",),
+    )
 
     @classmethod
     def setUpTestData(cls):

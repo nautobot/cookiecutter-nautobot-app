@@ -15,7 +15,9 @@ from {{ cookiecutter.app_name }} import views
 app_name = "{{ cookiecutter.app_name }}"
 router = NautobotUIViewSetRouter()
 {% if cookiecutter.model_class_name != "None" %}
-router.register("{{ cookiecutter.model_class_name | lower }}", views.{{ cookiecutter.model_class_name }}UIViewSet)
+# The standard is for the route to be the hyphenated version of the model class name plural.
+# for example, ExampleModel would be example-models.
+router.register("{{ cookiecutter.model_class_name | camel_case_to_kebab }}s", views.{{ cookiecutter.model_class_name }}UIViewSet)
 {% else %}
 # Here is an example of how to register a viewset, you will want to replace views.{{ cookiecutter.camel_name }}UIViewSet with your viewset
 # router.register("{{ cookiecutter.app_name }}", views.{{ cookiecutter.camel_name }}UIViewSet)
