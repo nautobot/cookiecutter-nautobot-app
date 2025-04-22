@@ -14,8 +14,8 @@ limitations under the License.
 
 import os
 import re
-import sys
 import shutil
+import sys
 from pathlib import Path
 from time import sleep
 
