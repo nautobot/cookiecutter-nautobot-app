@@ -33,4 +33,3 @@ This document describes all new features and changes in the release. The format 
 - [#166](https://github.com/nautobot/cookiecutter-nautobot-app/issues/166) - Fixed `invoke ruff` not properly exiting with non-zero status when a ruff check fails.
 - [#167](https://github.com/nautobot/cookiecutter-nautobot-app/issues/167) - Fixed missing variable in upstream testing workflow.
 - [#170](https://github.com/nautobot/cookiecutter-nautobot-app/issues/170) - Fixed Dockerfile to allow installing Nautobot from a branch as well as a tag.
-- [#237](https://github.com/nautobot/cookiecutter-nautobot-app/issues/237) - Fixed terminology in the footer of docs.
