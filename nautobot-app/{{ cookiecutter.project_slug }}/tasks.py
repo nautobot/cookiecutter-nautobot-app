@@ -609,7 +609,8 @@ def import_db(context, db_name="", input_file="dump.sql"):
         "db-name": "Database name to backup (default: Nautobot database)",
         "format": (
             "Database dump format, SQL by default. "
-            "Other valid values for PostgreSQL are: `tar | directory | custom`, for MySQL are: `xml | tab`."
+            "Other valid values for PostgreSQL are: `tar | directory | custom`, "
+            "This task doesn't support `format` argument for MySQL."
         ),
         "output-file": "Ouput file, overwrite if exists (default: `dump.sql`)",
         "readable": "Flag to dump database data in more readable format (default: `True`)",
@@ -623,6 +624,9 @@ def backup_db(context, db_name="", format="", output_file="", readable=True):
     command = ["exec -- db sh -c '"]
 
     if _is_compose_included(context, "mysql"):
+        if format:
+            raise ValueError("This task doesn't support `format` argument for MySQL.")
+
         command += [
             "mysqldump",
             "--user=root",
@@ -630,16 +634,15 @@ def backup_db(context, db_name="", format="", output_file="", readable=True):
             "--skip-extended-insert" if readable else "",
             db_name if db_name else "$MYSQL_DATABASE",
         ]
-
-        if not format:
-            pass
-        elif format == "xml":
-            command += ["--xml"]
-        elif format == "tab":
-            command += ["--tab=/path/to/output/directory", "--fields-terminated-by=,"]
-        else:
-            raise ValueError("Supported formats are: `xml`, `tab`")
     elif _is_compose_included(context, "postgres"):
+        if not output_file:
+            if format == "directory":
+                output_file = "dump"
+            elif format == "custom":
+                output_file = "dump.pgdump"
+            elif format == "tar":
+                output_file = "dump.tar"
+
         command += [
             "pg_dump",
             "--username=$POSTGRES_USER",
@@ -651,7 +654,7 @@ def backup_db(context, db_name="", format="", output_file="", readable=True):
         raise ValueError("Unsupported database backend.")
 
     if not output_file:
-        output_file = f"dump.{format or 'sql'}"
+        output_file = f"dump.sql"
 
     command += [
         "'",
