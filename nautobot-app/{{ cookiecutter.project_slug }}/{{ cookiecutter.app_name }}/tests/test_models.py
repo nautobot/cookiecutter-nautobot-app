@@ -9,6 +9,8 @@ from {{ cookiecutter.app_name }}.tests import fixtures
 class Test{{ cookiecutter.model_class_name }}(ModelTestCases.BaseModelTestCase):
     """Test {{ cookiecutter.model_class_name }}."""
 
+    model = models.{{ cookiecutter.model_class_name }}
+
     @classmethod
     def setUpTestData(cls):
         """Create test data for {{ cookiecutter.model_class_name }} Model."""
