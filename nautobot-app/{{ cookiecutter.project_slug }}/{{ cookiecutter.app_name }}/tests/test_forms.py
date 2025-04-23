@@ -1,11 +1,11 @@
 """Test {{ cookiecutter.model_class_name.lower() }} forms."""
 
-from nautobot.apps.testing import FormTestCases
+from django.test import TestCase
 
 from {{ cookiecutter.app_name }} import forms
 
 
-class {{ cookiecutter.model_class_name }}Test(FormTestCases.BaseFormTestCase):
+class {{ cookiecutter.model_class_name }}Test(TestCase):
     """Test {{ cookiecutter.model_class_name }} forms."""
 
     def test_specifying_all_fields_success(self):
