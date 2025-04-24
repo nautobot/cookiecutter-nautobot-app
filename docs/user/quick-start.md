@@ -49,7 +49,6 @@ Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
 * poetry lock
-* cp development/creds.example.env development/creds.env
 * poetry install
 * poetry shell
 * invoke makemigrations
@@ -166,13 +165,12 @@ Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
 * poetry lock
-* cp development/creds.example.env development/creds.env
 * poetry install
 * poetry shell
 * invoke makemigrations
 * ruff . # this will ensure all python files are formatted correctly, may require `sudo chown -R <my local username> ./` as migrations may be owned by root
 
-The file `creds.env` will be ignored by git and can be used to override default environment variables.
+Note: The file `development/creds.env` may be automatically created and ignored by git. It can be used to override default environment variables within the docker containers.
 ```
 
 The cookiecutter CLI tool uses the default branch when using the above example command, to use a different branch, commit, or tag the `--checkout` command line argument can be used.
