@@ -24,6 +24,7 @@ jobs:
           - "dev-example"
           - "device-lifecycle-mgmt"
           - "device-onboarding"
+          - "dns-models"
           - "firewall-models"
           - "floor-plan"
           - "golden-config"
