@@ -104,6 +104,7 @@ Each command can be executed with `invoke <command>`. All commands support the a
 ```
   ruff             Run ruff to perform code formatting and/or linting.
   pylint           Run pylint code analysis.
+  markdownlint     Run pymarkdown linting.
   tests            Run all tests for this app.
   unittest         Run Django unit tests for the app.
 ```

@@ -375,7 +375,8 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
         if not run_command(context, command, warn=True):
             exit_code = 1
 
-    raise Exit(code=exit_code)
+    if exit_code != 0:
+        raise Exit(code=exit_code)
 
 
 @task
@@ -394,6 +395,18 @@ def yamllint(context):
         context (obj): Used to run specific commands
     """
     command = "yamllint . --format standard"
+    run_command(context, command)
+
+
+@task
+def markdownlint(context, fix=False):
+    """Lint Markdown files."""
+    # note: at the time of this writing, the `--fix` option is in pending state for pymarkdown on both rules.
+    if fix:
+        command = "pymarkdown fix --recurse docs *.md"
+        run_command(context, command)
+    # fix mode doesn't scan/report issues it can't fix, so always run scan even after fixing
+    command = "pymarkdown scan --recurse docs *.md"
     run_command(context, command)
 
 
@@ -438,6 +451,8 @@ def tests(context, failfast=False, lint_only=False):
     ruff(context)
     print("Running yamllint...")
     yamllint(context)
+    print("Running markdownlint...")
+    markdownlint(context)
     print("Running poetry check...")
     lock(context, check=True)
     print("Running pylint...")

@@ -6,6 +6,7 @@ The project is packaged with a light [development environment](dev_environment.m
 The project is following Network to Code software development guidelines and is leveraging the following:
 
 - Python linting and formatting: `ruff`, `pylint`.
+- Markdown linting and formatting: `pymarkdown`.
 - YAML linting is done with `yamllint`.
 - Django unit test to ensure the app is working properly.
 

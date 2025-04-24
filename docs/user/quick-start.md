@@ -5,7 +5,7 @@
 Pre-requisites:
 
 - git
-- Python 3.8+
+- Python 3.9-3.12
 - cookiecutter
 
 ## Baking Cookies
