@@ -68,6 +68,9 @@ if __name__ == "__main__":
         for folder in folders_to_remove:
             (_ADDONS_PATH / folder).rmdir()
 
+        (_PROJECT_PATH / "docs/models/{{ cookiecutter.model_class_name.lower() }}.md").unlink()
+        (_PROJECT_PATH / "docs/models").rmdir()
+
     # Persist the baked cookie parameters in-repo for future usage as a replay file or for the drift management.
     cookie = {{ cookiecutter }}
     (_PROJECT_PATH / ".cookiecutter.json").write_text(
