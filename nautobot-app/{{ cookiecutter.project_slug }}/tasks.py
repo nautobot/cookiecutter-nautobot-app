@@ -898,6 +898,22 @@ def unittest_coverage(context):
     run_command(context, command)
 
 
+@task
+def coverage_lcov(context):
+    """Generate an LCOV coverage report."""
+    command = "coverage lcov -o lcov.info"
+
+    run_command(context, command)
+
+
+@task
+def coverage_xml(context):
+    """Generate an XML coverage report."""
+    command = "coverage xml -o coverage.xml"
+
+    run_command(context, command)
+
+
 @task(
     help={
         "failfast": "fail as soon as a single test fails don't run the entire test suite. (default: False)",
@@ -932,6 +948,7 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
         print("Running unit tests...")
         unittest(context, failfast=failfast, keepdb=keepdb, coverage=True, skip_docs_build=True)
         unittest_coverage(context)
+        coverage_lcov(context)
     print("All tests have passed!")
 
 
