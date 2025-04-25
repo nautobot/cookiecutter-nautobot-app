@@ -238,7 +238,7 @@ jobs:
       - name: "Run Poetry Build"
         run: "poetry build"
       - name: "Upload binaries to release"
-        run: "gh release upload {% raw %}${{ github.ref }} dist/*.{tar.gz,whl}{% endraw %}"
+        run: "gh release upload {% raw %}${{ github.ref_name }} dist/*.{tar.gz,whl}{% endraw %}"
         env:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
   publish_pypi:
