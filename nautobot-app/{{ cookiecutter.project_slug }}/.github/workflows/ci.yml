@@ -272,7 +272,7 @@ jobs:
         with:
           name: "python-coverage-comment-action"
           path: "python-coverage-comment-action.txt"
-      
+
   changelog:
     if: >
       contains(fromJson('["develop","ltm-1.6"]'), github.base_ref) &&
