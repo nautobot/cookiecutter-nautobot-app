@@ -854,6 +854,7 @@ def check_migrations(context):
         "pattern": "Run specific test methods, classes, or modules instead of all tests",
         "verbose": "Enable verbose test output.",
         "coverage": "Enable coverage reporting. Defaults to False",
+        "skip_docs_build": "Skip building the documentation before running tests.",
     }
 )
 def unittest(  # noqa: PLR0913
@@ -865,8 +866,11 @@ def unittest(  # noqa: PLR0913
     pattern="",
     verbose=False,
     coverage=False,
+    skip_docs_build=False,
 ):
     """Run Nautobot unit tests."""
+    if not skip_docs_build:
+        build_and_check_docs(context)
     if coverage:
         command = f"coverage run --module nautobot.core.cli test {label}"
     else:
@@ -926,7 +930,7 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     validate_app_config(context)
     if not lint_only:
         print("Running unit tests...")
-        unittest(context, failfast=failfast, keepdb=keepdb, coverage=True)
+        unittest(context, failfast=failfast, keepdb=keepdb, coverage=True, skip_docs_build=True)
         unittest_coverage(context)
     print("All tests have passed!")
 

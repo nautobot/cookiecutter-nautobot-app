@@ -1,0 +1,1 @@
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/models/{{ cookiecutter.model_class_name | lower }}.md

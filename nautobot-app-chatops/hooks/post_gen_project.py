@@ -48,10 +48,10 @@ if __name__ == "__main__":
             "tables.py",
             "templates/{{ cookiecutter.app_name }}/{{ cookiecutter.model_class_name.lower() }}_retrieve.html",
             "tests/fixtures.py",
-            "tests/test_api_views.py",
-            "tests/test_filter_{{ cookiecutter.model_class_name.lower() }}.py",
-            "tests/test_form_{{ cookiecutter.model_class_name.lower() }}.py",
-            "tests/test_model_{{ cookiecutter.model_class_name.lower() }}.py",
+            "tests/test_api.py",
+            "tests/test_filters.py",
+            "tests/test_forms.py",
+            "tests/test_models.py",
             "tests/test_views.py",
             "urls.py",
             "views.py",
@@ -66,6 +66,9 @@ if __name__ == "__main__":
         ]
         for folder in folders_to_remove:
             (_ADDONS_PATH / folder).rmdir()
+
+        (_PROJECT_PATH / "docs/models/{{ cookiecutter.model_class_name.lower() }}.md").unlink()
+        (_PROJECT_PATH / "docs/models").rmdir()
 
     # Persist the baked cookie parameters in-repo for future usage as a replay file or for the drift management.
     cookie = {{ cookiecutter }}

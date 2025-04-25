@@ -1,1 +1,0 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/{{ cookiecutter.app_name }}/tests/test_form_{{ cookiecutter.model_class_name | lower }}.py

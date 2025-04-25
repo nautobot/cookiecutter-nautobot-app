@@ -1,28 +1,45 @@
 """Unit tests for {{ cookiecutter.app_name }}."""
 
-from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.urls import reverse
-from nautobot.users.models import Token
-from rest_framework import status
-from rest_framework.test import APIClient
+from nautobot.apps.testing import APIViewTestCases
 
-User = get_user_model()
+from {{ cookiecutter.app_name }} import models
+from {{ cookiecutter.app_name }}.tests import fixtures
 
 
-class PlaceholderAPITest(TestCase):
-    """Test the {{ cookiecutter.camel_name }} API."""
+class {{ cookiecutter.model_class_name }}APIViewTest(APIViewTestCases.APIViewTestCase):
+    # pylint: disable=too-many-ancestors
+    """Test the API viewsets for {{ cookiecutter.model_class_name }}."""
 
-    def setUp(self):
-        """Create a superuser and token for API calls."""
-        self.user = User.objects.create(username="testuser", is_superuser=True)
-        self.token = Token.objects.create(user=self.user)
-        self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
+    model = models.{{ cookiecutter.model_class_name }}
+    # Any choice fields will require the choices_fields to be set
+    # to the field names in the model that are choice fields.
+    choices_fields = ()
 
-    def test_placeholder(self):
-        """Verify that devices can be listed."""
-        url = reverse("dcim-api:device-list")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 0)
+    @classmethod
+    def setUpTestData(cls):
+        """Create test data for {{ cookiecutter.model_class_name }} API viewset."""
+        super().setUpTestData()
+        # Create 3 objects for the generic API test cases.
+        fixtures.create_{{ cookiecutter.model_class_name.lower() }}()
+        # Create 3 objects for the api test cases.
+        cls.create_data = [
+            {
+                "name": "API Test One",
+                "description": "Test One Description",
+            },
+            {
+                "name": "API Test Two",
+                "description": "Test Two Description",
+            },
+            {
+                "name": "API Test Three",
+                "description": "Test Three Description",
+            },
+        ]
+        cls.update_data = {
+            "name": "Update Test Two",
+            "description": "Test Two Description",
+        }
+        cls.bulk_update_data = {
+            "description": "Test Bulk Update Description",
+        }
