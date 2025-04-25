@@ -26,7 +26,7 @@ packages = [
 ]
 include = [
     # Poetry by default will exclude files that are in .gitignore
-    "{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs/**/*",
+    { path = "{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs/**/*", format = ["sdist", "wheel"] }
 ]
 
 [tool.poetry.dependencies]
