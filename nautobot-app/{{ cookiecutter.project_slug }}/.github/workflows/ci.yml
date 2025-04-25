@@ -123,9 +123,9 @@ jobs:
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver"
       - name: "Set up Docker Buildx"
         id: "buildx"
-        uses: "docker/setup-buildx-action@v3"
+        uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"  # v3.10.0
       - name: "Build"
-        uses: "docker/build-push-action@v5"
+        uses: "docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25"  # v5.4.0
         with:
           builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
           context: "./"
@@ -178,9 +178,9 @@ jobs:
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver"
       - name: "Set up Docker Buildx"
         id: "buildx"
-        uses: "docker/setup-buildx-action@v3"
+        uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"  # v3.10.0
       - name: "Build"
-        uses: "docker/build-push-action@v5"
+        uses: "docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25"  # v5.4.0
         with:
           builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
           context: "./"
@@ -300,6 +300,8 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     env:
       INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "True"
+    permissions:
+      contents: "write"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -320,13 +322,9 @@ jobs:
       - name: "Run Poetry Build"
         run: "poetry build"
       - name: "Upload binaries to release"
-        uses: "svenstaro/upload-release-action@v2"
-        with:
-          repo_token: "{% raw %}${{ secrets.NTC_GITHUB_TOKEN }}{% endraw %}"  # use GH_NAUTOBOT_BOT_TOKEN for Nautobot Org repos.
-          file: "dist/*"
-          tag: "{% raw %}${{ github.ref }}{% endraw %}"
-          overwrite: true
-          file_glob: true
+        run: "gh release upload {% raw %}${{ github.ref_name }} dist/*.{tar.gz,whl}{% endraw %}"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
   publish_pypi:
     needs:
       - "unittest"
@@ -355,7 +353,7 @@ jobs:
       - name: "Run Poetry Build"
         run: "poetry build"
       - name: "Push to PyPI"
-        uses: "pypa/gh-action-pypi-publish@release/v1"
+        uses: "pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc"  # v1.12.4
         with:
           user: "__token__"
           password: "{% raw %}${{ secrets.PYPI_API_TOKEN }}{% endraw %}"
@@ -376,7 +374,7 @@ jobs:
         # ENVs cannot be used directly in job.if. This is a workaround to check
         # if SLACK_WEBHOOK_URL is present.
         if: "env.SLACK_WEBHOOK_URL != ''"
-        uses: "slackapi/slack-github-action@v1"
+        uses: "slackapi/slack-github-action@fcfb566f8b0aab22203f066d80ca1d7e4b5d05b3"  # v1.27.1
         with:
           payload: |
             {
