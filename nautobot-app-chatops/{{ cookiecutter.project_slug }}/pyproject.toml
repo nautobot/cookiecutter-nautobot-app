@@ -142,6 +142,17 @@ convention = "google"
     "S"
 ]
 
+[tool.coverage.run]
+disable_warnings = ["already-imported"]
+relative_files = true
+omit = [
+    # Skip Tests
+    "*/tests/*",
+]
+include = [
+    "{{ cookiecutter.app_name }}/*",
+]
+
 [tool.pymarkdown]
 # Seems to be not support for whitelisting rules: https://github.com/jackdewinter/pymarkdown/issues/1396
 plugins.md001.enabled = false
