@@ -2,7 +2,7 @@
 name: ✨ Feature Request
 about: Propose a new feature or enhancement
 title: "[FEATURE]"
-labels: minor feature
+labels: feature
 
 ---
 
