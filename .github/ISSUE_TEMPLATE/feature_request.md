@@ -1,9 +1,8 @@
 ---
 name: ✨ Feature Request
 about: Propose a new feature or enhancement
-title: "[FEATURE]"
-labels: feature
-
+labels:
+  - "type: feature"
 ---
 
 ### Environment
