@@ -6,42 +6,9 @@ on:  # yamllint disable-line rule:truthy
       - "nautobot-app-v2.*"
 jobs:
   rebake:
-    container: "ghcr.io/nautobot/cookiecutter-nautobot-app-drift-manager/prod:latest"
-    runs-on: "ubuntu-22.04"
-    env:
-      GITHUB_TOKEN: "${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}"
-    strategy:
-      fail-fast: false
-      max-parallel: 5    # Limit of concurrent jobs
-      matrix:
-        name:
-          - "bgp-models"
-          - "capacity-metrics"
-          - "chatops"
-          - "circuit-maintenance"
-          - "data-validation-engine"
-          - "design-builder"
-          - "dev-example"
-          - "device-lifecycle-mgmt"
-          - "device-onboarding"
-          - "dns-models"
-          - "firewall-models"
-          - "floor-plan"
-          - "golden-config"
-          - "netbox-importer"
-          - "nornir"
-          - "secrets-providers"
-          - "ssot"
-          - "welcome-wizard"
+    runs-on: "ubuntu-latest"
     steps:
-      - name: "Re-bake"
-        run: |
-          python -m ntc_cookie_drift_manager \
-            rebake \
-            --push \
-            --post-action=ruff \
-            --post-action=poetry \
-            --disable-post-actions \
-            --no-draft \
-            --template-ref="${{ github.ref }}" \
-            https://github.com/nautobot/nautobot-app-${{ matrix.name }}.git
+      - name: "Call rebke workflow in cookiecutter-nautobot-app-drift-manager"
+        run: "gh workflow run rebake-workflow.yml -R nautobot/cookiecutter-nautobot-app-drift-=manager -f tag=${{ github.ref_name }}"
+        env:
+          GH_TOKEN: "${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}"
