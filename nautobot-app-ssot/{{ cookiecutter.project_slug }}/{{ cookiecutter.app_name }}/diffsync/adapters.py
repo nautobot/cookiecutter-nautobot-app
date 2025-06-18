@@ -1,6 +1,7 @@
 """Diffsync adapters for {{ cookiecutter.app_name }}."""
 
 from diffsync import Adapter
+from nautobot_ssot.contrib import NautobotAdapter
 
 from {{ cookiecutter.app_name }}.diffsync.models import DeviceSSoTModel
 
