@@ -18,8 +18,6 @@ class {{ cookiecutter.camel_name }}Config(NautobotAppConfig):
     description = "{{ cookiecutter.project_short_description }}."
     base_url = "{{ cookiecutter.base_url }}"
     required_settings = []
-    min_version = "{{ cookiecutter.min_nautobot_version }}"
-    max_version = "{{ cookiecutter.max_nautobot_version }}"
     default_settings = {}
     caching_config = {}
     docs_view_name = "plugins:{{ cookiecutter.app_name }}:docs"
