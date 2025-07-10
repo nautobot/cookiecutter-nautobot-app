@@ -34,7 +34,7 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 # Used for local development
-nautobot = "^{{ cookiecutter.min_nautobot_version }}"
+nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-chatops = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
@@ -96,7 +96,7 @@ notes = """,
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = [
-    "{{ cookiecutter.min_nautobot_version }}"
+    "2"
 ]
 
 [tool.ruff]

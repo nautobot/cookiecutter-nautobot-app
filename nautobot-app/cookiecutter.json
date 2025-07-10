@@ -9,8 +9,6 @@
     "project_slug": "nautobot-app-{{ cookiecutter.app_slug }}",
     "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
     "base_url": "{{ cookiecutter.app_slug }}",
-    "min_nautobot_version": "2.0.0",
-    "max_nautobot_version": "2.9999",
     "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",
     "model_class_name": "{{ cookiecutter.camel_name }}ExampleModel",
@@ -23,5 +21,9 @@
     "__prompts__": {
         "model_class_name": "Camel case name of the model class to be created, enter None if no model is needed"
     },
-    "_extensions": ["local_extensions.camel_case_to_kebab", "local_extensions.camel_case_to_words"]
+    "_extensions": [
+        "local_extensions.camel_case_to_kebab",
+        "local_extensions.camel_case_to_words",
+        "local_extensions.NautobotVersions"
+    ]
 }

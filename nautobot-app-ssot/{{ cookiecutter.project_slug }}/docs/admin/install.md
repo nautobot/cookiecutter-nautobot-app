@@ -7,7 +7,7 @@ Here you will find detailed instructions on how to **install** and **configure**
 
 ## Prerequisites
 
-- The app is compatible with Nautobot {{ cookiecutter.min_nautobot_version }} and higher.
+- The app is compatible with Nautobot {{ min_nautobot_version }} and higher.
 - Databases supported: PostgreSQL, MySQL
 
 !!! note

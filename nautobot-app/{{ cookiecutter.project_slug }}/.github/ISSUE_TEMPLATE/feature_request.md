@@ -6,7 +6,7 @@ labels:
 ---
 
 ### Environment
-* Nautobot version:  <!-- Example: {{ cookiecutter.min_nautobot_version }} -->
+* Nautobot version:  <!-- Example: {{ min_nautobot_version }} -->
 * {{ cookiecutter.app_slug }} version:  <!-- Example: 1.0.0 -->
 
 <!--
