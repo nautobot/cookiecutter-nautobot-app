@@ -53,4 +53,4 @@ The following table lists the inputs that you will be prompted for when generati
 
 ## Globals
 
-The variables `min_nautobot_version` and `max_nautobot_version` are now global variables and can no longer be provided as an input. These are now controlled by the template.
+The variables `min_nautobot_version` and `upper_bound_nautobot_version` are now global variables and can no longer be provided as an input. These are now controlled by the template.

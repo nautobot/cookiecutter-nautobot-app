@@ -32,7 +32,7 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
 # Used for local development
-nautobot = ">={{ min_nautobot_version }},<{{ max_nautobot_version }}"
+nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
