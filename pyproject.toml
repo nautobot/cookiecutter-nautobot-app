@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.1.3"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
@@ -164,7 +164,7 @@ plugins.md049.enabled = false
 plugins.md050.enabled = false
 plugins.pml100.enabled = false
 plugins.pml101.enabled = true # list-anchored-indent
-plugins.pml102.enabled = false 
+plugins.pml102.enabled = false
 plugins.pml103.enabled = false
 
 [tool.towncrier]

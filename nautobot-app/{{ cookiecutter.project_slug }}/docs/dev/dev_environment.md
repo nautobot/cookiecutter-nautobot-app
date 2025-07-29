@@ -36,6 +36,7 @@ This project is managed by [Python Poetry](https://python-poetry.org/) and has a
 Once you have Poetry and Docker installed you can run the following commands (in the root of the repository) to install all other development dependencies in an isolated Python virtual environment:
 
 ```shell
+poetry self add poetry-plugin-shell
 poetry shell
 poetry install
 invoke build
@@ -62,6 +63,7 @@ To either stop or destroy the development environment use the following options.
 Run the following commands:
 
 ```shell
+poetry self add poetry-plugin-shell
 poetry shell
 poetry install --extras nautobot
 export $(cat development/development.env | xargs)
@@ -152,6 +154,8 @@ The `pyproject.toml` file outlines all of the relevant dependencies for the proj
 The `poetry shell` command is used to create and enable a virtual environment managed by Poetry, so all commands ran going forward are executed within the virtual environment. This is similar to running the `source venv/bin/activate` command with virtualenvs. To install project dependencies in the virtual environment, you should run `poetry install` - this will install **both** project and development dependencies.
 
 For more details about Poetry and its commands please check out its [online documentation](https://python-poetry.org/docs/).
+For more details about Poetry Shell, please review its [open source git repo](https://github.com/python-poetry/poetry-plugin-shell).
+
 
 ## Full Docker Development Environment
 

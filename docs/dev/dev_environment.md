@@ -30,6 +30,7 @@ Using **Invoke** these configuration options can be overridden using [several me
 Run the following commands:
 
 ```shell
+poetry self add poetry-plugin-shell
 poetry shell
 poetry install
 invoke tests
@@ -55,6 +56,7 @@ Once you have Poetry and Docker installed you can run the following commands (in
 
 ```shell
 poetry install
+poetry self add poetry-plugin-shell
 poetry shell
 invoke build
 invoke tests
@@ -121,6 +123,7 @@ The `pyproject.toml` file outlines all of the relevant dependencies for the proj
 The `poetry shell` command is used to create and enable a virtual environment managed by Poetry, so all commands ran going forward are executed within the virtual environment. This is similar to running the `source venv/bin/activate` command with virtualenvs. To install project dependencies in the virtual environment, you should run `poetry install` - this will install **both** project and development dependencies.
 
 For more details about Poetry and its commands please check out its [online documentation](https://python-poetry.org/docs/).
+For more details about Poetry Shell, please review its [open source git repo](https://github.com/python-poetry/poetry-plugin-shell).
 
 ## Full Docker Development Environment
 
@@ -142,7 +145,7 @@ The first thing you need to do is build the necessary development container imag
 
 ### Invoke - Using Development Container
 
-The development containers are used for running tests & linters. 
+The development containers are used for running tests & linters.
 
 ```bash
 ➜ invoke tests

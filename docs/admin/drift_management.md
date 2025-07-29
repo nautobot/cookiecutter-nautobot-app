@@ -25,7 +25,7 @@ Once the workflow finishes, it creates a pull request with the drift changes sin
 Drift pull requests often require manual cleanup before being marked as ready for review. The reasons for this include:
 
 - An obsolete `poetry.lock` file.
-    To resolve this, run `poetry lock --no-update` and commit the changes.
+    To resolve this, run `poetry lock` and commit the changes.
 - Linter issues after updating the tooling.
     To resolve these, run `invoke autoformat`. Manual code updates may also be needed.
 - Code or documentation changes.
