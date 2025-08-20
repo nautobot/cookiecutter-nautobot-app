@@ -10,7 +10,7 @@
     "project_slug": "nautobot-app-chatops-{{ cookiecutter.chatops_interactive_command.lower().replace('_', '-') }}",
     "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
     "base_url": "{{ cookiecutter.chatops_interactive_command.lower().replace(' ', '-').replace('_', '-') }}",
-    "min_nautobot_version": "2.4.11",
+    "min_nautobot_version": "2.4.2",
     "max_nautobot_version": "2.9999",
     "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",
