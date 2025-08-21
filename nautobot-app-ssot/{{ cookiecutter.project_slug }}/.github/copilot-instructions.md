@@ -421,7 +421,7 @@ Options:
 ```
 
 **When to use which**  
-- Use `poetry run invoke **tests**` for the full unittest experience (fixtures, markers, rich plugins).  
+- Use `poetry run invoke tests` for the full unittest experience (fixtures, markers, rich plugins).  
 - Use `poetry run invoke **unittest**` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core’s CI jobs.
 
 **Common recipes**  
