@@ -12,6 +12,7 @@ Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH
 
 * poetry lock
 * poetry install
+* poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
 * inv ruff --fix # this will ensure all python files are formatted correctly, may require `sudo chown -R $USER ./` as migrations may be owned by root

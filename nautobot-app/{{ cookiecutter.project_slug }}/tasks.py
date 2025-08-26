@@ -280,7 +280,7 @@ def lock(context, check=False, constrain_nautobot_ver=False, constrain_python_ve
                 command += f" --python {context.{{ cookiecutter.app_name }}.python_ver}"
             run_command(context, command)
     else:
-        command = f"poetry {'check' if check else 'lock --no-update'}"
+        command = f"poetry {'check' if check else 'lock'}"
         run_command(context, command)
 
 

@@ -30,6 +30,7 @@ Using **Invoke** these configuration options can be overridden using [several me
 Run the following commands:
 
 ```shell
+poetry self add poetry-plugin-shell
 poetry shell
 poetry install
 invoke tests
@@ -55,6 +56,7 @@ Once you have Poetry and Docker installed you can run the following commands (in
 
 ```shell
 poetry install
+poetry self add poetry-plugin-shell
 poetry shell
 invoke build
 invoke tests
@@ -122,6 +124,8 @@ The `poetry shell` command is used to create and enable a virtual environment ma
 
 For more details about Poetry and its commands please check out its [online documentation](https://python-poetry.org/docs/).
 
+In Poetry version 2, the shell command was moved out of the main Poetry project and into a plugin. For more details about the Poetry shell plugin, refer to its [GitHub repository](https://github.com/python-poetry/poetry-plugin-shell).
+
 ## Full Docker Development Environment
 
 This project is set up with a number of **Invoke** tasks consumed as simple CLI commands to get developing fast. You'll use a few `invoke` commands to get your environment up and running.
@@ -142,7 +146,7 @@ The first thing you need to do is build the necessary development container imag
 
 ### Invoke - Using Development Container
 
-The development containers are used for running tests & linters. 
+The development containers are used for running tests & linters.
 
 ```bash
 ➜ invoke tests
@@ -259,7 +263,6 @@ Once completed, the new/updated environment variables should now be live.
 If you want your app to leverage another available Nautobot app or another Python package, you can easily add them into your Docker environment.
 
 ```bash
-➜ poetry shell
 ➜ poetry add <package_name>
 ```
 

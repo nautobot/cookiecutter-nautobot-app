@@ -156,7 +156,7 @@ plugins.list-anchored-indent.enabled = true
 extensions.front-matter.enabled = true
 
 [build-system]
-requires = ["poetry_core>=1.0.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.towncrier]
