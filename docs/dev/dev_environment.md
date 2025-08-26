@@ -123,7 +123,8 @@ The `pyproject.toml` file outlines all of the relevant dependencies for the proj
 The `poetry shell` command is used to create and enable a virtual environment managed by Poetry, so all commands ran going forward are executed within the virtual environment. This is similar to running the `source venv/bin/activate` command with virtualenvs. To install project dependencies in the virtual environment, you should run `poetry install` - this will install **both** project and development dependencies.
 
 For more details about Poetry and its commands please check out its [online documentation](https://python-poetry.org/docs/).
-For more details about Poetry Shell, please review its [open source git repo](https://github.com/python-poetry/poetry-plugin-shell).
+
+In Poetry version 2, the shell command was moved out of the main Poetry project and into a plugin. For more details about the Poetry shell plugin, refer to its [GitHub repository](https://github.com/python-poetry/poetry-plugin-shell).
 
 ## Full Docker Development Environment
 
@@ -262,7 +263,6 @@ Once completed, the new/updated environment variables should now be live.
 If you want your app to leverage another available Nautobot app or another Python package, you can easily add them into your Docker environment.
 
 ```bash
-➜ poetry shell
 ➜ poetry add <package_name>
 ```
 
