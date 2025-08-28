@@ -119,7 +119,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.11"]
-        nautobot-version: ["{{ cookiecutter.min_nautobot_version }}"]
+        nautobot-version: ["{{ min_nautobot_version }}"]
     env:
       INVOKE_{{ cookiecutter.app_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
       INVOKE_{{ cookiecutter.app_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
@@ -170,7 +170,7 @@ jobs:
         include:
           - python-version: "3.11"
             db-backend: "postgresql"
-            nautobot-version: "{{ cookiecutter.min_nautobot_version }}"
+            nautobot-version: "{{ min_nautobot_version }}"
           - python-version: "3.12"
             db-backend: "mysql"
             nautobot-version: "stable"

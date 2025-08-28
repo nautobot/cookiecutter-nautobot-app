@@ -47,7 +47,6 @@ if __name__ == "__main__":
             "models.py",
             "navigation.py",
             "tables.py",
-            "templates/{{ cookiecutter.app_name }}/{{ cookiecutter.model_class_name.lower() }}_retrieve.html",
             "tests/fixtures.py",
             "tests/test_api.py",
             "tests/test_filters.py",
@@ -62,8 +61,6 @@ if __name__ == "__main__":
         folders_to_remove = [
             "api",
             "migrations",
-            "templates/{{ cookiecutter.app_name }}",
-            "templates",
         ]
         for folder in folders_to_remove:
             (_ADDONS_PATH / folder).rmdir()

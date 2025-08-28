@@ -7,7 +7,7 @@ labels:
 
 ### Environment
 * Python version:  <!-- Example: 3.11.4 -->
-* Nautobot version:  <!-- Example: {{ cookiecutter.min_nautobot_version }} -->
+* Nautobot version:  <!-- Example: {{ min_nautobot_version }} -->
 * {{ cookiecutter.app_slug }} version:  <!-- Example: 1.0.0 -->
 
 <!-- What did you expect to happen? -->

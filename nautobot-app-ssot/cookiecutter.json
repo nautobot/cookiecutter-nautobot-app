@@ -17,8 +17,6 @@
     "project_slug": "nautobot-app-ssot-{{ cookiecutter.system_of_record.lower().replace(' ', '-').replace('_', '-') }}",
     "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
     "base_url": "ssot-{{ cookiecutter.system_of_record.lower().replace(' ', '-').replace('_', '-') }}",
-    "min_nautobot_version": "2.4.2",
-    "max_nautobot_version": "2.9999",
     "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",
     "open_source_license": [
@@ -27,5 +25,9 @@
     ],
     "docs_base_url": "https://docs.nautobot.com",
     "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest",
-    "_extensions": ["local_extensions.camel_case_to_kebab", "local_extensions.camel_case_to_words"]
+    "_extensions": [
+        "local_extensions.camel_case_to_kebab",
+        "local_extensions.camel_case_to_words",
+        "local_extensions.NautobotVersions"
+    ]
 }
