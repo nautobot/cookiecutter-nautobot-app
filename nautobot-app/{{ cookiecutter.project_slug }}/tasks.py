@@ -52,7 +52,7 @@ namespace = Collection("{{ cookiecutter.app_name }}")
 namespace.configure(
     {
         "{{ cookiecutter.app_name }}": {
-            "nautobot_ver": "2.3.1",
+            "nautobot_ver": "2.4.2",
             "project_name": "{{ cookiecutter.app_slug }}",
             "python_ver": "3.11",
             "local": False,
@@ -280,7 +280,7 @@ def lock(context, check=False, constrain_nautobot_ver=False, constrain_python_ve
                 command += f" --python {context.{{ cookiecutter.app_name }}.python_ver}"
             run_command(context, command)
     else:
-        command = f"poetry {'check' if check else 'lock --no-update'}"
+        command = f"poetry {'check' if check else 'lock'}"
         run_command(context, command)
 
 
@@ -773,11 +773,12 @@ def pylint(context):
 def autoformat(context):
     """Run code autoformatting."""
     ruff(context, action=["format"], fix=True)
+    djlint(context, action=["format"], fix=True)
 
 
 @task(
     help={
-        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `['lint', 'format']`)",
+        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `--action lint --action format`)",
         "target": "File or directory to inspect, repeatable (default: all files in the project will be inspected)",
         "fix": "Automatically fix selected actions. May not be able to fix all issues found. (default: False)",
         "output_format": "See https://docs.astral.sh/ruff/settings/#output-format for details. (default: `concise`)",
@@ -810,6 +811,39 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
         if not run_command(context, command, warn=True):
             exit_code = 1
 
+    if exit_code != 0:
+        raise Exit(code=exit_code)
+
+
+@task(
+    help={
+        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `--action format`)",
+        "target": "File or directory to inspect, repeatable (default: all files in the project will be inspected)",
+        "fix": "Automatically fix the formatting. (default: False)",
+        "quiet": "Suppress output when formatting or checking (default: False)",
+    },
+    iterable=["target", "action"],
+)
+def djlint(context, action=None, target=None, fix=False, quiet=False):
+    """Run djlint to validate Django template formatting."""
+    if not action:
+        action = ["format"]  # TODO: Add 'lint' when we are ready to enforce linting
+    if not target:
+        target = ["."]
+
+    command = "djlint "
+
+    if "format" in action:
+        command += "--reformat --warn " if fix else "--check "
+        if quiet:
+            command += "--quiet "
+
+    if "lint" in action:
+        command += "--lint "
+
+    command += " ".join(target)
+
+    exit_code = 0 if run_command(context, command, warn=True) else 1
     if exit_code != 0:
         raise Exit(code=exit_code)
 
@@ -930,6 +964,8 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     # Sorted loosely from fastest to slowest
     print("Running ruff...")
     ruff(context)
+    print("Running djlint...")
+    djlint(context)
     print("Running yamllint...")
     yamllint(context)
     print("Running markdownlint...")

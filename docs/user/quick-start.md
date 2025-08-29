@@ -48,6 +48,7 @@ Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-
 
 * poetry lock
 * poetry install
+* poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
 * invoke autoformat # this will ensure all python files are formatted correctly
@@ -154,7 +155,7 @@ cookiecutter https://github.com/nautobot/cookiecutter-nautobot-app.git --directo
 Output:
 
 ```shell
-You've downloaded ~/.cookiecutters/cookiecutter-nautobot-app before. Is it okay to delete and re-download it? [y/n] (y): 
+You've downloaded ~/.cookiecutters/cookiecutter-nautobot-app before. Is it okay to delete and re-download it? [y/n] (y):
 
 Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-app-my-app
 
@@ -162,6 +163,7 @@ Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-
 
 * poetry lock
 * poetry install
+* poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
 * ruff . # this will ensure all python files are formatted correctly, may require `sudo chown -R <my local username> ./` as migrations may be owned by root
