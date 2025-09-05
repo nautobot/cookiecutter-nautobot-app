@@ -281,7 +281,14 @@ class DeviceNote(PrimaryModel):
     """Freeform note attached to a device."""
     name = models.CharField(max_length=CHARFIELD_MAX_LENGTH, unique=True)
     content = models.TextField(blank=True, default="")
-
+# Unless you have a really good reason not to, we should have a FK to Tenant.
+tenant = models.ForeignKey(
+    to="tenancy.Tenant",
+    on_delete=models.PROTECT,
+    related_name="device_notes",
+    blank=True,
+    null=True,
+)
     class Meta:
         ordering = ("name",)
 ```
