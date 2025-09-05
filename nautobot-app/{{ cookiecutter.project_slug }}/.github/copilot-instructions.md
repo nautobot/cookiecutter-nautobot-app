@@ -46,6 +46,7 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
   - No wildcard imports; prefer absolute imports and explicit symbols.  
   - Aliasing Nautobot app modules is fine for clarity, e.g.:  
     `from nautobot.ipam import models as ipam_models`
+  - Prefer imports from `nautobot.apps` instead of `nautobot.core`
 - **Docstrings > inline comments:**  
   - Keep inline comments to the minimum for non‑obvious logic.  
   - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.  
