@@ -10,7 +10,7 @@ You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mi
 ## 0) Quick Facts (for Copilot)
 
 - **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
-- **Python:** 3.9–3.12 commonly in use.
+- **Python:** 3.9–3.13 commonly in use.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over inline comments**; clear, explicit code.
