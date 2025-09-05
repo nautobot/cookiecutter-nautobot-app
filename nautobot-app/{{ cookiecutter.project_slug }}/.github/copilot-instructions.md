@@ -259,17 +259,7 @@ Add a lightweight OpenAPI schema test using Nautobot’s provided test cases to 
 
 ---
 
-## 12) Pre‑commit
-
-Assume contributors have `pre-commit` enabled. Your output should pass hooks (Ruff, Markdown lint, etc.). To run manually:
-
-```
-poetry run pre-commit run -a
-```
-
----
-
-## 13) PR Hygiene — What Copilot Should Suggest
+## 12) PR Hygiene — What Copilot Should Suggest
 
 - Clear, action‑oriented title and description.  
 - Link to issue(s) and include screenshots/GIFs for UI work.  
@@ -278,7 +268,7 @@ poetry run pre-commit run -a
 
 ---
 
-## 14) Snippets Copilot Should Prefer
+## 13) Snippets Copilot Should Prefer
 
 **Model**
 ```python
@@ -373,13 +363,13 @@ poetry run invoke makemigrations -n devicenote_initial
 
 ---
 
-## 15) Optional: Folder‑Specific Instructions
+## 14) Optional: Folder‑Specific Instructions
 
 If needed, add `.github/instructions/*.instructions.md` with path‑scoped front‑matter to apply specialized guidance to certain subtrees (e.g., `docs/`, `nautobot_plugin_tooling/`). Keep rules minimal to avoid confusion.
 
 ---
 
-## 16) Final Checklist (for every change)
+## 15) Final Checklist (for every change)
 
 - [ ] Commands are shown as `poetry run invoke ...`  
 - [ ] Imports are at the top; docstrings explain intent/usage  
@@ -442,7 +432,7 @@ Options:
 
 ---
 
-## 17) Authoritative Nautobot Repositories & Examples
+## 16) Authoritative Nautobot Repositories & Examples
 
 When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.  
 Use them for import paths, base-class usage, testing mixins, viewset patterns, job/celery conventions, and UI Component Framework examples.
