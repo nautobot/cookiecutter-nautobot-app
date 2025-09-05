@@ -1,4 +1,4 @@
-# Copilot Repository Instructions — Nautobot App (cookiecutter)
+# Copilot Repository Instructions — Nautobot App
 
 You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mission is to generate **small, readable, test‑backed** changes that follow **Nautobot patterns** and this repository’s tooling and style.
 
