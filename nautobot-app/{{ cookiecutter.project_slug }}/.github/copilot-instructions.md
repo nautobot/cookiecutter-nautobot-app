@@ -75,9 +75,8 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 - Prefer natural keys (e.g., unique `name`) or PKs; add `slug` only with clear rationale.
 - Use constant `CHARFIELD_MAX_LENGTH` for text lengths unless you have a very good reason not to.
 - Avoid `null=True` on strings; use empty string `""` when semantically empty.
-- For `ManyToManyField`, declare an explicit **through** model.
-- If searchable, populate `search_fields`.
-- Add DB indexes when fields are frequently filtered; justify in the migration message.
+- For `ManyToManyField`, declare an explicit **through** model. We follow the convention of using both model names and the word Assignment for **through** models. Ex. `AccessPointDeviceAssignment`
+- If searchable, populate `searchable_models` on the `NautobotAppConfig` in the `__init__.py` file.
 
 ---
 
@@ -182,14 +181,12 @@ class WidgetAPITests(
     brief_fields = ["display", "id", "name", "url"]
 
     @classmethod
-    def _get_queryset(cls):
-        return models.Widget.objects.all()
-
-    create_data = [
-        {"name": "Widget A"},
-        {"name": "Widget B"},
-    ]
-    update_data = {"name": "Widget A+"}
+    def SetUpTestData(cls):
+        cls.create_data = [
+            {"name": "Widget A"},
+            {"name": "Widget B"},
+        ]
+        cls.update_data = {"name": "Widget A+"}
 ```
 
 ### 7.6 Filter Test Skeleton
