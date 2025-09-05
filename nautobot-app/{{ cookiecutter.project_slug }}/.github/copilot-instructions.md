@@ -117,15 +117,15 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 
 ### 7.1 Test Types & Base Classes
 
-- **Unit tests:** inherit from `nautobot.core.testing.TestCase` (auto‑tagged `unit`).
-- **View tests:** use `nautobot.core.testing.views.ViewTestCases` mixins.
-- **API tests:** use `nautobot.core.testing.api.APIViewTestCases` mixins  
+- **Unit tests:** inherit from `nautobot.apps.testing.TestCase` (auto‑tagged `unit`).
+- **View tests:** use `nautobot.apps.testing.ViewTestCases` mixins.
+- **API tests:** use `nautobot.apps.testing.APIViewTestCases` mixins  
   (`CreateObjectViewTestCase`, `ListObjectsViewTestCase`, `GetObjectViewTestCase`,  
   `UpdateObjectViewTestCase`, `DeleteObjectViewTestCase`, and bulk variants).  
   These enforce `?brief=` behavior (declare `brief_fields`) and exercise bulk endpoints.
-- **Filter tests:** use `nautobot.core.testing.filters.FilterTestCases` (generic boolean/multi‑choice/tags tests).
-- **Form tests:** use `nautobot.core.testing.forms.FormTestCases.BaseFormTestCase`.
-- **Integration (browser) tests:** `nautobot.core.testing.integration.SeleniumTestCase` (auto‑tagged `integration`).
+- **Filter tests:** use `nautobot.apps.testing.FilterTestCases` (generic boolean/multi‑choice/tags tests).
+- **Form tests:** use `nautobot.core.testing.FormTestCases.BaseFormTestCase`.
+- **Integration (browser) tests:** `nautobot.apps.testing.SeleniumTestCase` (auto‑tagged `integration`).
 - **Migration tests:** `django_test_migrations.MigratorTestCase` (auto‑tagged `migration_test`).
 
 ### 7.2 Directory Layout
@@ -165,7 +165,7 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 
 ```python
 """API tests for Widget."""
-from nautobot.core.testing.api import APIViewTestCases
+from nautobot.apps.testing import APIViewTestCases
 from . import models
 
 class WidgetAPITests(
@@ -196,7 +196,7 @@ class WidgetAPITests(
 
 ```python
 """Filter tests for Widget."""
-from nautobot.core.testing.filters import FilterTestCases
+from nautobot.apps.testing import FilterTestCases
 from . import filters as widget_filters, models
 
 class WidgetFilterTests(FilterTestCases.FilterTestCase):
@@ -215,7 +215,7 @@ class WidgetFilterTests(FilterTestCases.FilterTestCase):
 
 ```python
 """View tests for Widget UI."""
-from nautobot.core.testing.views import ViewTestCases
+from nautobot.apps.testing import ViewTestCases
 from . import models
 
 class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
@@ -287,11 +287,12 @@ poetry run pre-commit run -a
 ```python
 """DeviceNote model."""
 from django.db import models
-from nautobot.core.models.generics import PrimaryModel
+from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
+from nautobot.apps.models.generics import PrimaryModel
 
 class DeviceNote(PrimaryModel):
     """Freeform note attached to a device."""
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=CHARFIELD_MAX_LENGTH, unique=True)
     content = models.TextField(blank=True, default="")
 
     class Meta:
@@ -301,10 +302,10 @@ class DeviceNote(PrimaryModel):
 **Serializer**
 ```python
 """Serializer for DeviceNote."""
-from nautobot.core.api.serializers import NautobotModelSerializer
+from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 from .models import DeviceNote
 
-class DeviceNoteSerializer(NautobotModelSerializer):
+class DeviceNoteSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
     """Serialize DeviceNote objects."""
     class Meta:
         model = DeviceNote
@@ -314,10 +315,10 @@ class DeviceNoteSerializer(NautobotModelSerializer):
 **FilterSet**
 ```python
 """FilterSet for DeviceNote."""
-from nautobot.core.filters import BaseFilterSet
+from nautobot.apps.filters import NautobotFilterSet, TenancyModelFilterSetMixin
 from .models import DeviceNote
 
-class DeviceNoteFilter(BaseFilterSet):
+class DeviceNoteFilter(TenancyModelFilterSetMixin, NautobotFilterSet):
     """Filter DeviceNote by name/content."""
     class Meta:
         model = DeviceNote
@@ -460,7 +461,7 @@ Use them for import paths, base-class usage, testing mixins, viewset patterns, j
 **Guidance for Copilot**  
 - Prefer examples from these repos over generic Django code.  
 - Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`, `NautobotUIViewSet`, etc.).  
-- Follow **testing** patterns under `nautobot/core/testing` (mixins and tags) rather than ad‑hoc tests.  
+- Follow **testing** patterns under `nautobot/apps/testing` (mixins and tags) rather than ad‑hoc tests.  
 - Reuse **filter/serializer** patterns and import paths exactly as shown in the official code.  
 - Avoid v1-only patterns; target **Nautobot 2.x** APIs and UI Component Framework.  
 - If proposing URLs, prefer helper utilities (e.g., `get_route_for_model`) visible in Nautobot core, not hard‑coded strings.
