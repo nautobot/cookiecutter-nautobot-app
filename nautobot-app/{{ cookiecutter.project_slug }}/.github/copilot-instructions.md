@@ -327,7 +327,7 @@ class DeviceNoteFilter(BaseFilterSet):
 **API ViewSet**
 ```python
 """API viewset for DeviceNote."""
-from nautobot.core.api.views import NautobotModelViewSet
+from nautobot.apps.api import NautobotModelViewSet
 from .filters import DeviceNoteFilter
 from .serializers import DeviceNoteSerializer
 from .models import DeviceNote
@@ -342,7 +342,7 @@ class DeviceNoteViewSet(NautobotModelViewSet):
 **UI ViewSet**
 ```python
 """UI viewset for DeviceNote."""
-from nautobot.core.views import NautobotUIViewSet
+from nautobot.apps.views import NautobotUIViewSet
 from .models import DeviceNote
 from .tables import DeviceNoteTable
 from .forms import DeviceNoteForm

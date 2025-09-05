@@ -10,7 +10,7 @@ You are **GitHub Copilot** working inside a **Nautobot App (plugin)** repository
 ## 0) Quick Facts (for Copilot)
 
 - **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
-- **Python:** 3.9–3.12 commonly in use.
+- **Python:** 3.9–3.13 commonly in use.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over inline comments**; clear, explicit code.
@@ -326,7 +326,7 @@ class DeviceNoteFilter(BaseFilterSet):
 **API ViewSet**
 ```python
 """API viewset for DeviceNote."""
-from nautobot.core.api.views import NautobotModelViewSet
+from nautobot.apps.api import NautobotModelViewSet
 from .filters import DeviceNoteFilter
 from .serializers import DeviceNoteSerializer
 from .models import DeviceNote
@@ -341,7 +341,7 @@ class DeviceNoteViewSet(NautobotModelViewSet):
 **UI ViewSet**
 ```python
 """UI viewset for DeviceNote."""
-from nautobot.core.views import NautobotUIViewSet
+from nautobot.apps.views import NautobotUIViewSet
 from .models import DeviceNote
 from .tables import DeviceNoteTable
 from .forms import DeviceNoteForm
