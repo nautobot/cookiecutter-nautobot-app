@@ -73,7 +73,7 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 ## 4) Models & Data Layer
 
 - Prefer natural keys (e.g., unique `name`) or PKs; add `slug` only with clear rationale.
-- Use constants for text lengths (e.g., `CHARFIELD_MAX_LENGTH`).
+- Use constant `CHARFIELD_MAX_LENGTH` for text lengths unless you have a very good reason not to.
 - Avoid `null=True` on strings; use empty string `""` when semantically empty.
 - For `ManyToManyField`, declare an explicit **through** model.
 - If searchable, populate `search_fields`.
