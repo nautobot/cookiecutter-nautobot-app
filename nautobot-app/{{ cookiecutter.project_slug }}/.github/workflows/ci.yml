@@ -374,7 +374,7 @@ jobs:
       - "publish_pypi"
     runs-on: "ubuntu-latest"
     env:
-      SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.SLACK_WEBHOOK_URL }}{% endraw %}"
+      SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.OSS_PYPI_SLACK_WEBHOOK_URL }}{% endraw %}"
       SLACK_MESSAGE: >-
         *NOTIFICATION: NEW-RELEASE-PUBLISHED*\n
         Repository: <{% raw %}${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}{% endraw %}>\n
@@ -401,5 +401,5 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.SLACK_WEBHOOK_URL }}{% endraw %}"
+          SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.OSS_PYPI_SLACK_WEBHOOK_URL }}{% endraw %}"
           SLACK_WEBHOOK_TYPE: "INCOMING_WEBHOOK"
