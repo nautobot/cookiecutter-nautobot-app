@@ -27,7 +27,7 @@ Always use Poetry for dependency management and virtualenvs.
   `poetry run invoke <task> [args]`
 
 Examples:
-- `poetry run invoke ruff --autoformat`
+- `poetry run invoke autoformat`
 - `poetry run invoke ruff`
 - `poetry run invoke pylint`
 - `poetry run invoke tests`
@@ -144,15 +144,24 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 ### 7.3 Running Tests
 
 - All tests (fast fixtures enabled):  
-  `poetry run invoke tests`
-- Filter by expression:  
-  `poetry run invoke tests -- -k "<pattern>"`
-- Last failed:  
-  `poetry run invoke tests -- --lf`
-- Only **integration** tests:  
-  `poetry run invoke tests -- --tag integration`
-- Only **migration** tests:  
-  `poetry run invoke tests -- --tag migration_test`
+**Help**
+```
+poetry run invoke tests
+```
+
+```
+Usage: inv[oke] [--core-opts] tests [--options] [other tasks here ...]
+
+Docstring:
+  Run all tests for this app.
+
+Options:
+  -f, --failfast    fail as soon as a single test fails don't run the entire test suite. (default:
+                    False)
+  -k, --keepdb      Save and re-use test database between test runs for faster re-testing. (default:
+                    False)
+  -l, --lint-only   Only run linters; unit tests will be excluded. (default: False)
+```
 
 ### 7.4 Test Data & Fixtures
 
@@ -336,6 +345,10 @@ tenant = models.ForeignKey(
 )
     class Meta:
         ordering = ("name",)
+
+    def __str__(self):
+        """Stringify instance."""
+        return self.name
 ```
 
 **Serializer**
