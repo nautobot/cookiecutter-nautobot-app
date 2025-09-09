@@ -22,6 +22,7 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v6"
         with:
           poetry-version: "2.1.3"
+          poetry-install-options: "--only dev,docs"
       - name: "Linting: ruff"
         run: "poetry run invoke ruff"
       - name: "Linting: yamllint"
