@@ -225,6 +225,51 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
 
 Add a lightweight OpenAPI schema test using Nautobot’s provided test cases to ensure your app’s endpoints and serializers remain schema‑valid.
 
+### 7.9 Unittest Task (Django/Nautobot runner)
+
+In addition to `invoke tests` (the default Nautobot test runner), this repo can use **Django’s unittest-style runner** via the `unittest` Invoke task when present. Prefer this when you want stock unittest selection semantics or when a plugin/app intends to mirror Nautobot core’s runner behavior.
+
+**Help**  
+```
+poetry run invoke unittest -h
+```
+```
+Usage: inv[oke] [--core-opts] unittest [--options] [other tasks here ...]
+
+Docstring:
+  Run Nautobot unit tests.
+
+Options:
+  -b, --[no-]buffer             Discard output from passing tests
+  -c, --coverage                Enable coverage reporting. Defaults to False
+  -f, --failfast                Fail fast on first failure
+  -k, --keepdb                  Re-use the test database between runs
+  -l STRING, --label=STRING     Directory or module label to test (runs subset)
+  -p STRING, --pattern=STRING   Select specific test methods/classes/modules
+  -s, --skip-docs-build         Skip building docs before tests
+  -v, --verbose                 Verbose test output
+```
+
+**When to use which**  
+- Use `poetry run invoke tests` for the full testing suite experience (ruff, yamllint, markdownlint, check_migrations, pylint, build_and_check_docs, validate_app_config, unittest, unitttest_coverage, coverage_lcov).  
+- Use `poetry run invoke **unittest**` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core’s CI jobs.
+
+**Common recipes**  
+- Run with coverage:  
+  `poetry run invoke unittest --coverage`
+- Target a specific module (label):  
+  `poetry run invoke unittest --label myapp.tests.test_api`
+- Match by pattern (method/class):  
+  `poetry run invoke unittest --pattern "WidgetAPITests and test_list_objects"`
+- Re-use the DB between runs for speed:  
+  `poetry run invoke unittest --keepdb`
+- Fail fast & suppress noise from passing tests:  
+  `poetry run invoke unittest --failfast --buffer`
+- Skip docs build if unchanged:  
+  `poetry run invoke unittest --skip-docs-build`
+
+> **Note:** Always prefix with `poetry run` to ensure tests execute inside the project’s Poetry environment.
+
 ---
 
 ## 8) Celery & Jobs
@@ -281,7 +326,14 @@ class DeviceNote(PrimaryModel):
     """Freeform note attached to a device."""
     name = models.CharField(max_length=CHARFIELD_MAX_LENGTH, unique=True)
     content = models.TextField(blank=True, default="")
-
+# Unless you have a really good reason not to, we should have a FK to Tenant.
+tenant = models.ForeignKey(
+    to="tenancy.Tenant",
+    on_delete=models.PROTECT,
+    related_name="device_notes",
+    blank=True,
+    null=True,
+)
     class Meta:
         ordering = ("name",)
 ```
@@ -343,19 +395,6 @@ class DeviceNoteUIViewSet(NautobotUIViewSet):
     form_class = DeviceNoteForm
 ```
 
-**Tests (API smoke)**
-```python
-"""API smoke test for DeviceNote list."""
-import unittest
-from django.urls import reverse
-
-@unittest.mark.django_db
-def test_device_note_list(api_client):
-    url = reverse("plugins-api:<your_app_label>-api:devicenote-list")
-    resp = api_client.get(url)
-    assert resp.status_code == 200
-```
-
 **Migrations (command)**
 ```
 poetry run invoke makemigrations -n devicenote_initial
@@ -380,55 +419,6 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 - [ ] No secrets/PII in code, tests, or docs  
 - [ ] Pre‑commit hooks pass; Ruff & Pylint clean  
 - [ ] PR description includes “how to test” and references related issues
-
-
-### 7.9 Unittest Task (Django/Nautobot runner)
-
-In addition to `invoke tests` (the default Nautobot test runner), this repo can use **Django’s unittest-style runner**
-via the `unittest` Invoke task when present. Prefer this when you want stock unittest
-selection semantics or when a plugin/app intends to mirror Nautobot core’s runner behavior.
-
-**Help**  
-```
-poetry run invoke unittest -h
-```
-```
-Usage: inv[oke] [--core-opts] unittest [--options] [other tasks here ...]
-
-Docstring:
-  Run Nautobot unit tests.
-
-Options:
-  -b, --[no-]buffer             Discard output from passing tests
-  -c, --coverage                Enable coverage reporting. Defaults to False
-  -f, --failfast                Fail fast on first failure
-  -k, --keepdb                  Re-use the test database between runs
-  -l STRING, --label=STRING     Directory or module label to test (runs subset)
-  -p STRING, --pattern=STRING   Select specific test methods/classes/modules
-  -s, --skip-docs-build         Skip building docs before tests
-  -v, --verbose                 Verbose test output
-```
-
-**When to use which**  
-- Use `poetry run invoke tests` for the full unittest experience (fixtures, markers, rich plugins).  
-- Use `poetry run invoke **unittest**` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core’s CI jobs.
-
-**Common recipes**  
-- Run with coverage:  
-  `poetry run invoke unittest --coverage`
-- Target a specific module (label):  
-  `poetry run invoke unittest --label myapp.tests.test_api`
-- Match by pattern (method/class):  
-  `poetry run invoke unittest --pattern "WidgetAPITests and test_list_objects"`
-- Re-use the DB between runs for speed:  
-  `poetry run invoke unittest --keepdb`
-- Fail fast & suppress noise from passing tests:  
-  `poetry run invoke unittest --failfast --buffer`
-- Skip docs build if unchanged:  
-  `poetry run invoke unittest --skip-docs-build`
-
-> **Note:** Always prefix with `poetry run` to ensure tests execute inside the project’s Poetry environment.
-
 
 ---
 
