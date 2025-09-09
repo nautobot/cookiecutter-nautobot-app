@@ -336,6 +336,10 @@ tenant = models.ForeignKey(
 )
     class Meta:
         ordering = ("name",)
+
+    def __str__(self):
+        """Stringify instance."""
+        return self.name
 ```
 
 **Serializer**
