@@ -14,7 +14,7 @@ on: # yamllint disable-line rule:truthy rule:comments
 
 jobs:
   qa:
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-latest"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
@@ -22,6 +22,7 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v6"
         with:
           poetry-version: "2.1.3"
+          poetry-install-options: "--only dev,docs"
       - name: "Linting: ruff"
         run: "poetry run invoke ruff"
       - name: "Linting: yamllint"
