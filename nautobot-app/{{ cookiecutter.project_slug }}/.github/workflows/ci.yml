@@ -120,7 +120,7 @@ jobs:
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
-          PY_CONSTRAINT: "${{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}"
+          PY_CONSTRAINT: "${{{{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}}}"
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver=${{ env.PY_CONSTRAINT }}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -176,7 +176,7 @@ jobs:
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
-          PY_CONSTRAINT: "${{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}"
+          PY_CONSTRAINT: "${{{{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}}}"
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver=${{ env.PY_CONSTRAINT }}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -228,7 +228,7 @@ jobs:
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
-          PY_CONSTRAINT: "${{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}"
+          PY_CONSTRAINT: "${{{{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}}}"
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver=${{ env.PY_CONSTRAINT }}"
       - name: "Set up Docker Buildx"
         id: "buildx"
