@@ -773,7 +773,7 @@ def pylint(context):
 def autoformat(context):
     """Run code autoformatting."""
     ruff(context, action=["format"], fix=True)
-    djlint(context, action=["format"], fix=True)
+    djhtml(context)
 
 
 @task(
