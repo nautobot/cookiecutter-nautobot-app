@@ -817,31 +817,34 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
 
 @task(
     help={
-        "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `--action format`)",
         "target": "File or directory to inspect, repeatable (default: all files in the project will be inspected)",
-        "fix": "Automatically fix the formatting. (default: False)",
-        "quiet": "Suppress output when formatting or checking (default: False)",
     },
-    iterable=["target", "action"],
+    iterable=["target"],
 )
-def djlint(context, action=None, target=None, fix=False, quiet=False):
-    """Run djlint to validate Django template formatting."""
-    if not action:
-        action = ["format"]  # TODO: Add 'lint' when we are ready to enforce linting
+def djlint(context, target=None):
+    """Run djlint to lint Django templates."""
     if not target:
         target = ["."]
 
-    command = "djlint "
-
-    if "format" in action:
-        command += "--reformat --warn " if fix else "--check "
-        if quiet:
-            command += "--quiet "
-
-    if "lint" in action:
-        command += "--lint "
-
+    command = "djlint --lint "
     command += " ".join(target)
+
+    exit_code = 0 if run_command(context, command, warn=True) else 1
+    if exit_code != 0:
+        raise Exit(code=exit_code)
+
+
+@task(
+    help={
+        "check": "Run djhtml in check mode.",
+    },
+)
+def djhtml(context, check=False):
+    """Run djhtml to format Django HTML templates."""
+    command = "djhtml -t 4 {{ cookiecutter.app_name }}/templates/"
+
+    if check:
+        command += " --check"
 
     exit_code = 0 if run_command(context, command, warn=True) else 1
     if exit_code != 0:
