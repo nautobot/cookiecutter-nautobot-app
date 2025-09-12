@@ -1,6 +1,6 @@
-# Copilot Repository Instructions — Nautobot App
+# Copilot Repository Instructions — Nautobot SSoT App
 
-You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mission is to generate **small, readable, test‑backed** changes that follow **Nautobot patterns** and this repository’s tooling and style.
+You are **GitHub Copilot** working inside a **Nautobot SSoT App** repository. Your mission is to generate **small, readable, test‑backed** changes that follow **Nautobot patterns** and this repository’s tooling and style.
 
 > **Location:** Save this file at `.github/copilot-instructions.md`.  
 > **Scope:** You may also add path‑scoped rules via `.github/instructions/*.instructions.md` if truly necessary.
@@ -10,6 +10,7 @@ You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mi
 ## 0) Quick Facts (for Copilot)
 
 - **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
+- **SSOT Framework:** Built on **DiffSync** library for data synchronization. Uses `nautobot_ssot.contrib` classes for Nautobot integration patterns.
 - **Python:** 3.9–3.13 commonly in use.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
@@ -33,6 +34,8 @@ Examples:
 - `poetry run invoke tests`
 - `poetry run invoke check-migrations`
 - `poetry run invoke makemigrations -n <name>`
+- `poetry run invoke markdownlint`
+- `poetry run invoke yamllint`
 
 Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix them with `poetry run`.**
 
@@ -51,6 +54,12 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
   - Keep inline comments to the minimum for non‑obvious logic.  
   - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.  
 - Write straightforward, readable code over clever one‑liners.
+- **Docs:**
+  - If you add/change features, update `docs/` accordingly.
+  - Use `mkdocs` syntax.
+  - Run `poetry run invoke markdownlint` to validate and resolve any issues with the markdown syntax.
+  - Run `poetry run invoke yamllint` to validate YAML files (e.g., mkdocs.yml).
+  - Run `poetry run invoke build-and-check-docs` to validate.
 
 ---
 
@@ -281,18 +290,216 @@ Options:
 
 ---
 
-## 8) Celery & Jobs
+## 8) SSOT Job Development Patterns
+
+This is a **Nautobot SSOT app** that enables data synchronization between Nautobot and external systems. Follow these SSOT-specific patterns:
+
+### 8.1 SSOT Job Architecture
+
+All SSOT jobs should inherit from either `DataSource` or `DataTarget` base classes from `nautobot_ssot.jobs`:
+
+- **DataSource:** Syncs data FROM external system TO Nautobot
+- **DataTarget:** Syncs data FROM Nautobot TO external system
+
+### 8.2 DiffSync Models
+
+Use `NautobotModel` from `nautobot_ssot.contrib` for automatic CRUD operations:
+
+```python
+from nautobot_ssot.contrib import NautobotModel
+from nautobot.ipam.models import VLAN
+
+class VLANModel(NautobotModel):
+    """DiffSync model for VLANs."""
+    _model = VLAN
+    _modelname = "vlan"
+    _identifiers = ("vid", "group__name")
+    _attributes = ("description",)
+
+    vid: int
+    group__name: Optional[str] = None
+    description: Optional[str] = None
+```
+
+**Key Rules:**
+- Model fields must match Nautobot model fields exactly
+- Use `_identifiers` for unique identification (natural keys)
+- Use `_attributes` for data that can change
+- Only normal fields, forward foreign keys, and custom fields in identifiers
+
+### 8.3 Adapter Patterns
+
+#### Nautobot Adapter
+Use `NautobotAdapter` from `nautobot_ssot.contrib` with automatic loading:
+
+```python
+from nautobot_ssot.contrib import NautobotAdapter
+
+class MySSoTNautobotAdapter(NautobotAdapter):
+    """DiffSync adapter for Nautobot."""
+    vlan = VLANModel
+    top_level = ("vlan",)
+    
+    # Optional: override parameter loading
+    def load_param_time_zone(self, parameter_name, database_object):
+        """Custom loader for time_zone parameter."""
+        return str(getattr(database_object, parameter_name))
+```
+
+#### Remote Adapter
+Implement `load()` method for external system data:
+
+```python
+from diffsync import Adapter
+
+class MySSoTRemoteAdapter(Adapter):
+    """DiffSync adapter for remote system."""
+    vlan = VLANModel
+    top_level = ("vlan",)
+
+    def __init__(self, *args, api_client, job=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.api_client = api_client
+        self.job = job
+
+    def load(self):
+        """Load data from remote system."""
+        for vlan in self.api_client.get_vlans():
+            loaded_vlan = self.vlan(
+                vid=vlan["vlan_id"], 
+                group__name=vlan["grouping"], 
+                description=vlan["description"]
+            )
+            self.add(loaded_vlan)
+```
+
+### 8.4 Job Implementation
+
+```python
+from nautobot_ssot.jobs import DataSource
+from nautobot.extras.jobs import Job
+
+class ExampleDataSource(DataSource, Job):
+    """SSoT Job class."""
+    
+    class Meta:
+        name = "Example Data Source"
+        description = "Sync VLANs from external system"
+
+    def load_source_adapter(self):
+        """Load the source (remote) adapter."""
+        self.source_adapter = MySSoTRemoteAdapter(
+            api_client=APIClient(), 
+            job=self
+        )
+        self.source_adapter.load()
+
+    def load_target_adapter(self):
+        """Load the target (Nautobot) adapter."""
+        self.target_adapter = MySSoTNautobotAdapter(job=self)
+        self.target_adapter.load()
+
+    # Optional: provide additional metadata
+    def lookup_object(self, model_name, unique_id):
+        """Provide object lookup for UI display."""
+        # Implementation for object lookup
+        pass
+
+    def data_mappings(self):
+        """Return data mapping information for UI."""
+        return [
+            {"source": "Remote System VLANs", "target": "Nautobot VLANs"}
+        ]
+
+jobs = [ExampleDataSource]
+```
+
+### 8.5 Many-to-Many Relationships
+
+For M2M and N:1 relationships, use TypedDict with SortKey annotation:
+
+```python
+from nautobot_ssot.contrib.typeddicts import SortKey
+from typing_extensions import Annotated, TypedDict
+
+class TagDict(TypedDict):
+    """Many-to-many relationship typed dict."""
+    name: Annotated[str, SortKey]
+    description: Optional[str] = ""
+```
+
+### 8.6 SSOT Testing Patterns
+
+Test SSOT jobs with DiffSync-specific test cases:
+
+```python
+from nautobot.apps.testing import TestCase
+from nautobot_ssot.tests.utils import SSOTTestCase
+
+class TestMySSoTJob(SSOTTestCase):
+    """Test SSOT job functionality."""
+    
+    def test_data_sync(self):
+        """Test data synchronization."""
+        # Test adapter loading
+        # Test diff calculation  
+        # Test sync execution
+        pass
+```
+
+### 8.7 SSOT Best Practices
+
+- **Performance:** Use bulk operations in adapters when possible
+- **Error Handling:** Implement proper exception handling in load methods
+- **Logging:** Use job.logger for consistent logging
+- **Dry Run:** Always support dry-run mode for testing
+- **Device Types:** Handle Interface creation conflicts with Device Types
+- **Relationships:** Sort M2M relationships consistently using SortKey
+- **Validation:** Validate data in adapters before adding to DiffSync
+- **Dependencies:** Load parent objects before children in hierarchical data
+
+## 9) Celery & Jobs
 
 - For long‑running work or external calls, prefer **Celery tasks** or **Nautobot Jobs**.  
 - Do **not** block web requests with heavy processing.
 
 ---
 
-## 9) Security & Secrets
+## 10) Security & Secrets
 
 - Never hard‑code secrets/tokens/credentials.  
 - Use Nautobot Secrets / External Integrations.  
 - Scrub PII and sensitive network details from examples/tests.
+
+---
+
+## 11) Performance & DB
+
+- Prefer queryset filters/bulk ops over per‑row loops.  
+- Use `select_related` / `prefetch_related` where appropriate.  
+- Add indexes for frequently filtered fields; justify in migration message.
+
+---
+
+## 12) Git & Branching
+
+- Small, focused branches.  
+- PRs must include tests, migration notes (if any), and "how to test" steps.  
+- Reference related issues.  
+- Target the repository's active development branch (not `main` if `main` is reserved for releases).
+
+---
+
+## 13) PR Hygiene — What Copilot Should Suggest
+
+- Clear, action‑oriented title and description.  
+- Link to issue(s) and include screenshots/GIFs for UI work.  
+- Call out any migrations and potential data impacts.  
+- Keep the diff small and logically cohesive.
+
+---
+
+## 14) Snippets Copilot Should Prefer
 
 ---
 
@@ -323,6 +530,34 @@ Options:
 ---
 
 ## 13) Snippets Copilot Should Prefer
+
+**SSOT Job**
+```python
+"""SSOT Job for syncing external data."""
+from nautobot_ssot.jobs import DataSource
+from nautobot.extras.jobs import Job
+from nautobot_ssot.contrib import NautobotAdapter, NautobotModel
+from diffsync import Adapter
+
+class ExternalDataSource(DataSource, Job):
+    """Sync data from external system to Nautobot."""
+    
+    class Meta:
+        name = "External Data Sync"
+        description = "Synchronize data from external system"
+
+    def load_source_adapter(self):
+        """Load external system adapter."""
+        self.source_adapter = ExternalAdapter(job=self)
+        self.source_adapter.load()
+
+    def load_target_adapter(self):
+        """Load Nautobot adapter."""
+        self.target_adapter = MyNautobotAdapter(job=self)
+        self.target_adapter.load()
+
+jobs = [ExternalDataSource]
+```
 
 **Model**
 ```python
@@ -408,6 +643,57 @@ class DeviceNoteUIViewSet(NautobotUIViewSet):
     form_class = DeviceNoteForm
 ```
 
+```
+
+**DiffSync Model (SSOT)**
+```python
+"""DiffSync model for Device synchronization."""
+from typing import Optional
+from nautobot_ssot.contrib import NautobotModel
+from nautobot.dcim.models import Device
+
+class DeviceModel(NautobotModel):
+    """DiffSync model for Devices."""
+    _model = Device
+    _modelname = "device"
+    _identifiers = ("name", "location__name")
+    _attributes = ("serial", "device_type__model")
+
+    name: str
+    location__name: str
+    serial: Optional[str] = None
+    device_type__model: Optional[str] = None
+```
+
+**Remote Adapter (SSOT)**
+```python
+"""Remote adapter for external system."""
+from diffsync import Adapter
+from .models import DeviceModel
+
+class ExternalAdapter(Adapter):
+    """DiffSync adapter for external system."""
+    device = DeviceModel
+    top_level = ("device",)
+
+    def __init__(self, *args, job=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.job = job
+        # Initialize external system client here
+
+    def load(self):
+        """Load data from external system."""
+        devices = self.external_client.get_devices()
+        for device_data in devices:
+            device = self.device(
+                name=device_data["hostname"],
+                location__name=device_data["site"],
+                serial=device_data.get("serial_number"),
+                device_type__model=device_data.get("model"),
+            )
+            self.add(device)
+```
+
 **Migrations (command)**
 ```
 poetry run invoke makemigrations -n devicenote_initial
@@ -415,13 +701,13 @@ poetry run invoke makemigrations -n devicenote_initial
 
 ---
 
-## 14) Optional: Folder‑Specific Instructions
+## 15) Optional: Folder‑Specific Instructions
 
 If needed, add `.github/instructions/*.instructions.md` with path‑scoped front‑matter to apply specialized guidance to certain subtrees (e.g., `docs/`, `nautobot_plugin_tooling/`). Keep rules minimal to avoid confusion.
 
 ---
 
-## 15) Final Checklist (for every change)
+## 16) Final Checklist (for every change)
 
 - [ ] Commands are shown as `poetry run invoke ...`  
 - [ ] Imports are at the top; docstrings explain intent/usage  
@@ -435,7 +721,7 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 
 ---
 
-## 16) Authoritative Nautobot Repositories & Examples
+## 17) Authoritative Nautobot Repositories & Examples
 
 When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.  
 Use them for import paths, base-class usage, testing mixins, viewset patterns, job/celery conventions, and UI Component Framework examples.
