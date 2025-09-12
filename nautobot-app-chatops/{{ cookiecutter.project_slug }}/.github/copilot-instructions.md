@@ -169,7 +169,7 @@ or raw `django.test.TestCase`.**
 
 ### 7.2 Directory Layout
 
-```text
+```python
 <app>/tests/
   test_models.py
   test_filters.py
@@ -179,7 +179,7 @@ or raw `django.test.TestCase`.**
     test_*.py
   migration/
     test_*.py
-```text
+```
 
 ### 7.3 Running Tests
 
@@ -187,9 +187,9 @@ or raw `django.test.TestCase`.**
 
 **Help**
 
-```text
+```bash
 poetry run invoke tests
-```text
+```
 
 ```text
 Usage: inv[oke] [--core-opts] tests [--options] [other tasks here ...]
@@ -203,7 +203,7 @@ Options:
   -k, --keepdb      Save and re-use test database between test runs for faster
                     re-testing. (default: False)
   -l, --lint-only   Only run linters; unit tests will be excluded. (default: False)
-```text
+```
 
 ### 7.4 Test Data & Fixtures
 
@@ -240,7 +240,7 @@ class WidgetAPITests(
             {"name": "Widget B"},
         ]
         cls.update_data = {"name": "Widget A+"}
-```text
+```
 
 ### 7.6 Filter Test Skeleton
 
@@ -259,7 +259,7 @@ class WidgetFilterTests(FilterTestCases.FilterTestCase):
         ["name", "name"],
         # ["owner_id", "owner__id"],
     ]
-```text
+```
 
 ### 7.7 Views Test Skeleton
 
@@ -272,7 +272,7 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
     """UI list/detail/create/edit/delete tests for Widget."""
     model = models.Widget
     bulk_edit_data = {"name": "Bulk Renamed"}
-```text
+```
 
 ### 7.8 OpenAPI Schema Checks
 
@@ -287,9 +287,10 @@ present. Prefer this when you want stock unittest selection semantics or when a
 plugin/app intends to mirror Nautobot core's runner behavior.
 
 **Help**  
-```text
+```bash
 poetry run invoke unittest -h
-```text
+```
+
 ```text
 Usage: inv[oke] [--core-opts] unittest [--options] [other tasks here ...]
 
@@ -305,7 +306,7 @@ Options:
   -p STRING, --pattern=STRING   Select specific test methods/classes/modules
   -s, --skip-docs-build         Skip building docs before tests
   -v, --verbose                 Verbose test output
-```text
+```
 
 **When to use which**
 
@@ -362,7 +363,7 @@ def get_device_info(dispatcher, device_name):
     """Get device information from Nautobot."""
     # Worker logic here
     return True  # or False, or (status, details)
-```text
+```
 
 ### 8.2 Subcommand Patterns
 
@@ -383,7 +384,7 @@ def get_device_info(dispatcher, device_name):
 ```python
 action = f"get-sites location '{city}'"  # Preserve quotes for multi-word params
 dispatcher.prompt_for_text(action_id=action, help_text="Enter number", label="Limit")
-```text
+```
 
 ### 8.3 Dispatcher Interface Patterns
 
@@ -405,7 +406,7 @@ dispatcher.send_blocks([
     dispatcher.markdown_block(f"Device: **{device.name}**"),
     dispatcher.markdown_block(f"Status: {device.status}"),
 ])
-```text
+```
 
 ### 8.4 Parameter Validation & User Prompting
 
@@ -434,7 +435,7 @@ def get_device_info(dispatcher, site_name=None, device_name=None):
     device = Device.objects.get(name=device_name)
     dispatcher.send_markdown(f"Device **{device.name}** status: {device.status}")
     return True
-```text
+```
 
 ### 8.5 Platform Considerations & Output Formatting
 
@@ -454,7 +455,7 @@ dispatcher.send_large_table(
     ["Device", "Site", "Status", "IP Address"],
     *[(dev.name, dev.location.name, dev.status, dev.primary_ip) for dev in devices]
 )
-```text
+```
 
 ### 8.6 Error Handling & Status Reporting
 
@@ -474,7 +475,7 @@ def risky_operation(dispatcher, device_name):
     except Exception as exc:
         dispatcher.send_markdown(f"❌ Operation failed: {exc}")
         return (CommandStatusChoices.STATUS_FAILED, str(exc))
-```text
+```
 
 ### 8.7 Testing ChatOps Commands
 
@@ -507,7 +508,7 @@ class MyCommandWorkerTest(ChatOpsTestCase):
   
         self.assertFalse(result)
         mock_dispatcher.prompt_from_menu.assert_called_once()
-```text
+```
 
 ---
 
@@ -594,7 +595,7 @@ def get_device_status(dispatcher, device_name=None):
     except Device.DoesNotExist:
         dispatcher.send_markdown(f"❌ Device '{device_name}' not found")
         return False
-```text
+```
 
 **ChatOps Worker Test**
 ```python
@@ -627,7 +628,7 @@ class MyCommandWorkerTest(TestCase):
   
         self.assertFalse(result)
         mock_dispatcher.prompt_from_menu.assert_called_once()
-```text
+```
 
 **Model**
 ```python
@@ -654,7 +655,7 @@ class DeviceNote(PrimaryModel):
     def __str__(self):
         """Stringify instance."""
         return self.name
-```text
+```
 
 **Serializer**
 ```python
@@ -667,7 +668,7 @@ class DeviceNoteSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
     class Meta:
         model = DeviceNote
         fields = "__all__"
-```text
+```
 
 **FilterSet**
 ```python
@@ -680,7 +681,7 @@ class DeviceNoteFilter(TenancyModelFilterSetMixin, NautobotFilterSet):
     class Meta:
         model = DeviceNote
         fields = "__all__"
-```text
+```
 
 **API ViewSet**
 ```python
@@ -695,7 +696,7 @@ class DeviceNoteViewSet(NautobotModelViewSet):
     queryset = DeviceNote.objects.all()
     serializer_class = DeviceNoteSerializer
     filterset_class = DeviceNoteFilter
-```text
+```
 
 **UI ViewSet**
 ```python
@@ -711,12 +712,12 @@ class DeviceNoteUIViewSet(NautobotUIViewSet):
     table = DeviceNoteTable
     bulk_update_form_class = DeviceNoteForm
     form_class = DeviceNoteForm
-```text
+```
 
 **Migrations (command)**
-```text
+```bash
 poetry run invoke makemigrations -n devicenote_initial
-```text
+```
 
 ---
 
