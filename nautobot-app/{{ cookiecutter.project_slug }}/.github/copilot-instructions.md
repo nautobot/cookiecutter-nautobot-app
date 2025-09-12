@@ -33,6 +33,8 @@ Examples:
 - `poetry run invoke tests`
 - `poetry run invoke check-migrations`
 - `poetry run invoke makemigrations -n <name>`
+- `poetry run invoke markdownlint`
+- `poetry run invoke yamllint`
 
 Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix them with `poetry run`.**
 
@@ -51,6 +53,12 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
   - Keep inline comments to the minimum for non‑obvious logic.  
   - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.  
 - Write straightforward, readable code over clever one‑liners.
+- **Docs:**
+  - If you add/change features, update `docs/` accordingly.
+  - Use `mkdocs` syntax.
+  - Run `poetry run invoke markdownlint` to validate and resolve any issues with the markdown syntax.
+  - Run `poetry run invoke yamllint` to validate YAML files (e.g., mkdocs.yml).
+  - Run `poetry run invoke build-and-check-docs` to validate.
 
 ---
 
