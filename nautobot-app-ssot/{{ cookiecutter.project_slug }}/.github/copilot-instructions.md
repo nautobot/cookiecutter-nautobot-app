@@ -503,7 +503,7 @@ class TestMySSoTJob(SSOTTestCase):
 
 ---
 
-## 10) Performance & DB
+## 15) Performance & DB
 
 - Prefer queryset filters/bulk ops over per‑row loops.  
 - Use `select_related` / `prefetch_related` where appropriate.  
@@ -511,7 +511,7 @@ class TestMySSoTJob(SSOTTestCase):
 
 ---
 
-## 11) Git & Branching
+## 16) Git & Branching
 
 - Small, focused branches.  
 - PRs must include tests, migration notes (if any), and “how to test” steps.  
@@ -520,7 +520,7 @@ class TestMySSoTJob(SSOTTestCase):
 
 ---
 
-## 12) PR Hygiene — What Copilot Should Suggest
+## 17) PR Hygiene — What Copilot Should Suggest
 
 - Clear, action‑oriented title and description.  
 - Link to issue(s) and include screenshots/GIFs for UI work.  
@@ -529,7 +529,7 @@ class TestMySSoTJob(SSOTTestCase):
 
 ---
 
-## 13) Snippets Copilot Should Prefer
+## 18) Snippets Copilot Should Prefer
 
 **SSOT Job**
 ```python
@@ -701,13 +701,13 @@ poetry run invoke makemigrations -n devicenote_initial
 
 ---
 
-## 15) Optional: Folder‑Specific Instructions
+## 19) Optional: Folder‑Specific Instructions
 
 If needed, add `.github/instructions/*.instructions.md` with path‑scoped front‑matter to apply specialized guidance to certain subtrees (e.g., `docs/`, `nautobot_plugin_tooling/`). Keep rules minimal to avoid confusion.
 
 ---
 
-## 16) Final Checklist (for every change)
+## 20) Final Checklist (for every change)
 
 - [ ] Commands are shown as `poetry run invoke ...`  
 - [ ] Imports are at the top; docstrings explain intent/usage  
@@ -721,7 +721,7 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 
 ---
 
-## 17) Authoritative Nautobot Repositories & Examples
+## 21) Authoritative Nautobot Repositories & Examples
 
 When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.  
 Use them for import paths, base-class usage, testing mixins, viewset patterns, job/celery conventions, and UI Component Framework examples.
