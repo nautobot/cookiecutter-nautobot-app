@@ -1,6 +1,7 @@
 """Forms for {{ cookiecutter.app_name }}."""
 
 from django import forms
+from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
 from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin
 
 from {{ cookiecutter.app_name }} import models
@@ -20,7 +21,7 @@ class {{ cookiecutter.model_class_name }}BulkEditForm(TagsBulkEditFormMixin, Nau
     """{{ cookiecutter.model_class_name }} bulk edit form."""
 
     pk = forms.ModelMultipleChoiceField(queryset=models.{{ cookiecutter.model_class_name }}.objects.all(), widget=forms.MultipleHiddenInput)
-    description = forms.CharField(required=False)
+    description = forms.CharField(required=False, max_length=CHARFIELD_MAX_LENGTH)
 
     class Meta:
         """Meta attributes."""

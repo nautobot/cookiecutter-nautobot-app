@@ -33,7 +33,7 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.9.2,<3.13"
 # Used for local development
-nautobot = "^{{ cookiecutter.min_nautobot_version }}"
+nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-chatops = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
@@ -50,6 +50,11 @@ toml = "*"
 # Python implementation of markdownlint
 pymarkdownlnt = "~0.9.30"
 Markdown = "*"
+towncrier = ">=23.6.0,<=24.8.0"
+to-json-schema = "*"
+jsonschema = "*"
+
+[tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
 markdown-version-annotations = "1.0.1"
 # Rendering docs to HTML
@@ -61,9 +66,6 @@ mkdocstrings = "0.25.2"
 mkdocstrings-python = "1.10.8"
 mkdocs-autorefs = "1.2.0"
 griffe = "1.1.1"
-towncrier = ">=23.6.0,<=24.8.0"
-to-json-schema = "*"
-jsonschema = "*"
 
 [tool.poetry.extras]
 all = [
@@ -92,7 +94,7 @@ notes = """,
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = [
-    "{{ cookiecutter.min_nautobot_version }}"
+    "2"
 ]
 
 [tool.ruff]

@@ -36,15 +36,19 @@ yamllint = "*"
 # Python implementation of markdownlint
 pymarkdownlnt = "~0.9.30"
 Markdown = "*"
+
+[tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
 markdown-version-annotations = "1.0.1"
 # Rendering docs to HTML
-mkdocs = "1.5.2"
+mkdocs = "1.6.0"
 # Material for MkDocs theme
-mkdocs-material = "9.1.15"
+mkdocs-material = "9.5.32"
 # Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.5.2"
+mkdocstrings = "0.25.2"
+mkdocstrings-python = "1.10.8"
+mkdocs-autorefs = "1.2.0"
+griffe = "1.1.1"
 
 [tool.pylint.master]
 ignore = ".venv"
@@ -55,7 +59,8 @@ no-docstring-rgx = "^(_|test_|Meta$)"
 
 [tool.pylint.messages_control]
 disable = """,
-    line-too-long
+    line-too-long,
+    duplicate-code,
 """
 
 [tool.pylint.miscellaneous]
