@@ -19,7 +19,6 @@ class {{ cookiecutter.camel_name }}Config(NautobotAppConfig):
     base_url = "{{ cookiecutter.base_url }}"
     required_settings = []
     default_settings = {}
-    caching_config = {}
     docs_view_name = "plugins:{{ cookiecutter.app_name }}:docs"
     searchable_models = [{% if cookiecutter.model_class_name and cookiecutter.model_class_name|trim|lower != 'none' %}"{{ cookiecutter.model_class_name|trim|lower }}"{% endif %}]
 
