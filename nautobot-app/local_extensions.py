@@ -31,5 +31,5 @@ class NautobotVersions(Extension):  # pylint: disable=abstract-method
     def __init__(self, environment: Environment):
         super().__init__(environment)
 
-        environment.globals.update(min_nautobot_version="2.4.2")
-        environment.globals.update(upper_bound_nautobot_version="3.0.0")
+        environment.globals.update(min_nautobot_version="3.0.0")
+        environment.globals.update(upper_bound_nautobot_version="4.0.0")
