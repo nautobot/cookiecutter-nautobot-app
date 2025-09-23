@@ -10,8 +10,6 @@
     "project_slug": "nautobot-app-chatops-{{ cookiecutter.chatops_interactive_command.lower().replace('_', '-') }}",
     "repo_url": "https://github.com/{{ cookiecutter.github_org }}/{{ cookiecutter.project_slug }}",
     "base_url": "{{ cookiecutter.chatops_interactive_command.lower().replace(' ', '-').replace('_', '-') }}",
-    "min_nautobot_version": "2.0.0",
-    "max_nautobot_version": "2.9999",
     "camel_name": "{{ cookiecutter.app_slug.title().replace(' ', '').replace('-', '') }}",
     "project_short_description": "{{ cookiecutter.verbose_name }}",
     "setup_local_mattermost_dev_env": [
@@ -25,5 +23,9 @@
     ],
     "docs_base_url": "https://docs.nautobot.com",
     "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest",
-    "_extensions": ["local_extensions.camel_case_to_kebab", "local_extensions.camel_case_to_words"]
+    "_extensions": [
+        "local_extensions.camel_case_to_kebab",
+        "local_extensions.camel_case_to_words",
+        "local_extensions.NautobotVersions"
+    ]
 }

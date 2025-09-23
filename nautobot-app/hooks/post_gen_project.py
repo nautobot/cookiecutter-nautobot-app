@@ -12,6 +12,7 @@ Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH
 
 * poetry lock
 * poetry install
+* poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
 * invoke ruff --fix # this will ensure all python files are formatted correctly, may require `sudo chown -R $USER ./` as migrations may be owned by root
@@ -35,7 +36,6 @@ if __name__ == "__main__":
             "models.py",
             "navigation.py",
             "tables.py",
-            "templates/{{ cookiecutter.app_name }}/{{ cookiecutter.model_class_name.lower() }}_retrieve.html",
             "tests/fixtures.py",
             "tests/test_api.py",
             "tests/test_filters.py",
@@ -49,12 +49,10 @@ if __name__ == "__main__":
         folders_to_remove = [
             "api",
             "migrations",
-            "templates/{{ cookiecutter.app_name }}",
-            "templates",
         ]
         for folder in folders_to_remove:
             (_ADDONS_PATH / folder).rmdir()
-        
+
         (_PROJECT_PATH / "docs/models/{{ cookiecutter.model_class_name.lower() }}.md").unlink()
         (_PROJECT_PATH / "docs/models").rmdir()
 

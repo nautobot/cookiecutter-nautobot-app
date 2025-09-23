@@ -188,7 +188,7 @@ def generate_packages(context):
 )
 def lock(context, check=False):
     """Generate poetry.lock inside the container."""
-    run_command(context, f"poetry {'check' if check else 'lock --no-update'}")
+    run_command(context, f"poetry {'check' if check else 'lock'}")
 
 
 # ------------------------------------------------------------------------------

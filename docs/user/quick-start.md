@@ -22,27 +22,25 @@ Output:
 
 ```shell
 You've downloaded ~/.cookiecutters/cookiecutter-nautobot-app before. Is it okay to delete and re-download it? [y/n] (y): 
-  [1/18] codeowner_github_usernames (): @smith-ntc
-  [2/18] full_name (Network to Code, LLC): 
-  [3/18] email (info@networktocode.com): 
-  [4/18] github_org (nautobot): 
-  [5/18] app_name (my_app): 
-  [6/18] verbose_name (My App): 
-  [7/18] app_slug (my-app): 
-  [8/18] project_slug (nautobot-app-my-app): 
-  [9/18] repo_url (https://github.com/nautobot/nautobot-app-my-app): 
-  [10/18] base_url (my-app): 
-  [11/18] min_nautobot_version (2.0.0): 
-  [12/18] max_nautobot_version (2.9999): 
-  [13/18] camel_name (MyApp): 
-  [14/18] project_short_description (My App): 
-  [15/18] model_class_name (None): 
-  [16/18] Select open_source_license
+  [1/16] codeowner_github_usernames (): @smith-ntc
+  [2/16] full_name (Network to Code, LLC): 
+  [3/16] email (info@networktocode.com): 
+  [4/16] github_org (nautobot): 
+  [5/16] app_name (my_app): 
+  [6/16] verbose_name (My App): 
+  [7/16] app_slug (my-app): 
+  [8/16] project_slug (nautobot-app-my-app): 
+  [9/16] repo_url (https://github.com/nautobot/nautobot-app-my-app): 
+  [10/16] base_url (my-app): 
+  [11/16] camel_name (MyApp): 
+  [12/16] project_short_description (My App): 
+  [13/16] model_class_name (None): 
+  [14/16] Select open_source_license
     1 - Apache-2.0
     2 - Not open source
     Choose from [1/2] (1): 
-  [17/18] docs_base_url (https://docs.nautobot.com): 
-  [18/18] docs_app_url (https://docs.nautobot.com/projects/my-app/en/latest): 
+  [15/16] docs_base_url (https://docs.nautobot.com): 
+  [16/16] docs_app_url (https://docs.nautobot.com/projects/my-app/en/latest): 
 
 Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-app-my-app
 
@@ -50,6 +48,7 @@ Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-
 
 * poetry lock
 * poetry install
+* poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
 * invoke autoformat # this will ensure all python files are formatted correctly
@@ -133,8 +132,6 @@ First create the `my-app.json` file:
         "project_slug": "nautobot-app-my-app",
         "repo_url": "https://github.com/nautobot/nautobot-app-my-app",
         "base_url": "my-app",
-        "min_nautobot_version": "2.0.0",
-        "max_nautobot_version": "2.9999",
         "camel_name": "MyApp",
         "project_short_description": "My App",
         "model_class_name": "None",
@@ -158,7 +155,7 @@ cookiecutter https://github.com/nautobot/cookiecutter-nautobot-app.git --directo
 Output:
 
 ```shell
-You've downloaded ~/.cookiecutters/cookiecutter-nautobot-app before. Is it okay to delete and re-download it? [y/n] (y): 
+You've downloaded ~/.cookiecutters/cookiecutter-nautobot-app before. Is it okay to delete and re-download it? [y/n] (y):
 
 Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-app-my-app
 
@@ -166,6 +163,7 @@ Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-
 
 * poetry lock
 * poetry install
+* poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
 * ruff . # this will ensure all python files are formatted correctly, may require `sudo chown -R <my local username> ./` as migrations may be owned by root

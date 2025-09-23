@@ -1,6 +1,8 @@
 """Local extensions for Nautobot Cookies."""
 import re
 
+from jinja2 import Environment
+from jinja2.ext import Extension
 from cookiecutter.utils import simple_filter
 
 @simple_filter
@@ -22,3 +24,12 @@ def camel_case_to_words(name: str) -> str:
     """
     words = re.findall(r"[A-Z]?[a-z]+|[A-Z]{2,}(?=[A-Z][a-z]|\d|\W|$)|\d+|[A-Z]{2,}|[A-Z]$", name)
     return " ".join(words)
+
+class NautobotVersions(Extension):  # pylint: disable=abstract-method
+    """Jinja2 extension to set a minimum/maximum Nautobot version."""
+
+    def __init__(self, environment: Environment):
+        super().__init__(environment)
+
+        environment.globals.update(min_nautobot_version="2.4.2")
+        environment.globals.update(upper_bound_nautobot_version="3.0.0")
