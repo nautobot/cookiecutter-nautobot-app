@@ -15,10 +15,10 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 packages = [
     { include = "{{ cookiecutter.app_name }}" },
@@ -29,7 +29,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9.2,<3.13"
+python = ">=3.10,<3.14"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-ssot = "^3.0.0"
@@ -96,7 +96,7 @@ notes = """,
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = [
-    "2"
+    "3"
 ]
 
 [tool.ruff]
