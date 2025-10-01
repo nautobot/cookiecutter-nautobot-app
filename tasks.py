@@ -324,6 +324,18 @@ def help_task(context):
         context.run(f"invoke {task_name} --help")
 
 
+@task(
+    help={
+        "version": "Version of Cookiecutter Nautobot App to generate the release notes for.",
+    }
+)
+def generate_release_notes(context, version):
+    """Generate Release Notes using Towncrier."""
+    command = f"poetry run towncrier build --version {version}"
+    # Due to issues with git repo ownership in the containers, this must always run locally.
+    context.run(command)
+
+
 # ------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------

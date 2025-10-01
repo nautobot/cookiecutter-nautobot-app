@@ -108,4 +108,5 @@ nav:
   - Developer Guide:
       - Contributing: "dev/contributing.md"
       - Development Environment: "dev/dev_environment.md"
+      - Release Checklist: "dev/release_checklist.md"
   - Nautobot Docs Home ↗︎: "https://docs.nautobot.com"

@@ -36,6 +36,8 @@ yamllint = "*"
 # Python implementation of markdownlint
 pymarkdownlnt = "~0.9.30"
 Markdown = "*"
+# Change log management and generation
+towncrier = ">=24.8.0,<24.9.0"
 
 [tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
@@ -122,7 +124,7 @@ plugins.list-anchored-indent.enabled = true
 
 [tool.towncrier]
 directory = "changes"
-filename = "docs/admin/release_notes/version_X.Y.md"
+filename = "docs/admin/release_notes/version_2.6.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
 issue_format = "[#{issue}](https://github.com/nautobot/cookiecutter-nautobot-app/issues/{issue})"
