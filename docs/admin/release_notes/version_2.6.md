@@ -8,6 +8,8 @@ This document describes all new features and changes in the release. The format 
 - Changed minimum Nautobot version to `2.4.2`.
 - Updated Poetry to v2.
 
+<!-- towncrier release notes start -->
+
 ## [v2.6.0 (2025-09-16)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/v2.6.0)
 
 ### Added
