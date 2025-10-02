@@ -71,8 +71,6 @@ To either stop or destroy the development environment use the following options.
 
 Documentation dependencies are pinned to exact versions to ensure consistent results. For the development environment, they are defined in the `pyproject.toml` file.
 
-If you need to update any of the documentation dependencies to a newer version, make sure you copy the exact same versions pinned in `pyproject.toml` to the `docs/requirements.txt` file as well. The latter is used in the automated build pipeline on ReadTheDocs to build the live version of the documentation.
-
 ### CLI Helper Commands
 
 The project features a CLI helper based on [Invoke](https://www.pyinvoke.org/) to help setup the development environment. The commands are listed below in 3 categories:
