@@ -121,7 +121,7 @@ jobs:
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
-          PY_CONSTRAINT: "{% raw %}${{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}{% endraw %}"
+          PY_CONSTRAINT: "{% raw %}${{ matrix.python-version == '3.10' || matrix.python-version }}{% endraw %}"
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ env.PY_CONSTRAINT }}{% endraw %}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -153,7 +153,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.9"]  # 3.12 stable is tested in unittest_report stage.
+        python-version: ["3.10"]  # 3.12 stable is tested in unittest_report stage.
         db-backend: ["postgresql"]
         nautobot-version: ["stable"]
         include:
@@ -177,7 +177,7 @@ jobs:
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
-          PY_CONSTRAINT: "{% raw %}${{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}{% endraw %}"
+          PY_CONSTRAINT: "{% raw %}${{ matrix.python-version == '3.10' || matrix.python-version }}{% endraw %}"
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ env.PY_CONSTRAINT }}{% endraw %}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -229,7 +229,7 @@ jobs:
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
-          PY_CONSTRAINT: "{% raw %}${{ matrix.python-version == '3.9' && '3.9.2' || matrix.python-version }}{% endraw %}"
+          PY_CONSTRAINT: "{% raw %}${{ matrix.python-version == '3.10' || matrix.python-version }}{% endraw %}"
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ env.PY_CONSTRAINT }}{% endraw %}"
       - name: "Set up Docker Buildx"
         id: "buildx"
