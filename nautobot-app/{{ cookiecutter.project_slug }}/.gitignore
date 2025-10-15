@@ -294,7 +294,7 @@ fabric.properties
 
 ### vscode ###
 .vscode/*
-*.code-workspace
+./*.code-workspace
 
 # Rando
 creds.env
