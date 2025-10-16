@@ -1,1 +1,1 @@
-nautobot-app/{{ cookiecutter.project_slug }}/.github/workflows/release.yml
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/.github/workflows/release.yml
