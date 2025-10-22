@@ -15,7 +15,7 @@ The [Invoke](http://www.pyinvoke.org/) library is used to provide some helper co
 
 - `nautobot_ver`: the version of Nautobot to use as a base for any built docker containers (default: {{ min_nautobot_version }})
 - `project_name`: the default docker compose project name (default: `{{ cookiecutter.app_slug }}`)
-- `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.11)
+- `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.12)
 - `local`: a boolean flag indicating if invoke tasks should be run on the host or inside the docker containers (default: False, commands will be run in docker containers)
 - `compose_dir`: the full path to a directory containing the project compose files
 - `compose_files`: a list of compose files applied in order (see [Multiple Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) for more information)
@@ -181,7 +181,7 @@ The first thing you need to do is build the necessary Docker image for Nautobot 
 #14 exporting layers
 #14 exporting layers 1.2s done
 #14 writing image sha256:2d524bc1665327faa0d34001b0a9d2ccf450612bf8feeb969312e96a2d3e3503 done
-#14 naming to docker.io/{{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.11 done
+#14 naming to docker.io/{{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.12 done
 ```
 
 ### Invoke - Starting the Development Environment
@@ -212,9 +212,9 @@ This will start all of the Docker containers used for hosting Nautobot. You shou
 ```bash
 ➜ docker ps
 ****CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS          PORTS                                       NAMES
-ee90fbfabd77   {{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.11  "nautobot-server rqw…"   16 seconds ago   Up 13 seconds                                               {{ cookiecutter.app_name }}_worker_1
-b8adb781d013   {{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.11  "/docker-entrypoint.…"   20 seconds ago   Up 15 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   {{ cookiecutter.app_name }}_nautobot_1
-d64ebd60675d   {{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.11  "mkdocs serve -v -a …"   25 seconds ago   Up 18 seconds   0.0.0.0:8001->8080/tcp, :::8001->8080/tcp   {{ cookiecutter.app_name }}_docs_1
+ee90fbfabd77   {{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.12  "nautobot-server rqw…"   16 seconds ago   Up 13 seconds                                               {{ cookiecutter.app_name }}_worker_1
+b8adb781d013   {{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.12  "/docker-entrypoint.…"   20 seconds ago   Up 15 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   {{ cookiecutter.app_name }}_nautobot_1
+d64ebd60675d   {{ cookiecutter.app_slug }}/nautobot:{{ min_nautobot_version }}-py3.12  "mkdocs serve -v -a …"   25 seconds ago   Up 18 seconds   0.0.0.0:8001->8080/tcp, :::8001->8080/tcp   {{ cookiecutter.app_name }}_docs_1
 e72d63129b36   postgres:13-alpine               "docker-entrypoint.s…"   25 seconds ago   Up 19 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   {{ cookiecutter.app_name }}_postgres_1
 96c6ff66997c   redis:6-alpine                   "docker-entrypoint.s…"   25 seconds ago   Up 21 seconds   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   {{ cookiecutter.app_name }}_redis_1
 ```
@@ -391,7 +391,7 @@ namespace.configure(
     {
         "{{ cookiecutter.app_name }}": {
             ...
-            "python_ver": "3.11",
+            "python_ver": "3.12",
 	    ...
         }
     }
