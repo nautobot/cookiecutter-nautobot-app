@@ -1,5 +1,0 @@
-Changed default minimum Nautobot version to 2.4.20.
-Changed default minimum Python version to 3.10 on cookies.
-Changed default minimum Python version to 3.10 on cookiecutter-nautobot-app.
-Changed default Python version to 3.12 on cookies.
-Changed default Python version to 3.12 on cookiecutter-nautobot-app.

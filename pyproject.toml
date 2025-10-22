@@ -9,6 +9,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -20,7 +21,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 cookiecutter = "^2.3.0"
-python = ">=3.10,<3.13"
+python = ">=3.9,<3.13"
 pyyaml = "*"
 
 [tool.poetry.group.dev.dependencies]
@@ -73,7 +74,7 @@ notes = """,
 
 [tool.ruff]
 line-length = 120
-target-version = "py310"
+target-version = "py39"
 exclude = [
   "nautobot-app*",
 ]

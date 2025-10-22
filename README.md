@@ -26,7 +26,7 @@ It's possible to use Cookiecutter directly without installing templates locally.
 
 Pre-requisites:
 
-- Python 3.10 - 3.12 with pip.
+- Python 3.9 - 3.12 with pip.
 
 ```shell
 pip install cookiecutter

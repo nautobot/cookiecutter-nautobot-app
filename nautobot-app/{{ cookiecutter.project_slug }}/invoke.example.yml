@@ -1,7 +1,7 @@
 ---
 {{ cookiecutter.app_name }}:
   nautobot_ver: "{{ min_nautobot_version }}"
-  python_ver: "3.12"
+  python_ver: "3.11"
   # local: false
   # compose_dir: "/full/path/to/{{ cookiecutter.project_slug }}/development"
 

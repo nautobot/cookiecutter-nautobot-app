@@ -14,7 +14,7 @@ This is a quick reference guide if you're already familiar with the development 
 The [Invoke](http://www.pyinvoke.org/) library is used to provide some helper commands based on the environment. There are a few configuration parameters which can be passed to Invoke to override the default configuration:
 
 - `project_name`: the default docker compose project name (default: `cookiecutter-nautobot-app`)
-- `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.12)
+- `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.11)
 - `local`: a boolean flag indicating if invoke tasks should be run on the host or inside the docker containers (default: True, commands will be run the host)
 - `compose_dir`: the full path to a directory containing the project compose files
 - `compose_files`: a list of compose files applied in order (see [Multiple Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) for more information)
@@ -140,7 +140,7 @@ The first thing you need to do is build the necessary development container imag
 #15 [cookiecutter] exporting to image
 #15 exporting layers 1.1s done
 #15 writing image sha256:85627092abfb1f9abca3faf4990dfd413028bb6a55140125a50386776b9749c2 done
-#15 naming to docker.io/library/cookiecutter-nautobot-app:3.12 done
+#15 naming to docker.io/library/cookiecutter-nautobot-app:3.11 done
 #15 DONE 1.1s
 ```
 
@@ -284,7 +284,7 @@ namespace.configure(
     {
         "cookiecutter_nautobot_app": {
             ...
-            "python_ver": "3.12",
+            "python_ver": "3.11",
 	    ...
         }
     }
