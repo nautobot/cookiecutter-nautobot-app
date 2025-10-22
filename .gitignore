@@ -299,9 +299,10 @@ fabric.properties
 .vscode/*
 *.code-workspace
 
-# Rando
+# Random
 creds.env
 development/*.txt
+!development/towncrier_header.txt
 
 # Invoke overrides
 invoke.yml
