@@ -42,8 +42,8 @@ django-debug-toolbar = "*"
 invoke = "*"
 ipython = "*"
 pylint = "*"
-pylint-django = "*"
-pylint-nautobot = "*"
+pylint-django = ">=0.3.1"
+pylint-nautobot = ">=2.5.3"
 ruff = "0.5.5"
 yamllint = "*"
 toml = "*"
@@ -95,11 +95,6 @@ notes = """,
     FIXME,
     XXX,
     """
-
-[tool.pylint-nautobot]
-supported_nautobot_versions = [
-    "2"
-]
 
 [tool.ruff]
 line-length = 120
