@@ -1,1 +1,1 @@
-../../../../nautobot-app/{{ cookiecutter.project_slug }}/development/towncrier_header.txt
+../../../nautobot-app/{{ cookiecutter.project_slug }}/development/towncrier_header.txt
