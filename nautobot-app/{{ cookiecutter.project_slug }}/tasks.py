@@ -52,9 +52,9 @@ namespace = Collection("{{ cookiecutter.app_name }}")
 namespace.configure(
     {
         "{{ cookiecutter.app_name }}": {
-            "nautobot_ver": "2.4.2",
+            "nautobot_ver": "2.4.20",
             "project_name": "{{ cookiecutter.app_slug }}",
-            "python_ver": "3.11",
+            "python_ver": "3.12",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
