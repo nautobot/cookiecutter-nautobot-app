@@ -7,7 +7,7 @@ This document describes all new features and changes in the release. The format 
 - Added coverage reporting in pull requests.
 - Added markdown file linter.
 
-## [v2.5.1 (2025-08-20)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/v2.5.1)
+## [nautobot-app-v2.5.1 (2025-08-20)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.5.1)
 
 ### Added
 
@@ -21,7 +21,7 @@ This document describes all new features and changes in the release. The format 
 
 - [#268](https://github.com/nautobot/cookiecutter-nautobot-app/issues/268) - Fixed a missing import in the SSoT cookie.
 
-## [v2.5.0 (2025-04-25)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/v2.5.0)
+## [nautobot-app-v2.5.0 (2025-04-25)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.5.0)
 
 ### Security
 
