@@ -1,0 +1,1 @@
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/development/bin/ensure_release_notes.py

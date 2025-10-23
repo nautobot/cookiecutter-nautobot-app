@@ -15,9 +15,9 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 packages = [
     { include = "{{ cookiecutter.app_name }}" },
@@ -31,7 +31,7 @@ include = [
 "{{ cookiecutter.chatops_interactive_command }}" = "{{ cookiecutter.app_name }}.worker:{{ cookiecutter.chatops_interactive_command }}"
 
 [tool.poetry.dependencies]
-python = ">=3.9.2,<3.13"
+python = ">=3.10,<3.13"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-chatops = "^3.0.1"
@@ -42,8 +42,8 @@ django-debug-toolbar = "*"
 invoke = "*"
 ipython = "*"
 pylint = "*"
-pylint-django = "*"
-pylint-nautobot = "*"
+pylint-django = ">=2.5.4"
+pylint-nautobot = ">=0.3.1"
 ruff = "0.5.5"
 yamllint = "*"
 toml = "*"
@@ -95,11 +95,6 @@ notes = """,
     FIXME,
     XXX,
     """
-
-[tool.pylint-nautobot]
-supported_nautobot_versions = [
-    "2"
-]
 
 [tool.ruff]
 line-length = 120
@@ -172,6 +167,11 @@ filename = "docs/admin/release_notes/version_X.Y.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
 issue_format = "[#{issue}]({{ cookiecutter.repo_url }}/issues/{issue})"
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking Changes"
+showcontent = true
 
 [[tool.towncrier.type]]
 directory = "security"
