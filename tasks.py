@@ -50,7 +50,7 @@ namespace.configure(
     {
         "cookiecutter_nautobot_app": {
             "project_name": "cookiecutter-nautobot-app",
-            "python_ver": "3.11",
+            "python_ver": "3.12",
             "local": "True",
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
