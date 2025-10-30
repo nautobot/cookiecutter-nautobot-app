@@ -123,7 +123,7 @@ plugins.list-anchored-indent.enabled = true
 
 [tool.towncrier]
 directory = "changes"
-filename = "docs/admin/release_notes/version_2.6.md"
+filename = "docs/admin/release_notes/version_2.7.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
 issue_format = "[#{issue}](https://github.com/nautobot/cookiecutter-nautobot-app/issues/{issue})"
