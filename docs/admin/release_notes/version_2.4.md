@@ -7,7 +7,7 @@ This document describes all new features and changes in the release. The format 
 - Various CI fixes for pull requests and upstream testing.
 - Various documentation updates and fixes.
 
-## [v2.4.0 (2024-10-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/v2.4.0)
+## [nautobot-app-v2.4.0 (2024-10-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.4.0)
 
 ### Added
 
