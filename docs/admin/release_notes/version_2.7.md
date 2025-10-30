@@ -10,6 +10,12 @@ This document describes all new features and changes in the release. The format 
 - Added support for PyPI Trusted Publisher in release workflow.
 
 <!-- towncrier release notes start -->
+## [nautobot-app-v2.7.1 (2025-10-30)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.7.1)
+
+### Fixed
+
+- [#303](https://github.com/nautobot/cookiecutter-nautobot-app/issues/303) - Fixed release workflow missing the docs build step.
+
 ## [nautobot-app-v2.7.0 (2025-10-23)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.7.0)
 
 ### Changed
