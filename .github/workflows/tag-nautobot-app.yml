@@ -3,7 +3,7 @@ name: "Rebake Tag"
 on:  # yamllint disable-line rule:truthy
   push:
     tags:
-      - "nautobot-app-v2.*"
+      - "nautobot-app-v*"
 jobs:
   rebake:
     runs-on: "ubuntu-latest"
