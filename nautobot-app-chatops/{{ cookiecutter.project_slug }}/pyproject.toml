@@ -18,6 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 packages = [
     { include = "{{ cookiecutter.app_name }}" },
@@ -31,7 +32,7 @@ include = [
 "{{ cookiecutter.chatops_interactive_command }}" = "{{ cookiecutter.app_name }}.worker:{{ cookiecutter.chatops_interactive_command }}"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.10,<3.14"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-chatops = "^3.0.1"
