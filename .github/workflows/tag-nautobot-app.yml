@@ -3,12 +3,12 @@ name: "Rebake Tag"
 on:  # yamllint disable-line rule:truthy
   push:
     tags:
-      - "nautobot-app-v2.*"
+      - "nautobot-app-v*"
 jobs:
   rebake:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Call rebake workflow in cookiecutter-nautobot-app-drift-manager"
-        run: "gh workflow run rebake-workflow.yml -R nautobot/cookiecutter-nautobot-app-drift-manager -f tag=${{ github.ref_name }}"
+        run: "gh workflow run rebake-workflow.yml -R nautobot/cookiecutter-nautobot-app-drift-manager -f tag=${{ github.ref_name }} -f branch=develop"
         env:
           GH_TOKEN: "${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}"
