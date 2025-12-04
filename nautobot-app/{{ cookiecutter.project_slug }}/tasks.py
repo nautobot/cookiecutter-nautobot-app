@@ -676,7 +676,7 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
 @task
 def docs(context):
     """Build and serve docs locally for development."""
-    command = "mkdocs serve -v"
+    command = "mkdocs serve -v --livereload"
 
     if is_truthy(context.{{ cookiecutter.app_name }}.local):
         print(">>> Serving Documentation at http://localhost:8001")
