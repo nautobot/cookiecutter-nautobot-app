@@ -1,0 +1,1 @@
+Updated CI workflow to always regenerate poetry lockfile.
