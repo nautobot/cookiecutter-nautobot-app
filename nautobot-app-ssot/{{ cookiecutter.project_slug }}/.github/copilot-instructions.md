@@ -11,7 +11,7 @@ You are **GitHub Copilot** working inside a **Nautobot SSoT App** repository. Yo
 
 - **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
 - **SSOT Framework:** Built on **DiffSync** library for data synchronization. Uses `nautobot_ssot.contrib` classes for Nautobot integration patterns.
-- **Python:** 3.9–3.13 commonly in use.
+- **Python:** 3.10–3.12 commonly in use.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over inline comments**; clear, explicit code.

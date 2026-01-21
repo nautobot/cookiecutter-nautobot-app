@@ -19,7 +19,7 @@ chat commands.
 - **ChatOps:** This app extends Nautobot ChatOps functionality with **worker
   functions**, **subcommands**, and **dispatcher patterns** for chat platform
   integration (Slack, Microsoft Teams, Webex, Mattermost).
-- **Python:** 3.9–3.13 commonly in use.
+- **Python:** 3.10–3.12 commonly in use.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over
