@@ -1,8 +1,8 @@
 # Copilot Repository Instructions — Nautobot App
 
-You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mission is to generate **small, readable, test‑backed** changes that follow **Nautobot patterns** and this repository’s tooling and style.
+You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mission is to generate **small, readable, test‑backed** changes that follow **Nautobot patterns** and this repository's tooling and style.
 
-> **Location:** Save this file at `.github/copilot-instructions.md`.  
+> **Location:** Save this file at `.github/copilot-instructions.md`.
 > **Scope:** You may also add path‑scoped rules via `.github/instructions/*.instructions.md` if truly necessary.
 
 ---
@@ -21,9 +21,9 @@ You are **GitHub Copilot** working inside a **Nautobot App** repository. Your mi
 
 Always use Poetry for dependency management and virtualenvs.
 
-- Install deps:  
+- Install deps:
   `poetry install`
-- **Run tasks (required):**  
+- **Run tasks (required):**
   `poetry run invoke <task> [args]`
 
 Examples:
@@ -43,15 +43,15 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
 ## 2) Style, Lint, and Documentation
 
 - **Ruff** is used for formatting and linting; **Pylint** for static analysis. Generated code must pass both.
-- **Imports:**  
-  - Place **all imports at the top** of the file (after the module docstring).  
-  - No wildcard imports; prefer absolute imports and explicit symbols.  
-  - Aliasing Nautobot app modules is fine for clarity, e.g.:  
+- **Imports:**
+  - Place **all imports at the top** of the file (after the module docstring).
+  - No wildcard imports; prefer absolute imports and explicit symbols.
+  - Aliasing Nautobot app modules is fine for clarity, e.g.:
     `from nautobot.ipam import models as ipam_models`
   - Prefer imports from `nautobot.apps` instead of `nautobot.core`
-- **Docstrings > inline comments:**  
-  - Keep inline comments to the minimum for non‑obvious logic.  
-  - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.  
+- **Docstrings > inline comments:**
+  - Keep inline comments to the minimum for non‑obvious logic.
+  - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.
 - Write straightforward, readable code over clever one‑liners.
 - **Docs:**
   - If you add/change features, update `docs/` accordingly.
@@ -62,9 +62,9 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
 
 ---
 
-## 3) Use Nautobot’s Frameworks (default choices)
+## 3) Use Nautobot's Frameworks (default choices)
 
-When scaffolding features, use Nautobot’s base classes and helpers first:
+When scaffolding features, use Nautobot's base classes and helpers first:
 
 - **Models:** `PrimaryModel` (full Nautobot features) or `BaseModel` as appropriate.
 - **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits).
@@ -88,29 +88,111 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 
 ---
 
-## 5) Forms, Filters, Templates, and UI Patterns
+## 5) UI Component Framework for Detail Views (Preferred)
 
-- **Forms:**  
-  - Use `DynamicModelChoiceField` for large foreign keys.  
+**IMPORTANT:** When creating or modifying object detail views, **always prefer the UI Component Framework over custom templates** (introduced in Nautobot 2.4).
+
+### What is the UI Component Framework?
+
+The UI Component Framework is a Python-based, declarative system for building object detail views. Instead of writing HTML templates, you define your UI structure using Python classes like `ObjectDetailContent`, `Panel`, `Tab`, and `Button`.
+
+### Why Use the Component Framework?
+
+- ✅ **No template files needed** for standard detail views
+- ✅ **Declarative and maintainable** — all UI logic in Python
+- ✅ **Automatic standard tabs** — Advanced, Contacts, Metadata, etc. are provided automatically
+- ✅ **Built-in permission handling** — panels and buttons respect permissions automatically
+- ✅ **Type safety** — better IDE support and fewer runtime errors
+- ✅ **Consistency** — automatic adherence to Nautobot design patterns
+
+### When to Use Components vs. Templates
+
+✅ **Use Component Framework (default choice)**:
+- New detail views
+- Refactoring existing detail views
+- Standard object detail pages
+- Any `NautobotUIViewSet` implementation
+
+❌ **Use Templates (rare exceptions only)**:
+- Highly custom UI requiring complex HTML beyond component capabilities
+- Legacy views not yet migrated
+- Non-standard views where components don't fit
+
+### Core Component Types
+
+#### ObjectDetailContent
+The top-level container for a detail view. Configure panels, extra tabs, and extra buttons.
+
+```python
+from nautobot.apps.ui import ObjectDetailContent
+
+object_detail_content = ObjectDetailContent(
+    panels=[...],           # Panels for the main tab
+    extra_buttons=[...],    # Additional action buttons
+    extra_tabs=[...],       # Custom tabs beyond standard tabs
+)
+```
+
+#### Panel Types
+
+- **`ObjectFieldsPanel`** — Display model fields as key-value pairs (most common)
+- **`ObjectsTablePanel`** — Display related objects in a table
+- **`StatsPanel`** — Show statistics with links to filtered views
+- **`ObjectTextPanel`** — Render text fields (Markdown, JSON, YAML, code)
+- **`GroupedKeyValueTablePanel`** — Collapsible accordion groups of fields
+- **`DataTablePanel`** — Lightweight tables from raw dictionaries
+
+#### Button Types
+
+- **`Button`** — Single action button
+- **`DropdownButton`** — Button with nested child buttons as dropdown menu
+- **`ExtraDetailViewActionButton`** — Action buttons in the main actions dropdown
+
+#### Tab Types
+
+- **`Tab`** — Standard tab with panels (rendered in same page)
+- **`DistinctViewTab`** — Tab that links to a separate view/URL (for complex data)
+
+### Component Framework Best Practices
+
+1. **Use `ObjectFieldsPanel` with `fields="__all__"`** for simple field display (auto-excludes ManyToMany, `id`, `created`, `last_updated`, `comments`, `tags`)
+2. **Use `ObjectsTablePanel`** for related object collections (specify `table_class` and `table_filter`)
+3. **Leverage weight constants** for consistent ordering:
+   ```python
+   Tab.WEIGHT_MAIN_TAB = 100
+   Tab.WEIGHT_ADVANCED_TAB = 200
+   Panel.WEIGHT_COMMENTS_PANEL = 200
+   Panel.WEIGHT_TAGS_PANEL = 600
+   ```
+4. **Use `SectionChoices`** for layout positioning: `LEFT_HALF`, `RIGHT_HALF`, `FULL_WIDTH`
+5. **Optimize queries** in `ObjectsTablePanel` using `select_related_fields` and `prefetch_related_fields`
+6. **Custom rendering** can be achieved by subclassing panels and overriding `render_value()` or `get_data()`
+
+---
+
+## 6) Forms, Filters, and UI Patterns
+
+- **Forms:**
+  - Use `DynamicModelChoiceField` for large foreign keys.
   - Put complex validation in `clean()` (model or form as appropriate).
-- **Filters:**  
-  - Use `RelatedMembershipBooleanFilter` for boolean relationship filters (`has_*`).  
+- **Filters:**
+  - Use `RelatedMembershipBooleanFilter` for boolean relationship filters (`has_*`).
   - Use `NaturalKeyOrPKMultipleChoiceFilter` for FK filters where applicable.
-- **Templates:**  
+- **Templates (when needed):**
   - Extend Nautobot base templates; prefer provided filters (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand‑rolled anchors.
-- **UI Patterns:**  
-  - Prefer **tabs** (via `NautobotUIViewSet`) for distinct data categories.  
-  - Use full‑width detail layouts for dense content.  
-  - Provide **stats tiles** / instance counts if helpful.  
-  - For long‑running actions, use **AJAX modal + polling** (Jobs/Celery).  
+- **UI Patterns:**
+  - **Prefer Component Framework** for detail views (see Section 5).
+  - Use **tabs** (via `ObjectDetailContent` extra_tabs) for distinct data categories.
+  - Provide **stats tiles** / instance counts if helpful via `StatsPanel`.
+  - For long‑running actions, use **AJAX modal + polling** (Jobs/Celery).
   - Use inline edit sparingly and always re‑validate server‑side.
 
 ---
 
-## 6) Migrations
+## 7) Migrations
 
-- If models change:  
-  - `poetry run invoke check-migrations`  
+- If models change:
+  - `poetry run invoke check-migrations`
   - `poetry run invoke makemigrations -n <meaningful_name>`
 - Keep schema and data migrations separate and reversible.
 - Use descriptive migration names (e.g., `devicenote_initial`, `provider_increase_account_length`).
@@ -118,24 +200,24 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 
 ---
 
-## 7) Tests — What to Generate (Nautobot‑style, **required**)
+## 8) Tests — What to Generate (Nautobot‑style, **required**)
 
-**Use Nautobot’s testing base classes and mixins. Don’t use `unittest.TestCase` or raw `django.test.TestCase`.**
+**Use Nautobot's testing base classes and mixins. Don't use `unittest.TestCase` or raw `django.test.TestCase`.**
 
-### 7.1 Test Types & Base Classes
+### 8.1 Test Types & Base Classes
 
 - **Unit tests:** inherit from `nautobot.apps.testing.TestCase` (auto‑tagged `unit`).
 - **View tests:** use `nautobot.apps.testing.ViewTestCases` mixins.
-- **API tests:** use `nautobot.apps.testing.APIViewTestCases` mixins  
-  (`CreateObjectViewTestCase`, `ListObjectsViewTestCase`, `GetObjectViewTestCase`,  
-  `UpdateObjectViewTestCase`, `DeleteObjectViewTestCase`, and bulk variants).  
+- **API tests:** use `nautobot.apps.testing.APIViewTestCases` mixins
+  (`CreateObjectViewTestCase`, `ListObjectsViewTestCase`, `GetObjectViewTestCase`,
+  `UpdateObjectViewTestCase`, `DeleteObjectViewTestCase`, and bulk variants).
   These enforce `?brief=` behavior (declare `brief_fields`) and exercise bulk endpoints.
 - **Filter tests:** use `nautobot.apps.testing.FilterTestCases` (generic boolean/multi‑choice/tags tests).
 - **Form tests:** use `nautobot.core.testing.FormTestCases.BaseFormTestCase`.
 - **Integration (browser) tests:** `nautobot.apps.testing.SeleniumTestCase` (auto‑tagged `integration`).
 - **Migration tests:** `django_test_migrations.MigratorTestCase` (auto‑tagged `migration_test`).
 
-### 7.2 Directory Layout
+### 8.2 Directory Layout
 
 ```
 <app>/tests/
@@ -149,9 +231,9 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
     test_*.py
 ```
 
-### 7.3 Running Tests
+### 8.3 Running Tests
 
-- All tests (fast fixtures enabled):  
+- All tests (fast fixtures enabled):
 **Help**
 ```
 poetry run invoke tests
@@ -171,13 +253,13 @@ Options:
   -l, --lint-only   Only run linters; unit tests will be excluded. (default: False)
 ```
 
-### 7.4 Test Data & Fixtures
+### 8.4 Test Data & Fixtures
 
-- Prefer creating objects via model `.create()`/`.save()` inside tests.  
-- Avoid calling factories in `setUp()` / `setUpTestData()`; factory output can be stateful.  
+- Prefer creating objects via model `.create()`/`.save()` inside tests.
+- Avoid calling factories in `setUp()` / `setUpTestData()`; factory output can be stateful.
 - Rely on cached/seeded fixtures where provided by the runner to keep tests fast and deterministic.
 
-### 7.5 API Test Skeleton (what Copilot should scaffold)
+### 8.5 API Test Skeleton (what Copilot should scaffold)
 
 ```python
 """API tests for Widget."""
@@ -198,7 +280,7 @@ class WidgetAPITests(
     brief_fields = ["display", "id", "name", "url"]
 
     @classmethod
-    def SetUpTestData(cls):
+    def setUpTestData(cls):
         cls.create_data = [
             {"name": "Widget A"},
             {"name": "Widget B"},
@@ -206,7 +288,7 @@ class WidgetAPITests(
         cls.update_data = {"name": "Widget A+"}
 ```
 
-### 7.6 Filter Test Skeleton
+### 8.6 Filter Test Skeleton
 
 ```python
 """Filter tests for Widget."""
@@ -225,7 +307,7 @@ class WidgetFilterTests(FilterTestCases.FilterTestCase):
     ]
 ```
 
-### 7.7 Views Test Skeleton
+### 8.7 Views Test Skeleton
 
 ```python
 """View tests for Widget UI."""
@@ -238,15 +320,15 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
     bulk_edit_data = {"name": "Bulk Renamed"}
 ```
 
-### 7.8 OpenAPI Schema Checks
+### 8.8 OpenAPI Schema Checks
 
-Add a lightweight OpenAPI schema test using Nautobot’s provided test cases to ensure your app’s endpoints and serializers remain schema‑valid.
+Add a lightweight OpenAPI schema test using Nautobot's provided test cases to ensure your app's endpoints and serializers remain schema‑valid.
 
-### 7.9 Unittest Task (Django/Nautobot runner)
+### 8.9 Unittest Task (Django/Nautobot runner)
 
-In addition to `invoke tests` (the default Nautobot test runner), this repo can use **Django’s unittest-style runner** via the `unittest` Invoke task when present. Prefer this when you want stock unittest selection semantics or when a plugin/app intends to mirror Nautobot core’s runner behavior.
+In addition to `invoke tests` (the default Nautobot test runner), this repo can use **Django's unittest-style runner** via the `unittest` Invoke task when present. Prefer this when you want stock unittest selection semantics or when a plugin/app intends to mirror Nautobot core's runner behavior.
 
-**Help**  
+**Help**
 ```
 poetry run invoke unittest -h
 ```
@@ -267,90 +349,91 @@ Options:
   -v, --verbose                 Verbose test output
 ```
 
-**When to use which**  
-- Use `poetry run invoke tests` for the full testing suite experience (ruff, yamllint, markdownlint, check_migrations, pylint, build_and_check_docs, validate_app_config, unittest, unitttest_coverage, coverage_lcov).  
-- Use `poetry run invoke **unittest**` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core’s CI jobs.
+**When to use which**
+- Use `poetry run invoke tests` for the full testing suite experience (ruff, yamllint, markdownlint, check_migrations, pylint, build_and_check_docs, validate_app_config, unittest, unittest_coverage, coverage_lcov).
+- Use `poetry run invoke unittest` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core's CI jobs.
 
-**Common recipes**  
-- Run with coverage:  
+**Common recipes**
+- Run with coverage:
   `poetry run invoke unittest --coverage`
-- Target a specific module (label):  
+- Target a specific module (label):
   `poetry run invoke unittest --label myapp.tests.test_api`
-- Match by pattern (method/class):  
+- Match by pattern (method/class):
   `poetry run invoke unittest --pattern "WidgetAPITests and test_list_objects"`
-- Re-use the DB between runs for speed:  
+- Re-use the DB between runs for speed:
   `poetry run invoke unittest --keepdb`
-- Fail fast & suppress noise from passing tests:  
+- Fail fast & suppress noise from passing tests:
   `poetry run invoke unittest --failfast --buffer`
-- Skip docs build if unchanged:  
+- Skip docs build if unchanged:
   `poetry run invoke unittest --skip-docs-build`
 
-> **Note:** Always prefix with `poetry run` to ensure tests execute inside the project’s Poetry environment.
+> **Note:** Always prefix with `poetry run` to ensure tests execute inside the project's Poetry environment.
 
 ---
 
-## 8) Celery & Jobs
+## 9) Celery & Jobs
 
-- For long‑running work or external calls, prefer **Celery tasks** or **Nautobot Jobs**.  
+- For long‑running work or external calls, prefer **Celery tasks** or **Nautobot Jobs**.
 - Do **not** block web requests with heavy processing.
 
 ---
 
-## 9) Security & Secrets
+## 10) Security & Secrets
 
-- Never hard‑code secrets/tokens/credentials.  
-- Use Nautobot Secrets / External Integrations.  
+- Never hard‑code secrets/tokens/credentials.
+- Use Nautobot Secrets / External Integrations.
 - Scrub PII and sensitive network details from examples/tests.
 
 ---
 
-## 10) Performance & DB
+## 11) Performance & DB
 
-- Prefer queryset filters/bulk ops over per‑row loops.  
-- Use `select_related` / `prefetch_related` where appropriate.  
+- Prefer queryset filters/bulk ops over per‑row loops.
+- Use `select_related` / `prefetch_related` where appropriate.
 - Add indexes for frequently filtered fields; justify in migration message.
 
 ---
 
-## 11) Git & Branching
+## 12) Git & Branching
 
-- Small, focused branches.  
-- PRs must include tests, migration notes (if any), and “how to test” steps.  
-- Reference related issues.  
-- Target the repository’s active development branch (not `main` if `main` is reserved for releases).
+- Small, focused branches.
+- PRs must include tests, migration notes (if any), and "how to test" steps.
+- Reference related issues.
+- Target the repository's active development branch (not `main` if `main` is reserved for releases).
 
 ---
 
-## 12) PR Hygiene — What Copilot Should Suggest
+## 13) PR Hygiene — What Copilot Should Suggest
 
-- Clear, action‑oriented title and description.  
-- Link to issue(s) and include screenshots/GIFs for UI work.  
-- Call out any migrations and potential data impacts.  
+- Clear, action‑oriented title and description.
+- Link to issue(s) and include screenshots/GIFs for UI work.
+- Call out any migrations and potential data impacts.
 - Keep the diff small and logically cohesive.
 
 ---
 
-## 13) Snippets Copilot Should Prefer
+## 14) Snippets Copilot Should Prefer
 
 **Model**
 ```python
 """DeviceNote model."""
 from django.db import models
 from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
-from nautobot.apps.models.generics import PrimaryModel
+from nautobot.apps.models import PrimaryModel
 
 class DeviceNote(PrimaryModel):
     """Freeform note attached to a device."""
     name = models.CharField(max_length=CHARFIELD_MAX_LENGTH, unique=True)
     content = models.TextField(blank=True, default="")
-# Unless you have a really good reason not to, we should have a FK to Tenant.
-tenant = models.ForeignKey(
-    to="tenancy.Tenant",
-    on_delete=models.PROTECT,
-    related_name="device_notes",
-    blank=True,
-    null=True,
-)
+    # Unless you have a really good reason not to, we should have a FK to Tenant.
+    tenant = models.ForeignKey(
+        to="tenancy.Tenant",
+        on_delete=models.PROTECT,
+        related_name="device_notes",
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         ordering = ("name",)
 
@@ -378,7 +461,7 @@ class DeviceNoteSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
 from nautobot.apps.filters import NautobotFilterSet, TenancyModelFilterSetMixin
 from .models import DeviceNote
 
-class DeviceNoteFilter(TenancyModelFilterSetMixin, NautobotFilterSet):
+class DeviceNoteFilterSet(TenancyModelFilterSetMixin, NautobotFilterSet):
     """Filter DeviceNote by name/content."""
     class Meta:
         model = DeviceNote
@@ -389,31 +472,117 @@ class DeviceNoteFilter(TenancyModelFilterSetMixin, NautobotFilterSet):
 ```python
 """API viewset for DeviceNote."""
 from nautobot.apps.api import NautobotModelViewSet
-from .filters import DeviceNoteFilter
-from .serializers import DeviceNoteSerializer
+from .filters import DeviceNoteFilterSet
 from .models import DeviceNote
+from .serializers import DeviceNoteSerializer
 
 class DeviceNoteViewSet(NautobotModelViewSet):
     """List, retrieve, and manage DeviceNotes via REST API."""
     queryset = DeviceNote.objects.all()
     serializer_class = DeviceNoteSerializer
-    filterset_class = DeviceNoteFilter
+    filterset_class = DeviceNoteFilterSet
 ```
 
-**UI ViewSet**
+**UI ViewSet (with Component Framework)**
 ```python
 """UI viewset for DeviceNote."""
+from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, ObjectsTablePanel, SectionChoices
 from nautobot.apps.views import NautobotUIViewSet
+from .forms import DeviceNoteForm, DeviceNoteBulkEditForm
 from .models import DeviceNote
 from .tables import DeviceNoteTable
-from .forms import DeviceNoteForm
 
 class DeviceNoteUIViewSet(NautobotUIViewSet):
     """UI for listing, viewing, creating, and editing DeviceNotes."""
     queryset = DeviceNote.objects.all()
-    table = DeviceNoteTable
-    bulk_update_form_class = DeviceNoteForm
+    table_class = DeviceNoteTable
     form_class = DeviceNoteForm
+    bulk_update_form_class = DeviceNoteBulkEditForm
+
+    object_detail_content = ObjectDetailContent(
+        panels=[
+            ObjectFieldsPanel(
+                weight=100,
+                section=SectionChoices.LEFT_HALF,
+                fields="__all__",
+            ),
+            # Optional: add related objects table
+            ObjectsTablePanel(
+                weight=200,
+                section=SectionChoices.RIGHT_HALF,
+                table_class=RelatedItemTable,
+                table_filter="device_note",
+                table_title="Related Items",
+            ),
+        ],
+    )
+```
+
+**Complex Detail View with Custom Panels and Tabs**
+```python
+"""Complex UI viewset example."""
+from nautobot.apps.ui import (
+    ObjectDetailContent,
+    ObjectFieldsPanel,
+    ObjectsTablePanel,
+    ObjectTextPanel,
+    StatsPanel,
+    SectionChoices,
+    Tab,
+    DistinctViewTab,
+)
+from nautobot.apps.views import NautobotUIViewSet
+from .models import ComplexModel, RelatedModel
+
+class ComplexModelUIViewSet(NautobotUIViewSet):
+    queryset = ComplexModel.objects.all()
+
+    object_detail_content = ObjectDetailContent(
+        panels=[
+            # Main tab panels
+            ObjectFieldsPanel(
+                weight=100,
+                section=SectionChoices.LEFT_HALF,
+                fields=["name", "status", "description"],
+            ),
+            StatsPanel(
+                weight=100,
+                section=SectionChoices.RIGHT_HALF,
+                filter_name="complex_model",
+                related_models=[RelatedModel],
+            ),
+            ObjectTextPanel(
+                weight=200,
+                section=SectionChoices.FULL_WIDTH,
+                label="Notes",
+                object_field="notes",
+                render_as=ObjectTextPanel.RenderOptions.MARKDOWN,
+            ),
+        ],
+        extra_tabs=[
+            # Custom tab with its own panels
+            Tab(
+                weight=Tab.WEIGHT_ADVANCED_TAB + 100,
+                tab_id="custom_data",
+                label="Custom Data",
+                panels=[
+                    ObjectsTablePanel(
+                        weight=100,
+                        table_class=CustomDataTable,
+                        table_attribute="custom_data_items",
+                    ),
+                ],
+            ),
+            # Distinct view tab (separate URL)
+            DistinctViewTab(
+                weight=Tab.WEIGHT_CHANGELOG_TAB + 100,
+                tab_id="analytics",
+                label="Analytics",
+                url_name="myapp:complexmodel_analytics",
+                related_object_attribute="analytics_data",
+            ),
+        ],
+    )
 ```
 
 **Migrations (command)**
@@ -423,30 +592,31 @@ poetry run invoke makemigrations -n devicenote_initial
 
 ---
 
-## 14) Optional: Folder‑Specific Instructions
+## 15) Optional: Folder‑Specific Instructions
 
 If needed, add `.github/instructions/*.instructions.md` with path‑scoped front‑matter to apply specialized guidance to certain subtrees (e.g., `docs/`, `nautobot_plugin_tooling/`). Keep rules minimal to avoid confusion.
 
 ---
 
-## 15) Final Checklist (for every change)
+## 16) Final Checklist (for every change)
 
-- [ ] Commands are shown as `poetry run invoke ...`  
-- [ ] Imports are at the top; docstrings explain intent/usage  
-- [ ] Nautobot base classes, viewsets, and helpers are used  
-- [ ] Tests cover models/filters/API/views with Nautobot base classes & mixins  
-- [ ] Migrations are checked/generated, named meaningfully, and reversible  
-- [ ] Querysets are optimized; indexes added if needed  
-- [ ] No secrets/PII in code, tests, or docs  
-- [ ] Pre‑commit hooks pass; Ruff & Pylint clean  
-- [ ] PR description includes “how to test” and references related issues
+- [ ] Commands are shown as `poetry run invoke ...`
+- [ ] Imports are at the top; docstrings explain intent/usage
+- [ ] Nautobot base classes, viewsets, and helpers are used
+- [ ] **Detail views use Component Framework** (not custom templates unless necessary)
+- [ ] Tests cover models/filters/API/views with Nautobot base classes & mixins
+- [ ] Migrations are checked/generated, named meaningfully, and reversible
+- [ ] Querysets are optimized; indexes added if needed
+- [ ] No secrets/PII in code, tests, or docs
+- [ ] Pre‑commit hooks pass; Ruff & Pylint clean
+- [ ] PR description includes "how to test" and references related issues
 
 ---
 
-## 16) Authoritative Nautobot Repositories & Examples
+## 17) Authoritative Nautobot Repositories & Examples
 
-When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.  
-Use them for import paths, base-class usage, testing mixins, viewset patterns, job/celery conventions, and UI Component Framework examples.
+When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.
+Use them for import paths, base-class usage, testing mixins, viewset patterns, job/celery conventions, and **UI Component Framework** examples.
 
 - **Nautobot Core:** https://github.com/nautobot/nautobot/
 - **Nautobot App — SSoT:** https://github.com/nautobot/nautobot-app-ssot
@@ -456,10 +626,11 @@ Use them for import paths, base-class usage, testing mixins, viewset patterns, j
 - **Nautobot App — Firewall Models:** https://github.com/nautobot/nautobot-app-firewall-models
 - **Nautobot App — BGP Models:** https://github.com/nautobot/nautobot-app-bgp-models
 
-**Guidance for Copilot**  
-- Prefer examples from these repos over generic Django code.  
-- Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`, `NautobotUIViewSet`, etc.).  
-- Follow **testing** patterns under `nautobot/apps/testing` (mixins and tags) rather than ad‑hoc tests.  
-- Reuse **filter/serializer** patterns and import paths exactly as shown in the official code.  
-- Avoid v1-only patterns; target **Nautobot 2.x** APIs and UI Component Framework.  
+**Guidance for Copilot**
+- Prefer examples from these repos over generic Django code.
+- Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`, `NautobotUIViewSet`, etc.).
+- Follow **testing** patterns under `nautobot/apps/testing` (mixins and tags) rather than ad‑hoc tests.
+- Reuse **filter/serializer** patterns and import paths exactly as shown in the official code.
+- **Use UI Component Framework** for detail views (see `nautobot/dcim/views.py`, `nautobot/vpn/views.py` for examples).
+- Avoid v1-only patterns; target **Nautobot 2.x** APIs and UI Component Framework.
 - If proposing URLs, prefer helper utilities (e.g., `get_route_for_model`) visible in Nautobot core, not hard‑coded strings.
