@@ -1,0 +1,14 @@
+# Set all ports to ephemeral to avoid conflicts with other services.
+---
+services:
+  nautobot:
+    ports:
+      - "8080:8080"
+      - "6899:6899"
+  worker:
+    ports:
+      - "8081:8080"
+      - "6898:6898"
+  docs:
+    ports:
+      - "8001:8001"
