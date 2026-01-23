@@ -13,6 +13,19 @@ on: # yamllint disable-line rule:truthy rule:comments
   pull_request: ~
 
 jobs:
+  branch-protection:
+    if: github.event_name == 'pull_request'
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check branch protection rules"
+        run: |
+          if [[ "$GITHUB_BASE_REF" == "main" && ! "$GITHUB_HEAD_REF" =~ ^release ]]; then
+            echo "❌ Error: Pull requests into 'main' are only allowed from branches starting with 'release'"
+            echo "Source branch: $GITHUB_HEAD_REF"
+            echo "Target branch: $GITHUB_BASE_REF"
+            exit 1
+          fi
+          echo "✅ Branch protection check passed"
   changelog:
     if: >
       contains(fromJson('["develop","ltm-1.6","ltm-2.4"]'), github.base_ref) &&
