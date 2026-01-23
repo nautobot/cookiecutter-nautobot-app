@@ -295,24 +295,27 @@ def debug(context, service=""):
     docker_compose(context, "up", service=service)
 
 
-@task(help={"service": "If specified, only affect this service."})
-def start(context, service=""):
-    """Start specified or all services and its dependencies in detached mode."""
+@task(help={"service": "If specified, only affect the specified service(s); can be provided multiple times (i.e. -s nautobot -s worker)."}, iterable=["service"])
+def start(context, service=None):
+    """Start specified service(s) or all services and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
+    service = " ".join(service) if service else None
     docker_compose(context, "up --detach", service=service)
 
 
-@task(help={"service": "If specified, only affect this service."})
-def restart(context, service=""):
+@task(help={"service": "If specified, only affect the specified service(s); can be provided multiple times (i.e. -s nautobot -s worker)."}, iterable=["service"])
+def restart(context, service=None):
     """Gracefully restart specified or all services."""
     print("Restarting Nautobot...")
+    service = " ".join(service) if service else None
     docker_compose(context, "restart", service=service)
 
 
-@task(help={"service": "If specified, only affect this service."})
-def stop(context, service=""):
+@task(help={"service": "If specified, only affect the specified service(s); can be provided multiple times (i.e. -s nautobot -s worker)."}, iterable=["service"])
+def stop(context, service=None):
     """Stop specified or all services, if service is not specified, remove all containers."""
     print("Stopping Nautobot...")
+    service = " ".join(service) if service else None
     docker_compose(context, "stop" if service else "down --remove-orphans", service=service)
 
 
@@ -386,12 +389,13 @@ def vscode(context):
 
 @task(
     help={
-        "service": "If specified, only display logs for this service (default: all)",
+        "service": "If specified, only display logs for the specified service(s) (default: all); can be provided multiple times (i.e. -s nautobot -s worker)",
         "follow": "Flag to follow logs (default: False)",
         "tail": "Tail N number of lines (default: all)",
-    }
+    },
+    iterable=["service"],
 )
-def logs(context, service="", follow=False, tail=0):
+def logs(context, service=None, follow=False, tail=0):
     """View the logs of a docker compose service."""
     command = "logs "
 
@@ -399,6 +403,7 @@ def logs(context, service="", follow=False, tail=0):
         command += "--follow "
     if tail:
         command += f"--tail={tail} "
+    service = " ".join(service) if service else None
 
     docker_compose(context, command, service=service)
 
