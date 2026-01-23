@@ -14,7 +14,7 @@ on: # yamllint disable-line rule:truthy rule:comments
 
 jobs:
   branch-protection:
-    if: github.event_name == 'pull_request'
+    if: "github.event_name == 'pull_request'"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Check branch protection rules"
