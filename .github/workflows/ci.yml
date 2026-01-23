@@ -25,6 +25,8 @@ jobs:
             echo "Target branch: $GITHUB_BASE_REF"
             exit 1
           fi
+          echo "Source branch: $GITHUB_HEAD_REF"
+          echo "Target branch: $GITHUB_BASE_REF"
           echo "✅ Branch protection check passed"
   changelog:
     if: >
