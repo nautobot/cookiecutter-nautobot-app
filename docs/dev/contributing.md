@@ -58,3 +58,4 @@ When a new release of any kind (e.g. from `develop` to `main`, or a release of a
     - Change the version from `<major>.<minor>.<patch>` to `<major>.<minor>.<patch + 1>-beta` in pyproject.toml.
     - Set the PR to the proper branch, e.g. either `develop` or `stable-<major>.<minor>`.
     - Once tests pass, merge.
+    
