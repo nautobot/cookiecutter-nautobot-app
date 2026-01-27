@@ -22,19 +22,6 @@ The branching policy includes the following tenets:
 
 This Nautobot App will observe semantic versioning, as of 1.0. This may result in a quick turnaround in minor versions to keep pace with an ever-growing feature set.
 
-## Testing Standards
-
-All contributions must include appropriate test coverage to ensure stability, prevent regressions, and maintain confidence in releases.
-
-Testing standards include the following expectations:
-
-- All new features **must** include relevant unit tests.
-- Bug fixes **should** include tests that validate the reported issue and prevent regressions.
-- Tests should be written using Nautobots testing framework and follow existing project patterns.
-- Existing tests **must not be broken** by a pull request.
-- Pull requests that reduce overall test coverage may be requested to add additional tests before approval.
-- Tests are expected to pass locally and in CI before a pull request is merged.
-
 ## Release Policy
 
 This Nautobot App currently has no intended scheduled release schedule and will release new features in minor versions.
@@ -58,4 +45,3 @@ When a new release of any kind (e.g. from `develop` to `main`, or a release of a
     - Change the version from `<major>.<minor>.<patch>` to `<major>.<minor>.<patch + 1>-beta` in pyproject.toml.
     - Set the PR to the proper branch, e.g. either `develop` or `stable-<major>.<minor>`.
     - Once tests pass, merge.
-    
