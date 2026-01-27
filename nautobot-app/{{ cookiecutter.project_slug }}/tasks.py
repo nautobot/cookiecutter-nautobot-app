@@ -723,7 +723,7 @@ def help_task(context):
 
 @task(
     help={
-        "version": "Version of Nautobot Dev Example App to generate the release notes for.",
+        "version": "Version of {{ cookiecutter.verbose_name }} to generate the release notes for.",
         "date": "Date of the release (default: today).",
         "keep": "Keep existing release notes files. Useful for testing. (default: False).",
     }
