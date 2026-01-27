@@ -59,7 +59,7 @@ Testing standards include the following expectations:
 
 - All new features **must** include relevant unit tests.
 - Bug fixes **should** include tests that validate the reported issue and prevent regressions.
-- Tests should be written using Nautobots testing framework and follow existing project patterns.
+- Tests should be written using Nautobot's base test cases and follow existing project patterns.
 - Existing tests **must not be broken** by a pull request.
 - Pull requests that reduce overall test coverage may be requested to add additional tests before approval.
 - Tests are expected to pass locally and in CI before a pull request is merged.
