@@ -1,1 +1,1 @@
-Added `--livereload` keyword argument to mkdocs serve command to explicitly enable livereload functionality.
+Added `--livereload` keyword argument to mkdocs serve command to explicitly enable live reload functionality.
