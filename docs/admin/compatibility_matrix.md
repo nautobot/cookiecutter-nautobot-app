@@ -6,3 +6,4 @@ This table shows the target Nautobot versions which the templates in this reposi
 | ------------- | -------------------- | ------------- |
 | 1.*           | 1.6.0                | 1.6.99        |
 | 2.*           | 2.0.0                | 2.9.99        |
+| 3.*           | 3.0.0                | 3.9.99        |
