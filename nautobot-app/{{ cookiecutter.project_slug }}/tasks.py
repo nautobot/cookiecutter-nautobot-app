@@ -682,6 +682,9 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
 @task
 def docs(context):
     """Build and serve docs locally for development."""
+    # Note: explicitly enabling --livereload was added as a workaround
+    # and can be removed if/when mkdocs is updated.
+    # Ref: https://github.com/mkdocs/mkdocs/issues/4032
     command = "mkdocs serve -v --livereload"
 
     if is_truthy(context.{{ cookiecutter.app_name }}.local):
