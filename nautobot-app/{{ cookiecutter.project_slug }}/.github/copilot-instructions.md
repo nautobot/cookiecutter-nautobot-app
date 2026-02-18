@@ -67,7 +67,7 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
 When scaffolding features, use Nautobot's base classes and helpers first:
 
 - **Models:** `PrimaryModel` (full Nautobot features) or `BaseModel` as appropriate.
-- **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits).
+- **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits, `NautobotFilterForm` for filter forms).
 - **FilterSets:** `NautobotModelFilterSet` (`Meta.fields = "__all__"` unless strongly justified).
 - **Serializers:** `NautobotModelSerializer` (writeable) / `BaseModelSerializer` (simple read‑only).
 - **API views:** `NautobotModelViewSet`.
@@ -151,7 +151,7 @@ object_detail_content = ObjectDetailContent(
 #### Tab Types
 
 - **`Tab`** — Standard tab with panels (rendered in same page)
-- **`DistinctViewTab`** — Tab that links to a separate view/URL (for complex data)
+- **`DistinctViewTab`** — Tab that links to a separate view/URL (for complex data). **Requires a corresponding `@action` method** on the ViewSet that returns `Response({})`.
 
 ### Component Framework Best Practices
 
@@ -178,6 +178,7 @@ object_detail_content = ObjectDetailContent(
 - **Filters:**
   - Use `RelatedMembershipBooleanFilter` for boolean relationship filters (`has_*`).
   - Use `NaturalKeyOrPKMultipleChoiceFilter` for FK filters where applicable.
+  - Use `SearchFilter` for `q` parameter search logic.
 - **Templates (when needed):**
   - Extend Nautobot base templates; prefer provided filters (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand‑rolled anchors.
 - **UI Patterns:**
@@ -191,7 +192,8 @@ object_detail_content = ObjectDetailContent(
 
 ## 7) Migrations
 
-- If models change:
+- **Do not generate migrations automatically.** Migration generation should be done by a developer, not by AI.
+- If models change, remind the developer to:
   - `poetry run invoke check-migrations`
   - `poetry run invoke makemigrations -n <meaningful_name>`
 - Keep schema and data migrations separate and reversible.
@@ -216,8 +218,28 @@ object_detail_content = ObjectDetailContent(
 - **Form tests:** use `nautobot.core.testing.FormTestCases.BaseFormTestCase`.
 - **Integration (browser) tests:** `nautobot.apps.testing.SeleniumTestCase` (auto‑tagged `integration`).
 - **Migration tests:** `django_test_migrations.MigratorTestCase` (auto‑tagged `migration_test`).
+- **When to use `TransactionTestCase`:** Default to `TestCase` for all standard tests (models, views, filters, API) — it is faster because it uses transaction rollback. Use `TransactionTestCase` only when testing **Nautobot Jobs** end-to-end via `run_job_for_testing()`, because Jobs run through Celery and need real committed transactions visible across process boundaries. Note that `setUpTestData()` does **not** work with `TransactionTestCase`; create test data in `setUp()` or in individual test methods instead.
 
-### 8.2 Directory Layout
+### 8.2 Testing Mixin Strategy (`nautobot.apps.testing`)
+
+Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `FilterTestCases`) containing **inner test-case classes** that app developers compose via multiple inheritance. This pattern eliminates boilerplate by providing 30+ test methods (CRUD, permissions, bulk operations, pagination, query performance) from a single declarative class.
+
+**How it works:** Inherit from a composite class (e.g., `ViewTestCases.PrimaryObjectViewTestCase`) and provide declarative data (`model`, `form_data`, `csv_data`, `bulk_edit_data`) in `setUpTestData`. The framework generates and runs all relevant test methods automatically.
+
+**Works well with:**
+- Standard CRUD operations using `NautobotUIViewSet` / `NautobotModelViewSet`
+- Consistent permission testing (403/302 without, 200 with)
+- API contract testing (serializer validation, depth params, bulk ops)
+- Filter testing via `generic_filter_tests` declarations
+- Performance regression testing (`assertApproximateNumQueries`)
+
+**Does not cover:**
+- Highly custom views (wizards, multi-step forms, non-CRUD actions)
+- Custom DRF `@action` endpoints beyond standard CRUD
+- Non-model-backed views (dashboards, reports)
+- Complex form logic with conditional fields or JavaScript-dependent validation
+
+### 8.3 Directory Layout
 
 ```
 <app>/tests/
@@ -231,7 +253,7 @@ object_detail_content = ObjectDetailContent(
     test_*.py
 ```
 
-### 8.3 Running Tests
+### 8.4 Running Tests
 
 - All tests (fast fixtures enabled):
 **Help**
@@ -253,13 +275,13 @@ Options:
   -l, --lint-only   Only run linters; unit tests will be excluded. (default: False)
 ```
 
-### 8.4 Test Data & Fixtures
+### 8.5 Test Data & Fixtures
 
 - Prefer creating objects via model `.create()`/`.save()` inside tests.
 - Avoid calling factories in `setUp()` / `setUpTestData()`; factory output can be stateful.
 - Rely on cached/seeded fixtures where provided by the runner to keep tests fast and deterministic.
 
-### 8.5 API Test Skeleton (what Copilot should scaffold)
+### 8.6 API Test Skeleton (what Copilot should scaffold)
 
 ```python
 """API tests for Widget."""
@@ -288,7 +310,7 @@ class WidgetAPITests(
         cls.update_data = {"name": "Widget A+"}
 ```
 
-### 8.6 Filter Test Skeleton
+### 8.7 Filter Test Skeleton
 
 ```python
 """Filter tests for Widget."""
@@ -307,7 +329,7 @@ class WidgetFilterTests(FilterTestCases.FilterTestCase):
     ]
 ```
 
-### 8.7 Views Test Skeleton
+### 8.8 Views Test Skeleton
 
 ```python
 """View tests for Widget UI."""
@@ -320,11 +342,11 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
     bulk_edit_data = {"name": "Bulk Renamed"}
 ```
 
-### 8.8 OpenAPI Schema Checks
+### 8.9 OpenAPI Schema Checks
 
-Add a lightweight OpenAPI schema test using Nautobot's provided test cases to ensure your app's endpoints and serializers remain schema‑valid.
+Nautobot's built-in test infrastructure includes OpenAPI schema validation. Ensure your app's serializers and endpoints remain schema-valid by running the full test suite (`poetry run invoke tests`). Do not generate custom OpenAPI schema tests — the framework handles this automatically.
 
-### 8.9 Unittest Task (Django/Nautobot runner)
+### 8.10 Unittest Task (Django/Nautobot runner)
 
 In addition to `invoke tests` (the default Nautobot test runner), this repo can use **Django's unittest-style runner** via the `unittest` Invoke task when present. Prefer this when you want stock unittest selection semantics or when a plugin/app intends to mirror Nautobot core's runner behavior.
 
@@ -399,7 +421,7 @@ Options:
 - Small, focused branches.
 - PRs must include tests, migration notes (if any), and "how to test" steps.
 - Reference related issues.
-- Target the repository's active development branch (not `main` if `main` is reserved for releases).
+- Target the `develop` branch for PRs (not `main`, which is reserved for releases).
 
 ---
 
@@ -573,7 +595,7 @@ class ComplexModelUIViewSet(NautobotUIViewSet):
                     ),
                 ],
             ),
-            # Distinct view tab (separate URL)
+            # Distinct view tab (separate URL — requires @action method below)
             DistinctViewTab(
                 weight=Tab.WEIGHT_CHANGELOG_TAB + 100,
                 tab_id="analytics",
@@ -583,6 +605,11 @@ class ComplexModelUIViewSet(NautobotUIViewSet):
             ),
         ],
     )
+
+    # Each DistinctViewTab requires a corresponding @action method:
+    @action(detail=True, url_path="analytics", custom_view_base_action="view")
+    def analytics(self, request, *args, **kwargs):
+        return Response({})
 ```
 
 **Migrations (command)**
@@ -608,7 +635,7 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 - [ ] Migrations are checked/generated, named meaningfully, and reversible
 - [ ] Querysets are optimized; indexes added if needed
 - [ ] No secrets/PII in code, tests, or docs
-- [ ] Pre‑commit hooks pass; Ruff & Pylint clean
+- [ ] Ruff & Pylint clean
 - [ ] PR description includes "how to test" and references related issues
 
 ---

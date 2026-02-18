@@ -82,7 +82,7 @@ When scaffolding features, use Nautobot's base classes and helpers first:
 
 - **Models:** `PrimaryModel` (full Nautobot features) or `BaseModel` as
   appropriate.
-- **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits).
+- **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits, `NautobotFilterForm` for filter forms).
 - **FilterSets:** `NautobotModelFilterSet` (`Meta.fields = "__all__"` unless
   strongly justified).
 - **Serializers:** `NautobotModelSerializer` (writeable) / `BaseModelSerializer`
@@ -121,10 +121,11 @@ maintainability.
   - Use `RelatedMembershipBooleanFilter` for boolean relationship filters
     (`has_*`).  
   - Use `NaturalKeyOrPKMultipleChoiceFilter` for FK filters where applicable.
-- **Templates:**  
-  - Extend Nautobot base templates; prefer provided filters
-    (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand-rolled
-    anchors.
+  - Use `SearchFilter` for `q` parameter search logic.
+- **Templates (rare — prefer UI Component Framework):**
+  - **Prefer the UI Component Framework** for detail views unless strongly justified.
+  - When templates are necessary, extend Nautobot base templates; prefer provided filters
+    (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand-rolled anchors.
 - **UI Patterns:**  
   - Prefer **tabs** (via `NautobotUIViewSet`) for distinct data categories.  
   - Use full-width detail layouts for dense content.  
@@ -136,8 +137,9 @@ maintainability.
 
 ## 6) Migrations
 
-- If models change:  
-  - `poetry run invoke check-migrations`  
+- **Do not generate migrations automatically.** Migration generation should be done by a developer, not by AI.
+- If models change, remind the developer to:
+  - `poetry run invoke check-migrations`
   - `poetry run invoke makemigrations -n <meaningful_name>`
 - Keep schema and data migrations separate and reversible.
 - Use descriptive migration names (e.g., `devicenote_initial`, `provider_increase_account_length`).
@@ -166,8 +168,28 @@ or raw `django.test.TestCase`.**
   (auto-tagged `integration`).
 - **Migration tests:** `django_test_migrations.MigratorTestCase` (auto-tagged
   `migration_test`).
+- **When to use `TransactionTestCase`:** Default to `TestCase` for all standard tests (models, views, filters, API) — it is faster because it uses transaction rollback. Use `TransactionTestCase` only when testing **Nautobot Jobs** end-to-end via `run_job_for_testing()`, because Jobs run through Celery and need real committed transactions visible across process boundaries. Note that `setUpTestData()` does **not** work with `TransactionTestCase`; create test data in `setUp()` or in individual test methods instead.
 
-### 7.2 Directory Layout
+### 7.2 Testing Mixin Strategy (`nautobot.apps.testing`)
+
+Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `FilterTestCases`) containing **inner test-case classes** that app developers compose via multiple inheritance. This pattern eliminates boilerplate by providing 30+ test methods (CRUD, permissions, bulk operations, pagination, query performance) from a single declarative class.
+
+**How it works:** Inherit from a composite class (e.g., `ViewTestCases.PrimaryObjectViewTestCase`) and provide declarative data (`model`, `form_data`, `csv_data`, `bulk_edit_data`) in `setUpTestData`. The framework generates and runs all relevant test methods automatically.
+
+**Works well with:**
+- Standard CRUD operations using `NautobotUIViewSet` / `NautobotModelViewSet`
+- Consistent permission testing (403/302 without, 200 with)
+- API contract testing (serializer validation, depth params, bulk ops)
+- Filter testing via `generic_filter_tests` declarations
+- Performance regression testing (`assertApproximateNumQueries`)
+
+**Does not cover:**
+- Highly custom views (wizards, multi-step forms, non-CRUD actions)
+- Custom DRF `@action` endpoints beyond standard CRUD
+- Non-model-backed views (dashboards, reports)
+- Complex form logic with conditional fields or JavaScript-dependent validation
+
+### 7.3 Directory Layout
 
 ```python
 <app>/tests/
@@ -181,7 +203,7 @@ or raw `django.test.TestCase`.**
     test_*.py
 ```
 
-### 7.3 Running Tests
+### 7.4 Running Tests
 
 - All tests (fast fixtures enabled):
 
@@ -205,7 +227,7 @@ Options:
   -l, --lint-only   Only run linters; unit tests will be excluded. (default: False)
 ```
 
-### 7.4 Test Data & Fixtures
+### 7.5 Test Data & Fixtures
 
 - Prefer creating objects via model `.create()`/`.save()` inside tests.
 - Avoid calling factories in `setUp()` / `setUpTestData()`; factory output can be
@@ -213,7 +235,7 @@ Options:
 - Rely on cached/seeded fixtures where provided by the runner to keep tests fast
   and deterministic.
 
-### 7.5 API Test Skeleton (what Copilot should scaffold)
+### 7.6 API Test Skeleton (what Copilot should scaffold)
 
 ```python
 """API tests for Widget."""
@@ -234,7 +256,7 @@ class WidgetAPITests(
     brief_fields = ["display", "id", "name", "url"]
 
     @classmethod
-    def SetUpTestData(cls):
+    def setUpTestData(cls):
         cls.create_data = [
             {"name": "Widget A"},
             {"name": "Widget B"},
@@ -242,7 +264,7 @@ class WidgetAPITests(
         cls.update_data = {"name": "Widget A+"}
 ```
 
-### 7.6 Filter Test Skeleton
+### 7.7 Filter Test Skeleton
 
 ```python
 """Filter tests for Widget."""
@@ -261,7 +283,7 @@ class WidgetFilterTests(FilterTestCases.FilterTestCase):
     ]
 ```
 
-### 7.7 Views Test Skeleton
+### 7.8 Views Test Skeleton
 
 ```python
 """View tests for Widget UI."""
@@ -274,12 +296,11 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
     bulk_edit_data = {"name": "Bulk Renamed"}
 ```
 
-### 7.8 OpenAPI Schema Checks
+### 7.9 OpenAPI Schema Checks
 
-Add a lightweight OpenAPI schema test using Nautobot's provided test cases to
-ensure your app's endpoints and serializers remain schema-valid.
+Nautobot's built-in test infrastructure includes OpenAPI schema validation. Ensure your app's serializers and endpoints remain schema-valid by running the full test suite (`poetry run invoke tests`). Do not generate custom OpenAPI schema tests — the framework handles this automatically.
 
-### 7.9 Unittest Task (Django/Nautobot runner)
+### 7.10 Unittest Task (Django/Nautobot runner)
 
 In addition to `invoke tests` (the default Nautobot test runner), this repo can
 use **Django's unittest-style runner** via the `unittest` Invoke task when
@@ -313,7 +334,7 @@ Options:
 - Use `poetry run invoke tests` for the full testing suite experience (ruff,
   yamllint, markdownlint, check_migrations, pylint, build_and_check_docs,
   validate_app_config, unittest, unitttest_coverage, coverage_lcov).
-- Use `poetry run invoke **unittest**` for Django/unittest-native selection
+- Use `poetry run invoke unittest` for Django/unittest-native selection
   (labels/patterns), quick targeted runs, or parity with Nautobot core's CI
   jobs.
 
@@ -546,8 +567,7 @@ class MyCommandWorkerTest(ChatOpsTestCase):
 - Small, focused branches.  
 - PRs must include tests, migration notes (if any), and "how to test" steps.  
 - Reference related issues.  
-- Target the repository's active development branch (not `main` if `main` is
-  reserved for releases).
+- Target the `develop` branch for PRs (not `main`, which is reserved for releases).
 
 ---
 
@@ -635,7 +655,7 @@ class MyCommandWorkerTest(TestCase):
 """DeviceNote model."""
 from django.db import models
 from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
-from nautobot.apps.models.generics import PrimaryModel
+from nautobot.apps.models import PrimaryModel
 
 class DeviceNote(PrimaryModel):
     """Freeform note attached to a device."""
@@ -743,7 +763,7 @@ front-matter to apply specialized guidance to certain subtrees (e.g., `docs/`,
 - [ ] Migrations are checked/generated, named meaningfully, and reversible  
 - [ ] Querysets are optimized; indexes added if needed  
 - [ ] No secrets/PII in code, tests, or docs  
-- [ ] Pre-commit hooks pass; Ruff & Pylint clean  
+- [ ] Ruff & Pylint clean
 - [ ] PR description includes "how to test" and references related issues
 
 ---
