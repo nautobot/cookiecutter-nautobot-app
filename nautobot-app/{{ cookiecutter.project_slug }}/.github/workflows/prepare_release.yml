@@ -1,18 +1,18 @@
 ---
-name: Prepare Release
-on:
+name: "Prepare Release"
+on: # yamllint disable-line rule:truthy rule:comments
   workflow_dispatch:
     inputs:
       bump_rule:
-        description: 'Select the version bump type'
+        description: "Select the version bump type"
         required: true
-        default: 'patch'
-        type: choice
+        default: "patch"
+        type: "choice"
         options:
-          - prerelease
-          - patch
-          - minor
-          - major
+          - "prerelease"
+          - "patch"
+          - "minor"
+          - "major"
       source_branch:
         description: "Create the release from this branch (default: main)."
         required: true
@@ -27,10 +27,10 @@ jobs:
     permissions:
       contents: "write"
       pull-requests: "write"
-    name: Prepare release
-    runs-on: ubuntu-latest
+    name: "Prepare Release"
+    runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout code
+      - name: "Checkout code"
         uses: "actions/checkout@v4"
         with:
           # If source_branch is 'main', use 'develop' because we cut the release from main, but start with develop. Otherwise, use the input value as with LTM and Next we cut from the same branch.
@@ -43,14 +43,14 @@ jobs:
           poetry-version: "2.1.3"
           poetry-install-options: "--with dev"
 
-      - name: Validate Branch and Tags
+      - name: "Validate Branch and Tags"
         run: |
           # 1. Verify branch exists
           if ! git rev-parse --verify origin/{% raw %}${{ github.event.inputs.source_branch }}{% endraw %} > /dev/null 2>&1; then
             echo "Error: Branch {% raw %}${{ github.event.inputs.source_branch }}{% endraw %} does not exist."
             exit 1
           fi
-          
+
           # 2. Try to get the previous version tag
           # If it fails (no tags), get the hash of the first commit
           if PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null); then
@@ -63,18 +63,18 @@ jobs:
             echo "No tags found. Falling back to initial commit: $FIRST_COMMIT"
           fi
 
-      - name: Determine New Version
-        id: versioning
+      - name: "Determine New Version"
+        id: "versioning"
         run: |
           # Perform the bump based on the user input
           poetry version {% raw %}${{ github.event.inputs.bump_rule }}{% endraw %}
-          
+
           # Capture the New version string for use in other steps
           NEW_VER=$(poetry version --short)
           echo "NEW_VERSION=$NEW_VER" >> $GITHUB_ENV
           echo "RELEASE_BRANCH=release/$NEW_VER" >> $GITHUB_ENV
 
-      - name: Set Date Variable
+      - name: "Set Date Variable"
         run: |
           if [ -z "{% raw %}${{ github.event.inputs.date }}{% endraw %}" ]; then
             RELEASE_DATE=$(date +%Y-%m-%d)
@@ -83,7 +83,7 @@ jobs:
           fi
           echo "RELEASE_DATE=$RELEASE_DATE" >> $GITHUB_ENV
 
-      - name: Create Release Branch
+      - name: "Create Release Branch"
         env:
           GITHUB_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |
@@ -102,7 +102,7 @@ jobs:
       - name: "Regenerate poetry.lock"
         run: "poetry lock --regenerate"
 
-      - name: Generate and Parse Release Notes
+      - name: "Generate and Parse Release Notes"
         env:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |
@@ -119,7 +119,7 @@ jobs:
           # 3. Parse usernames (Regex match)
           # We use grep to find "@user" patterns, sort, and uniq them
           USERNAMES=$(echo "$RAW_GH_NOTES" | grep -oP 'by @\K[a-zA-Z0-9-]+' | sort -u | grep -vE 'dependabot|nautobot-bot' || true)
-          
+
           # 4. Format the Contributors section
           CONTRIBUTORS_SECTION="## Contributors"
           for user in $USERNAMES; do
@@ -135,21 +135,21 @@ jobs:
 
           # 6. Combine everything
           FINAL_NOTES="$TOWNCRIER_NOTES"$'\n\n'"$CONTRIBUTORS_SECTION"$'\n\n'"$GH_FOOTER"
-          
+
           # 7. Save to a temporary file to avoid shell argument length limits
           echo "$FINAL_NOTES" > ../consolidated_notes.md
 
-      - name: Generate Release Notes
-        run: poetry run inv generate-release-notes --version "{% raw %}${{ env.NEW_VERSION }}{% endraw %}" --date "{% raw %}${{ env.RELEASE_DATE }}{% endraw %}"
+      - name: "Generate Release Notes"
+        run: "poetry run inv generate-release-notes --version '{% raw %}${{ env.NEW_VERSION }}{% endraw %}' --date '{% raw %}${{ env.RELEASE_DATE }}{% endraw %}'"
 
-      - name: Commit Changes and Push
+      - name: "Commit Changes and Push"
         run: |
           # Add all changes (pyproject.toml, poetry.lock, etc.)
           git add .
           git commit -m "chore: prepare release v{% raw %}${{ env.NEW_VERSION }}{% endraw %}"
           git push origin "{% raw %}${{ env.RELEASE_BRANCH }}{% endraw %}"
 
-      - name: Create Pull Request
+      - name: "Create Pull Request"
         env:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |
@@ -159,7 +159,7 @@ jobs:
             --base "{% raw %}${{ github.event.inputs.source_branch }}{% endraw %}" \
             --head "{% raw %}${{ env.RELEASE_BRANCH }}{% endraw %}"
 
-      - name: Create Draft Release
+      - name: "Create Draft Release"
         env:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |

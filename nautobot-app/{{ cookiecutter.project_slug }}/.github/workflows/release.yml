@@ -106,20 +106,20 @@ jobs:
             }
 
   create-pr-to-develop:
-    if: github.event.release.target_commitish == 'main'
+    if: "github.event.release.target_commitish == 'main'"
     permissions:
       contents: "write"
       pull-requests: "write"
     name: "Create a PR from main into develop"
     needs:
-    - "publish-github"
-    - "publish-pypi"
-    runs-on: ubuntu-latest
+      - "publish-github"
+      - "publish-pypi"
+    runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
+      - name: "Checkout main"
+        uses: "actions/checkout@v4"
         with:
-          ref: main
+          ref: "main"
           fetch-depth: 0
 
       - name: "Setup environment"
@@ -128,8 +128,8 @@ jobs:
           poetry-version: "2.1.3"
           poetry-install-options: "--no-root"
 
-      - name: Create release branch from main
-        id: branch
+      - name: "Create release branch from main"
+        id: "branch"
         run: |
 
           git config user.name "{% raw %}${{ github.actor }}{% endraw %}"
@@ -154,7 +154,7 @@ jobs:
 
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
-      - name: Create Pull Request to develop
+      - name: "Create Pull Request to develop"
         env:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |
