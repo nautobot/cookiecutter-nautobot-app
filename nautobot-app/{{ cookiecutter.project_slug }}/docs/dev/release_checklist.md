@@ -70,7 +70,6 @@ A Draft Release will automatically be created in GitHub when the Prepare Release
 
 After the release has been published, a new PR will automatically be created to merge the release branch back into `develop` with a version bump to the next development version (e.g. `1.4.3a1`). Review and merge this PR once CI has completed and the PR has been approved.
 
-
 ## Legacy Documentation for Releases
 
 Please use the above process for all releases going forward, but if you need to refer to the old manual release process for any reason, here are the steps that were previously followed for releases.
