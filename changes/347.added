@@ -1,1 +1,1 @@
-Added mkdocs plugin glightbox and included media files to provide examples when loaded on readthedocs
+Added mkdocs plugin glightbox with default behavior of being enabled on all images
