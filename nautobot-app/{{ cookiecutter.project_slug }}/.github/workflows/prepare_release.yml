@@ -18,7 +18,7 @@ on: # yamllint disable-line rule:truthy rule:comments
         required: true
         default: "main"
       date:
-        description: "Date of the release YYYY-MM-DD (default: today)."
+        description: "Date of the release YYYY-MM-DD (defaults to today's date in the US Eastern TZ)."
         required: false
         default: ""
 
@@ -77,7 +77,7 @@ jobs:
       - name: "Set Date Variable"
         run: |
           if [ -z "{% raw %}${{ github.event.inputs.date }}{% endraw %}" ]; then
-            RELEASE_DATE=$(date +%Y-%m-%d)
+            RELEASE_DATE=$(TZ=America/New_York date +%Y-%m-%d)
           else
             RELEASE_DATE="{% raw %}${{ github.event.inputs.date }}{% endraw %}"
           fi
