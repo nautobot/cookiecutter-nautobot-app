@@ -13,7 +13,7 @@ on: # yamllint disable-line rule:truthy rule:comments
           - "patch"
           - "minor"
           - "major"
-      source_branch:
+      target_branch:
         description: "Create the release from this branch (default: main)."
         required: true
         default: "main"
@@ -33,8 +33,8 @@ jobs:
       - name: "Checkout code"
         uses: "actions/checkout@v4"
         with:
-          # If source_branch is 'main', use 'develop' because we cut the release from main, but start with develop. Otherwise, use the input value as with LTM and Next we cut from the same branch.
-          ref: "{% raw %}${{ github.event.inputs['source_branch'] == 'main' && 'develop' || github.event.inputs['source_branch'] }}{% endraw %}"
+          # If target_branch is 'main', use 'develop' as the source branch. Otherwise, the source and target branch are the same.
+          ref: "{% raw %}${{ github.event.inputs['target_branch'] == 'main' && 'develop' || github.event.inputs['target_branch'] }}{% endraw %}"
           fetch-depth: 0  # Fetch all history for git tags
 
       - name: "Setup environment"
@@ -46,8 +46,8 @@ jobs:
       - name: "Validate Branch and Tags"
         run: |
           # 1. Verify branch exists
-          if ! git rev-parse --verify origin/{% raw %}${{ github.event.inputs.source_branch }}{% endraw %} > /dev/null 2>&1; then
-            echo "Error: Branch {% raw %}${{ github.event.inputs.source_branch }}{% endraw %} does not exist."
+          if ! git rev-parse --verify origin/{% raw %}${{ github.event.inputs.target_branch }}{% endraw %} > /dev/null 2>&1; then
+            echo "Error: Branch {% raw %}${{ github.event.inputs.target_branch }}{% endraw %} does not exist."
             exit 1
           fi
 
@@ -102,7 +102,7 @@ jobs:
       - name: "Regenerate poetry.lock"
         run: "poetry lock --regenerate"
 
-      - name: "Generate and Parse Release Notes"
+      - name: "Generate Github Release Notes"
         env:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |
@@ -110,15 +110,14 @@ jobs:
           TOWNCRIER_NOTES=$(poetry run towncrier build --version "{% raw %}${{ env.NEW_VERSION }}{% endraw %}" --date "{% raw %}${{ env.RELEASE_DATE }}{% endraw %}" --draft)
 
           # 2. Call GitHub API to generate raw notes
-          # This is the equivalent of your Python 'generate_notes_url' call
           RAW_GH_NOTES=$(gh api /repos/{% raw %}${{ github.repository }}{% endraw %}/releases/generate-notes \
             -f tag_name="v{% raw %}${{ env.NEW_VERSION }}{% endraw %}" \
-            -f target_commitish="{% raw %}${{ github.event.inputs['source_branch'] == 'main' && 'develop' || github.event.inputs['source_branch'] }}{% endraw %}" \
+            -f target_commitish="{% raw %}${{ github.event.inputs['target_branch'] == 'main' && 'develop' || github.event.inputs['target_branch'] }}{% endraw %}" \
             -f previous_tag_name="{% raw %}${{ env.PREVIOUS_TAG }}{% endraw %}" --jq '.body')
 
           # 3. Parse usernames (Regex match)
           # We use grep to find "@user" patterns, sort, and uniq them
-          USERNAMES=$(echo "$RAW_GH_NOTES" | grep -oP 'by @\K[a-zA-Z0-9-]+' | sort -u | grep -vE 'dependabot|nautobot-bot' || true)
+          USERNAMES=$(echo "$RAW_GH_NOTES" | grep -oP 'by @\K[a-zA-Z0-9-]+' | sort -u | grep -vE 'dependabot|nautobot-bot|github-actions' || true)
 
           # 4. Format the Contributors section
           CONTRIBUTORS_SECTION="## Contributors"
@@ -139,14 +138,14 @@ jobs:
           # 7. Save to a temporary file to avoid shell argument length limits
           echo "$FINAL_NOTES" > ../consolidated_notes.md
 
-      - name: "Generate Release Notes"
+      - name: "Generate App Release Notes and update mkdocs.yml"
         run: "poetry run inv generate-release-notes --version '{% raw %}${{ env.NEW_VERSION }}{% endraw %}' --date '{% raw %}${{ env.RELEASE_DATE }}{% endraw %}'"
 
       - name: "Commit Changes and Push"
         run: |
           # Add all changes (pyproject.toml, poetry.lock, etc.)
           git add .
-          git commit -m "chore: prepare release v{% raw %}${{ env.NEW_VERSION }}{% endraw %}"
+          git commit -m "prepare release v{% raw %}${{ env.NEW_VERSION }}{% endraw %}"
           git push origin "{% raw %}${{ env.RELEASE_BRANCH }}{% endraw %}"
 
       - name: "Create Pull Request"
@@ -156,7 +155,7 @@ jobs:
           gh pr create \
             --title "Release v{% raw %}${{ env.NEW_VERSION }}{% endraw %}" \
             --body-file "../consolidated_notes.md" \
-            --base "{% raw %}${{ github.event.inputs.source_branch }}{% endraw %}" \
+            --base "{% raw %}${{ github.event.inputs.target_branch }}{% endraw %}" \
             --head "{% raw %}${{ env.RELEASE_BRANCH }}{% endraw %}"
 
       - name: "Create Draft Release"
@@ -165,7 +164,7 @@ jobs:
         run: |
           if [[ "{% raw %}${{ github.event.inputs.bump_rule }}{% endraw %}" == "prerelease" ]]; then
             RELEASE_FLAGS="--prerelease"
-          elif [[ "{% raw %}${{ github.event.inputs.source_branch }}{% endraw %}" == "main" ]]; then
+          elif [[ "{% raw %}${{ github.event.inputs.target_branch }}{% endraw %}" == "main" ]]; then
             RELEASE_FLAGS="--latest"
           else
             RELEASE_FLAGS="--latest=false"
@@ -176,4 +175,4 @@ jobs:
             $RELEASE_FLAGS \
             --title "v{% raw %}${{ env.NEW_VERSION }}{% endraw %} - {% raw %}${{ env.RELEASE_DATE }}{% endraw %}" \
             --notes-file "../consolidated_notes.md" \
-            --target "{% raw %}${{ github.event.inputs.source_branch }}{% endraw %}"
+            --target "{% raw %}${{ github.event.inputs.target_branch }}{% endraw %}"

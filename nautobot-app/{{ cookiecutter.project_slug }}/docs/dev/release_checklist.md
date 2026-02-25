@@ -54,9 +54,9 @@ Ensure that continuous integration testing on the `develop` branch is completing
 
 ### Run the Prepare Release Github Workflow
 
-Run the [Prepare Release]({{ cookiecutter.repo_url }}/actions/workflows/prepare_release.yml) GitHub workflow on the `develop` branch. Select the version bump type (prerelease, patch, minor, major) that matches the version bump you intend to make for this release. Then enter the branch name to create the release from (default is `main`). You can optionally provide the Date of the release (YYYY-MM-DD), if preparing the release ahead of time, otherwise it will default to the current date. Finally, click "Run workflow" to execute the workflow.
+Run the [Prepare Release]({{ cookiecutter.repo_url }}/actions/workflows/prepare_release.yml) GitHub workflow. Leave the "Use workflow from" option set to the default `develop` branch. Select the version bump type (prerelease, patch, minor, major) that matches the version bump you intend to make for this release. Then enter the branch name to create the release from (default is `main`). You can optionally provide the Date of the release (YYYY-MM-DD), if preparing the release ahead of time, otherwise it will default to the current date. Finally, click "Run workflow" button to execute the workflow.
 
-This workflow will automatically create a release branch off of `develop` (If release from `main`, it will use `develop` as the starting point), bump the version, and generate the release notes. It will also open a pull request for you to merge the release branch into `main` (unless another branch is specified) with the generated release notes as the PR description.
+This workflow will automatically create a release branch from the appropriate branch (If releasing from `main`, it will use `develop` as the starting point), bump the version, and generate the release notes. It will also open a pull request for you to merge the release branch into the target branch with the generated release notes as the PR description.
 
 ### Review and Merge the Release PR
 
@@ -64,11 +64,11 @@ Review the release PR created by the workflow, make any necessary adjustments to
 
 ### Publish the Release
 
-A Draft Release will automatically be created in GitHub when the Prepare Release Workflow is run. Verify the content of the release notes, the tag, and the target branch, then publish the release.
+A draft release will automatically be created in GitHub when the Prepare Release workflow is run. Verify the content of the release notes, the tag, and the target branch, then publish the release.
 
 ### Sync the Release Back to `develop`
 
-After the release has been published, a new PR will automatically be created to merge the release branch back into `develop` with a version bump to the next development version (e.g. `1.4.3a1`). Review and merge this PR once CI has completed and the PR has been approved.
+After a release has been published from the `main` branch, a new PR will automatically be created to merge the changes from `main` back into `develop` with a version bump to the next development version (e.g. `1.4.3a1`). Review and merge this PR once CI has completed and the PR has been approved.
 
 ## Legacy Documentation for Releases
 
@@ -222,6 +222,8 @@ The process is similar to [releasing from `develop`](#all-releases-from-develop)
 Once the release has been published, open a separate PR against `develop` to synchronize all LTM release notes into the latest version of the docs for visibility.
 
 ### Legacy Documentation for LTM Releases
+
+Please use the automated process for all LTM releases going forward, but if you need to refer to the old manual release process for any reason, here are the steps that were previously followed for LTM releases.
 
 1. Make sure your `ltm-1.6` branch is passing CI.
 2. Create a release branch from the `ltm-1.6` branch: `git switch -c release-1.2.3 ltm-1.6`.
