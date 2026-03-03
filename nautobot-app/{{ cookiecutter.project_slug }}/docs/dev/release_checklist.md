@@ -215,7 +215,7 @@ All done!
 
 ## LTM Releases
 
-For projects maintaining a Nautobot LTM compatible release, all development and release management is done through the `ltm-x.y` branch. The `x.y` relates to the LTM version of Nautobot it's compatible with, for example `1.6`.
+For projects maintaining a Nautobot LTM compatible release, all development and release management is done through the `ltm-x.y` branch. The `x.y` relates to the LTM version of Nautobot it's compatible with, for example `2.4`.
 
 The process is similar to [releasing from `develop`](#all-releases-from-develop), but there is no need for post-release branch syncing because you'll release directly from the LTM branch.
 
@@ -225,12 +225,30 @@ Once the release has been published, open a separate PR against `develop` to syn
 
 Please use the automated process for all LTM releases going forward, but if you need to refer to the old manual release process for any reason, here are the steps that were previously followed for LTM releases.
 
-1. Make sure your `ltm-1.6` branch is passing CI.
-2. Create a release branch from the `ltm-1.6` branch: `git switch -c release-1.2.3 ltm-1.6`.
+1. Make sure your `ltm-2.4` branch is passing CI.
+2. Create a release branch from the `ltm-2.4` branch: `git switch -c release-2.4.99 ltm-2.4`.
 3. Bump up the patch version `poetry version patch`. If you're backporting a feature instead of bugfixes, bump the minor version instead with `poetry version minor`.
-4. Generate the release notes: `invoke generate-release-notes --version 1.2.3`.
-5. Move the release notes from the generated `docs/admin/release_notes/version_X.Y.md` to `docs/admin/release_notes/version_1.2.md`.
-6. Add all the changes and `git commit -m "Release v1.2.3"`, then `git push`.
-7. Open a new PR against `ltm-1.6`. Once CI is passing in the PR, `Create a merge commit` (don't squash!).
-8. Create a New Release in GitHub - use the same steps documented [here](#create-a-new-release-in-github).
-9. Open a separate PR against `develop` to synchronize all LTM release changelogs into the latest version of the docs for visibility.
+4. Generate the release notes: `invoke generate-release-notes --version 2.4.99`.
+5. Move the release notes from the generated `docs/admin/release_notes/version_X.Y.md` to `docs/admin/release_notes/version_2.4.md`.
+6. Add all the changes and `git commit -m "Release v2.4.99"`, then `git push`.
+7. Open a new PR against `ltm-2.4`. Once CI is passing in the PR, `Create a merge commit` (don't squash!).
+8. Create a New Release in GitHub - use the same steps documented [here](#create-a-new-release-in-github) except **UNCHECK THE "Set as the latest release" CHECKBOX** for LTM releases.
+9. Open a separate PR against `develop` to synchronize all LTM release notes into the latest version of the docs for visibility.
+
+You can use the following commands to help you pull in the release notes from the `ltm-2.4` branch to the `develop` branch:
+
+```no-highlight
+> git switch develop
+
+> git pull
+
+> git switch -c release-2.4.99-notes-to-develop develop
+
+> git checkout ltm-2.4 docs/admin/release_notes/version_2.4.md
+
+> git add docs/admin/release_notes/version_2.4.md && git commit -m "Update release notes from LTM 2.4 to develop"
+
+> git push
+```
+
+Open a new PR from `release-2.4.99-notes-to-develop` against `develop`, wait for CI to pass, and merge it.
