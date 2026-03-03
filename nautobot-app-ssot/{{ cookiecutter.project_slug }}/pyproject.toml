@@ -32,7 +32,7 @@ include = [
 python = ">=3.10,<3.14"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
-nautobot-ssot = "^3.0.0"
+nautobot-ssot = ">=4.0.0,<5.0.0"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
@@ -51,6 +51,9 @@ Markdown = "*"
 towncrier = ">=23.6.0,<=24.8.0"
 to-json-schema = "*"
 jsonschema = "*"
+djlint = ">=1.36.4,<2.0.0"
+djhtml = ">=3.0.8,<4.0.0"
+tomli = { version = "*", markers = "python_version < '3.11'" }  # tomli is included in the stdlib as of Python 3.11
 
 [tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
