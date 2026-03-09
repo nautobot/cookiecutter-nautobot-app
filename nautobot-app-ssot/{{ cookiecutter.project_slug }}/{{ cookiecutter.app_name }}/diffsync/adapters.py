@@ -17,9 +17,11 @@ class {{ cookiecutter.system_of_record_camel }}RemoteAdapter(Adapter):
         """Initialize {{ cookiecutter.system_of_record }}.
 
         Args:
+            *args (tuple): Variable length argument list.
             job (object, optional): {{ cookiecutter.system_of_record }} job. Defaults to None.
             sync (object, optional): {{ cookiecutter.system_of_record }} SSoT. Defaults to None.
             client (object): {{ cookiecutter.system_of_record }} API client connection object.
+            **kwargs (dict): Arbitrary keyword arguments.
         """
         super().__init__(*args, **kwargs)
         self.job = job

@@ -6,7 +6,7 @@ _PROJECT_PATH = Path.cwd()
 _ADDONS_PATH = _PROJECT_PATH / "{{ cookiecutter.app_name }}"
 
 _CONGRATS = f"""
-Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH}.
+Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH}
 
 ⚠️⚠️ Before you start using your cookie you must run the following commands inside your cookie:
 
@@ -15,7 +15,7 @@ Congratulations! Your cookie has now been baked. It is located at {_PROJECT_PATH
 * poetry self add poetry-plugin-shell
 * poetry shell
 * invoke makemigrations
-* inv ruff --fix # this will ensure all python files are formatted correctly, may require `sudo chown -R $USER ./` as migrations may be owned by root
+* invoke ruff --fix # this will ensure all python files are formatted correctly, may require `sudo chown -R $USER ./` as migrations may be owned by root
 
 Note: The file `development/creds.env` may be automatically created and ignored by git. It can be used to override default environment variables within the docker containers.
 """
@@ -53,7 +53,6 @@ if __name__ == "__main__":
             "tests/test_forms.py",
             "tests/test_models.py",
             "tests/test_views.py",
-            "urls.py",
             "views.py",
         ]
         for file in files_to_remove:

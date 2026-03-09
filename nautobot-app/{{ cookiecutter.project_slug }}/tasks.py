@@ -691,7 +691,7 @@ def docs(context):
         print(">>> Serving Documentation at http://localhost:8001")
         run_command(context, command)
     else:
-        start(context, service="docs")
+        start(context, service=["docs"])
 
 
 @task
@@ -1021,12 +1021,12 @@ def generate_app_config_schema(context):
     - `NautobotAppConfig.default_settings`
     - `NautobotAppConfig.required_settings`
     """
-    start(context, service="nautobot")
+    start(context, service=["nautobot"])
     nbshell(context, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "generate"})
 
 
 @task
 def validate_app_config(context):
     """Validate the app config based on the app config schema."""
-    start(context, service="nautobot")
+    start(context, service=["nautobot"])
     nbshell(context, plain=True, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "validate"})

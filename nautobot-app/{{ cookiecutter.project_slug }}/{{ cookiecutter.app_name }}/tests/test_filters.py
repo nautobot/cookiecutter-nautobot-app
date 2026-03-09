@@ -6,7 +6,7 @@ from {{ cookiecutter.app_name }} import filters, models
 from {{ cookiecutter.app_name }}.tests import fixtures
 
 
-class {{ cookiecutter.model_class_name }}FilterTestCase(FilterTestCases.FilterTestCase):
+class {{ cookiecutter.model_class_name }}FilterTestCase(FilterTestCases.FilterTestCase):  # pylint: disable=too-many-ancestors
     """{{ cookiecutter.model_class_name }} Filter Test Case."""
 
     queryset = models.{{ cookiecutter.model_class_name }}.objects.all()
