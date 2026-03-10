@@ -36,7 +36,7 @@ include = [
 python = ">=3.10,<3.15"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
-nautobot-chatops = "^3.0.1"
+nautobot-chatops = ">=4.0.0,<5.0.0"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
@@ -71,7 +71,8 @@ mkdocstrings = "0.25.2"
 mkdocstrings-python = "1.10.8"
 mkdocs-autorefs = "1.2.0"
 griffe = "1.1.1"
-glightbox = "3.2.0"
+# Image lightboxing in mkdocs
+mkdocs-glightbox = "~0.5.2"
 
 [tool.poetry.extras]
 all = [
