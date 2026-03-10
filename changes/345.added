@@ -1,2 +1,0 @@
-Added a new workflow to Automate the Release Process.
-Added a new step in release.yml to Automate merging release back to develop.

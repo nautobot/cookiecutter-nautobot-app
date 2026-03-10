@@ -1,1 +1,0 @@
-Changed invoke `start`, `restart`, `stop`, `debug`, and `logs` commands to accept multiple services as arguments.

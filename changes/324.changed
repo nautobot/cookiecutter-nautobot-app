@@ -1,1 +1,0 @@
-Updated the shared Poetry install workflow to use `gh-action-setup-poetry-environment` version 7.
