@@ -8,7 +8,7 @@ This document describes all new features and changes in the release. The format 
 
 <!-- towncrier release notes start -->
 
-## [3.1.0 (2026-03-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/3.1.0)
+## [3.1.0 (2026-03-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.0)
 
 ### Added
 
