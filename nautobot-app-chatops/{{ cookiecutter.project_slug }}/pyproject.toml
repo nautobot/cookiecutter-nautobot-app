@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "{{ cookiecutter.app_slug }}"
-version = "0.1.0a0"
+version = "0.1.0"
 description = "{{ cookiecutter.project_short_description }}"
 authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
 {%- if cookiecutter.open_source_license == 'Apache-2.0' %}
@@ -19,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
 ]
 packages = [
     { include = "{{ cookiecutter.app_name }}" },
@@ -33,7 +32,7 @@ include = [
 "{{ cookiecutter.chatops_interactive_command }}" = "{{ cookiecutter.app_name }}.worker:{{ cookiecutter.chatops_interactive_command }}"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.15"
+python = ">=3.10,<3.14"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-chatops = "^3.0.1"
@@ -55,9 +54,6 @@ Markdown = "*"
 towncrier = ">=23.6.0,<=24.8.0"
 to-json-schema = "*"
 jsonschema = "*"
-djlint = ">=1.36.4,<2.0.0"
-djhtml = ">=3.0.8,<4.0.0"
-tomli = { version = "*", markers = "python_version < '3.11'" }  # tomli is included in the stdlib as of Python 3.11
 
 [tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
