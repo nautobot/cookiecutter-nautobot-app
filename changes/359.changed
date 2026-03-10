@@ -1,1 +1,1 @@
-Change glightbox in pyproject.toml to mkdocs-glightbox.
+Fixed glightbox dependency.
