@@ -1,2 +1,1 @@
-Changed default Python version to 3.14 on cookiecutter-nautobot-app.
 Changed Python version range to 3.14 on cookies.
