@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 packages = [
     { include = "{{ cookiecutter.app_name }}" },
@@ -32,7 +33,7 @@ include = [
 "{{ cookiecutter.chatops_interactive_command }}" = "{{ cookiecutter.app_name }}.worker:{{ cookiecutter.chatops_interactive_command }}"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.14"
+python = ">=3.10,<3.15"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 nautobot-chatops = ">=4.0.0,<5.0.0"
@@ -70,6 +71,8 @@ mkdocstrings = "0.25.2"
 mkdocstrings-python = "1.10.8"
 mkdocs-autorefs = "1.2.0"
 griffe = "1.1.1"
+# Image lightboxing in mkdocs
+mkdocs-glightbox = "~0.5.2"
 
 [tool.poetry.extras]
 all = [
