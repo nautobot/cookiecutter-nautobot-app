@@ -7,6 +7,12 @@ This document describes all new features and changes in the release. The format 
 - Added support for Python `3.14`.
 
 <!-- towncrier release notes start -->
+## [nautobot-app-v3.1.2 (2026-03-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.2)
+
+### Fixed
+
+- [#359](https://github.com/nautobot/cookiecutter-nautobot-app/issues/359) - Fixed glightbox dependency.
+
 ## [nautobot-app-v3.1.1 (2026-03-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.1)
 
 ### Added
