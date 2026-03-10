@@ -1,5 +1,4 @@
-# Accepts a desired Python version as build argument, default to 3.12
-ARG PYTHON_VER="3.12"
+ARG PYTHON_VER
 FROM python:$PYTHON_VER
 
 # Add poetry install location to the $PATH

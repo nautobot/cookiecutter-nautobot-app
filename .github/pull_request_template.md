@@ -10,4 +10,3 @@
 
 - [ ] Update the documentation.
 - [ ] Add changelog.
-- [ ] Verify your changes by testing them in the [dev-example](https://github.com/nautobot/nautobot-app-dev-example) repository before merging.
