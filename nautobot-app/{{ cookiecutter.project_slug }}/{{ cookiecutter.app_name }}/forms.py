@@ -31,7 +31,7 @@ class {{ cookiecutter.model_class_name }}BulkEditForm(TagsBulkEditFormMixin, Nau
         ]
 
 
-class {{ cookiecutter.model_class_name }}FilterForm(NautobotFilterForm):
+class {{ cookiecutter.model_class_name }}FilterForm(NautobotFilterForm):  # pylint: disable=too-many-ancestors
     """Filter form to filter searches."""
 
     model = models.{{ cookiecutter.model_class_name }}

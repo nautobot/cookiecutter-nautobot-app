@@ -34,12 +34,12 @@ class {{ cookiecutter.system_of_record_camel }}DataSource(DataSource):
 
     def load_source_adapter(self):
         """Load data from {{ cookiecutter.system_of_record }} into DiffSync models."""
-        self.source_adapter = {{ cookiecutter.system_of_record_slug }}.{{ cookiecutter.system_of_record_camel }}Adapter(job=self, sync=self.sync)
+        self.source_adapter = {{ cookiecutter.system_of_record_camel }}RemoteAdapter(job=self, sync=self.sync)
         self.source_adapter.load()
 
     def load_target_adapter(self):
         """Load data from Nautobot into DiffSync models."""
-        self.target_adapter = nautobot.NautobotAdapter(job=self, sync=self.sync)
+        self.target_adapter = {{ cookiecutter.system_of_record_camel }}NautobotAdapter(job=self, sync=self.sync)
         self.target_adapter.load()
 
     def run(self, dryrun, memory_profiling, debug, *args, **kwargs):  # pylint: disable=arguments-differ
@@ -75,12 +75,12 @@ class {{ cookiecutter.system_of_record_camel }}DataTarget(DataTarget):
 
     def load_source_adapter(self):
         """Load data from Nautobot into DiffSync models."""
-        self.source_adapter = nautobot.NautobotAdapter(job=self, sync=self.sync)
+        self.source_adapter = {{ cookiecutter.system_of_record_camel }}NautobotAdapter(job=self, sync=self.sync)
         self.source_adapter.load()
 
     def load_target_adapter(self):
         """Load data from {{ cookiecutter.system_of_record }} into DiffSync models."""
-        self.target_adapter = {{ cookiecutter.system_of_record_slug }}.{{ cookiecutter.system_of_record_camel }}Adapter(job=self, sync=self.sync)
+        self.target_adapter = {{ cookiecutter.system_of_record_camel }}RemoteAdapter(job=self, sync=self.sync)
         self.target_adapter.load()
 
     def run(self, dryrun, memory_profiling, debug, *args, **kwargs):  # pylint: disable=arguments-differ
