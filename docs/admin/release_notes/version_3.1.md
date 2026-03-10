@@ -11,8 +11,7 @@ This document describes all new features and changes in the release. The format 
 
 ### Added
 
-- [#350](https://github.com/nautobot/cookiecutter-nautobot-app/issues/350) - Added glightbox as a dependency to custom group docs in pyproje
-ct.toml files.
+- [#350](https://github.com/nautobot/cookiecutter-nautobot-app/issues/350) - Added glightbox as a dependency to custom group docs in pyproject.toml files.
 
 ## [nautobot-app-v3.1.0 (2026-03-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.0)
 
