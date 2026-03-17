@@ -41,6 +41,7 @@ You've downloaded ~/.cookiecutters/cookiecutter-nautobot-app before. Is it okay 
     Choose from [1/2] (1): 
   [15/16] docs_base_url (https://docs.nautobot.com): 
   [16/16] docs_app_url (https://docs.nautobot.com/projects/my-app/en/latest): 
+  [17/17] publish_to_platform (default): 
 
 Congratulations! Your cookie has now been baked. It is located at /tmp/nautobot-app-my-app
 
@@ -138,6 +139,11 @@ First create the `my-app.json` file:
         "open_source_license": "Apache-2.0",
         "docs_base_url": "https://docs.nautobot.com",
         "docs_app_url": "https://docs.nautobot.com/projects/my-app/en/latest",
+        "publish_to_platform": {
+          "github": true,
+          "pypi": true,
+          "artifactory": false
+        },
         "_template": "git@github.com:nautobot/cookiecutter-nautobot-app.git",
         "_output_dir": "/tmp",
         "_repo_dir": "~/.cookiecutters/cookiecutter-nautobot-app/nautobot-app",

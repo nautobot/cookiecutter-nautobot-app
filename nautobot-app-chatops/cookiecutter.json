@@ -23,6 +23,11 @@
     ],
     "docs_base_url": "https://docs.nautobot.com",
     "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest",
+    "publish_to_platform": {
+        "github": true,
+        "pypi": true,
+        "artifactory": false
+    },
     "_extensions": [
         "local_extensions.camel_case_to_kebab",
         "local_extensions.camel_case_to_words",
