@@ -1,0 +1,1 @@
+Added conditional logic for publish_to_platform with github, pypi, and artifactory as platforms.
