@@ -51,9 +51,17 @@ img.logo {
     height: 200px;
 }
 
+a.copyright-sponsor {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    vertical-align: middle;
+}
+
 img.copyright-logo {
     height: 24px;
-    vertical-align: middle;
+    width: auto;
+    flex-shrink: 0;
 }
 
 [data-md-color-primary=black] .md-header {
