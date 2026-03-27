@@ -60,8 +60,6 @@ a.copyright-sponsor {
 
 img.copyright-logo {
     height: 24px;
-    width: auto;
-    flex-shrink: 0;
 }
 
 [data-md-color-primary=black] .md-header {
