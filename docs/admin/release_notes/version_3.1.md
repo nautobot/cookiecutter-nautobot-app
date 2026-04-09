@@ -7,6 +7,13 @@ This document describes all new features and changes in the release. The format 
 - Added support for Python `3.14`.
 
 <!-- towncrier release notes start -->
+
+## [nautobot-app-v3.1.3 (2026-04-09)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.3)
+
+### Housekeeping
+
+- [#364](https://github.com/nautobot/cookiecutter-nautobot-app/issues/364) - Fixed the logo in the footer of the documentation.
+
 ## [nautobot-app-v3.1.2 (2026-03-10)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.2)
 
 ### Fixed
