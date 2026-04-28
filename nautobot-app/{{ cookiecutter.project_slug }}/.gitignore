@@ -309,3 +309,23 @@ public
 /compose.yaml
 /dump.sql
 /{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs
+
+# Claude Code
+CLAUDE.md
+.claude/
+
+# OpenAI Codex CLI
+AGENTS.md
+AGENTS.override.md
+codex.md
+.codex/
+
+# Google Gemini CLI
+GEMINI.md
+.gemini/
+
+# Cursor (Anysphere)
+.cursor/
+.cursorrules
+.cursorignore
+.cursorindexingignore
