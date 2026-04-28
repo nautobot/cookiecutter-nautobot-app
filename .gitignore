@@ -306,3 +306,23 @@ development/*.txt
 
 # Invoke overrides
 invoke.yml
+
+# Claude Code
+CLAUDE.md
+.claude/
+
+# OpenAI Codex CLI
+AGENTS.md
+AGENTS.override.md
+codex.md
+.codex/
+
+# Google Gemini CLI
+GEMINI.md
+.gemini/
+
+# Cursor (Anysphere)
+.cursor/
+.cursorrules
+.cursorignore
+.cursorindexingignore
