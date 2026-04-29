@@ -320,9 +320,16 @@ codex.md
 # Google Gemini CLI
 GEMINI.md
 .gemini/
+.vertexai/
 
 # Cursor (Anysphere)
 .cursor/
 .cursorrules
 .cursorignore
 .cursorindexingignore
+
+# Common AI/ML/IDE tools
+# https://github.com/ollama/ollama
+.ollama/
+# https://github.com/kirodotdev/Kiro
+.kiro/
