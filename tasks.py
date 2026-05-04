@@ -357,11 +357,12 @@ def autoformat(context):
         "action": "Available values are `['lint', 'format']`. Can be used multiple times. (default: `['lint', 'format']`)",
         "target": "File or directory to inspect, repeatable (default: all files in the project will be inspected)",
         "fix": "Automatically fix selected actions. May not be able to fix all issues found. (default: False)",
+        "diff": "Show diffs of changes. (default: False)",
         "output_format": "See https://docs.astral.sh/ruff/settings/#output-format for details. (default: `concise`)",
     },
     iterable=["action", "target"],
 )
-def ruff(context, action=None, target=None, fix=False, output_format="concise"):
+def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):
     """Run ruff to perform code formatting and/or linting."""
     if not action:
         action = ["lint", "format"]
@@ -374,6 +375,8 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
         command = "ruff format "
         if not fix:
             command += "--check "
+            if diff:
+                command += "--diff "
         command += " ".join(target)
         if not run_command(context, command, warn=True):
             exit_code = 1
@@ -382,6 +385,8 @@ def ruff(context, action=None, target=None, fix=False, output_format="concise"):
         command = "ruff check "
         if fix:
             command += "--fix "
+        elif diff:
+            command += "--diff "
         command += f"--output-format {output_format} "
         command += " ".join(target)
         if not run_command(context, command, warn=True):
