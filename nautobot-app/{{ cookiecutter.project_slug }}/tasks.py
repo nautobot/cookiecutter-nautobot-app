@@ -824,7 +824,7 @@ def autoformat(context):
     },
     iterable=["action", "target"],
 )
-def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):
+def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):  # noqa: PLR0913
     """Run ruff to perform code formatting and/or linting."""
     if not action:
         action = ["lint", "format"]
