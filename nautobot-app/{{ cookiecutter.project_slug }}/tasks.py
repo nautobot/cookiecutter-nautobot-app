@@ -929,6 +929,7 @@ def check_migrations(context):
         "pattern": "Run specific test methods, classes, or modules instead of all tests",
         "verbose": "Enable verbose test output.",
         "coverage": "Enable coverage reporting. Defaults to False",
+        "no_input": "Suppress interactive prompts (e.g. confirmation when `--no-reusedb` would destroy an existing test database).",
         "skip_docs_build": "Skip building the documentation before running tests.",
     }
 )
@@ -941,6 +942,7 @@ def unittest(  # noqa: PLR0913
     pattern="",
     verbose=False,
     coverage=False,
+    no_input=False,
     skip_docs_build=False,
 ):
     """Run Nautobot unit tests."""
@@ -961,6 +963,8 @@ def unittest(  # noqa: PLR0913
         command += f" -k='{pattern}'"
     if verbose:
         command += " --verbosity 2"
+    if no_input:
+        command += " --no-input"
 
     run_command(context, command)
 
