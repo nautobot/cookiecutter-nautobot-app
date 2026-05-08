@@ -920,6 +920,17 @@ def check_migrations(context):
     run_command(context, command)
 
 
+@task
+def generate_test_data(context, flush=False, database=None):
+    """Generate test data in Nautobot for {{ cookiecutter.verbose_name }}."""
+    command = "nautobot-server generate_{{ cookiecutter.app_name }}_test_data"
+    if database:
+        command += f" --database {database}"
+    if flush:
+        command += " --flush"
+    run_command(context, command)
+
+
 @task(
     help={
         "keepdb": "save and re-use test database between test runs for faster re-testing.",

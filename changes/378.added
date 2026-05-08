@@ -1,0 +1,1 @@
+Added `invoke generate-test-data` task and a boilerplate `generate_<app_name>_test_data` management command to the `nautobot-app` cookie.
