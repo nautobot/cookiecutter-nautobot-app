@@ -21,6 +21,10 @@ on: # yamllint disable-line rule:truthy rule:comments
         description: "Date of the release YYYY-MM-DD (defaults to today's date in the US Eastern TZ)."
         required: false
         default: ""
+      previous_version:
+        description: "The previous version tag to use for generating release notes (defaults to the latest tag or initial commit if no tags exist)."
+        required: false
+        default: ""
 
 jobs:
   prepare-release:
@@ -53,7 +57,11 @@ jobs:
 
           # 2. Try to get the previous version tag
           # If it fails (no tags), get the hash of the first commit
-          if PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null); then
+          if [ -n "{% raw %}${{ github.event.inputs.previous_version }}{% endraw %}" ]; then
+            PREV_TAG="{% raw %}${{ github.event.inputs.previous_version }}{% endraw %}"
+            echo "Using user-specified previous version: $PREV_TAG"
+            echo "PREVIOUS_TAG=$PREV_TAG" >> $GITHUB_ENV
+          elif PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null); then
             echo "PREVIOUS_TAG=$PREV_TAG" >> $GITHUB_ENV
             echo "Found previous tag: $PREV_TAG"
           else
