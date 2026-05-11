@@ -322,6 +322,7 @@ AGENTS.override.md
 # Google Gemini CLI
 GEMINI.md
 .gemini/
+.vertexai/
 
 # Cursor (Anysphere)
 .cursor/
