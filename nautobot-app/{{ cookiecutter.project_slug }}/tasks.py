@@ -997,10 +997,11 @@ def coverage_xml(context):
     help={
         "failfast": "fail as soon as a single test fails don't run the entire test suite. (default: False)",
         "keepdb": "Save and re-use test database between test runs for faster re-testing. (default: False)",
+        "no_input": "Suppress interactive prompts (e.g. confirmation when `--no-reusedb` would destroy an existing test database). (default: False)",
         "lint-only": "Only run linters; unit tests will be excluded. (default: False)",
     }
 )
-def tests(context, failfast=False, keepdb=False, lint_only=False):
+def tests(context, failfast=False, keepdb=False, no_input=False, lint_only=False):
     """Run all tests for this app."""
     # If we are not running locally, start the docker containers so we don't have to for each test
     if not is_truthy(context.{{ cookiecutter.app_name }}.local):
@@ -1027,7 +1028,7 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     validate_app_config(context)
     if not lint_only:
         print("Running unit tests...")
-        unittest(context, failfast=failfast, keepdb=keepdb, coverage=True, skip_docs_build=True)
+        unittest(context, failfast=failfast, keepdb=keepdb, no_input=no_input, coverage=True, skip_docs_build=True)
         unittest_coverage(context)
         coverage_lcov(context)
     print("All tests have passed!")
