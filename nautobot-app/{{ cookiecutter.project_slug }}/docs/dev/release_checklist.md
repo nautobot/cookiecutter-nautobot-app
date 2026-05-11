@@ -184,7 +184,7 @@ Publish the release!
 
 First, sync your `main` branch with upstream changes: `git switch main && git pull`.
 
-Create a new branch from `main` called `release-1.4.2-to-develop` and use `poetry version prepatch` to bump the development version to the next release.
+Create a new branch from `main` called `release-1.4.2-to-develop` and use `poetry version prerelease` to bump the development version to the next release.
 
 For example, if you just released `v1.4.2`:
 
@@ -192,8 +192,8 @@ For example, if you just released `v1.4.2`:
 > git switch -c release-1.4.2-to-develop main
 Switched to a new branch 'release-1.4.2-to-develop'
 
-> poetry version prepatch
-Bumping version from 1.4.2 to 1.4.3a1
+> poetry version prerelease
+Bumping version from 1.4.2 to 1.4.3a0
 
 > git add pyproject.toml && git commit -m "Bump version"
 
