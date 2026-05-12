@@ -167,7 +167,7 @@ jobs:
           GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
         run: |
           gh pr create \
-            --title "Post release {% raw %}${{ github.event.release.tag_name }}{% endraw %} to {% raw %}${{ steps.branch.outputs.target_branch }}{% endraw %}" \
+            --title "Post release {% raw %}${{ github.event.release.tag_name }} to ${{ steps.branch.outputs.target_branch }}{% endraw %}" \
             --body "Please do a merge commit." \
             --base "{% raw %}${{ steps.branch.outputs.target_branch }}{% endraw %}" \
             --head "{% raw %}${{ steps.branch.outputs.branch_name }}{% endraw %}"
