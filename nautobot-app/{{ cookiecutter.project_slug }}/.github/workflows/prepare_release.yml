@@ -174,7 +174,9 @@ jobs:
 
       - name: "Create Pull Request"
         env:
-          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+          # To allow actions to run on PR, use Personal Access Token (GH_NAUTOBOT_BOT_TOKEN)
+          # https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+          GH_TOKEN: "{% raw %}${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}{% endraw %}"
         run: |
           gh pr create \
             --title "Release v{% raw %}${{ env.NEW_VERSION }}{% endraw %}" \
