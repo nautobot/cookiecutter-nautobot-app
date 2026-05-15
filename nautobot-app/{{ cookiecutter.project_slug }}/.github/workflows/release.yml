@@ -171,3 +171,64 @@ jobs:
             --body "Please do a merge commit." \
             --base "{% raw %}${{ steps.branch.outputs.target_branch }}{% endraw %}" \
             --head "{% raw %}${{ steps.branch.outputs.branch_name }}{% endraw %}"
+
+  sync-ltm-release-notes-to-develop:
+    if: "startsWith(github.event.release.target_commitish, 'ltm-')"
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+    name: "Sync release notes from {% raw %}${{ github.event.release.target_commitish }}{% endraw %} to develop"
+    runs-on: "ubuntu-latest"
+    needs:
+      - "publish-github"
+      - "publish-pypi"
+    steps:
+      - name: "Checkout develop"
+        uses: "actions/checkout@v4"
+        with:
+          ref: "develop"
+          fetch-depth: 0
+
+      - name: "Create branch and sync release notes from ltm"
+        id: "branch"
+        run: |
+          git config user.name "{% raw %}${{ github.actor }}{% endraw %}"
+          git config user.email "{% raw %}${{ github.actor }}{% endraw %}@users.noreply.github.com"
+
+          SOURCE_BRANCH="{% raw %}${{ github.event.release.target_commitish }}{% endraw %}"
+          TAG_NAME="{% raw %}${{ github.event.release.tag_name }}{% endraw %}"
+          BRANCH_NAME="release-${TAG_NAME#v}-notes-to-develop"
+
+          # Fetch the ltm source branch so we can checkout files from it
+          git fetch origin "$SOURCE_BRANCH"
+
+          # Ensure release branch doesn't already exist
+          if git rev-parse --verify "origin/$BRANCH_NAME" > /dev/null 2>&1; then
+            echo "Error: Release branch $BRANCH_NAME already exists."
+            exit 1
+          fi
+
+          git switch -c "$BRANCH_NAME"
+          git checkout "origin/$SOURCE_BRANCH" -- docs/admin/release_notes/
+
+          # Check if there are any changes in /release_notes
+          if git diff --staged --quiet; then
+            echo "No release notes changes to sync from $SOURCE_BRANCH to develop."
+            exit 0
+          fi
+
+          git commit -m "Sync release notes from $SOURCE_BRANCH"
+          git push origin "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: "Create Pull Request"
+        if: "steps.branch.outputs.branch_name != ''"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+        run: |
+          gh pr create \
+            --title "Sync release notes from {% raw %}${{ github.event.release.target_commitish }}{% endraw %} ({% raw %}${{ github.event.release.tag_name }}{% endraw %}) to develop" \
+            --body "Please do a merge commit." \
+            --base "develop" \
+            --head "{% raw %}${{ steps.branch.outputs.branch_name }}{% endraw %}"
