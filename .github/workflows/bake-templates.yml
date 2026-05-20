@@ -23,6 +23,9 @@ jobs:
           - template: "nautobot-app-chatops"
             project_slug: "nautobot-app-chatops-my-app"
             invoke_local_env: "INVOKE_NAUTOBOT_CHATOPS_MY_APP_LOCAL"
+          - template: "nautobot-app-private"
+            project_slug: "nautobot-app-my-private-app"
+            invoke_local_env: "INVOKE_NAUTOBOT_MY_PRIVATE_APP_LOCAL"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v4"
