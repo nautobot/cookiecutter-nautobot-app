@@ -1,1 +1,120 @@
-../../nautobot-app/{{ cookiecutter.project_slug }}/mkdocs.yml
+---
+dev_addr: "127.0.0.1:8001"
+# edit_uri: "edit/main/docs"
+site_dir: "{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs"
+site_name: "{{ cookiecutter.verbose_name }} Documentation"
+site_url: "{{ cookiecutter.docs_app_url }}/"
+copyright: "Copyright &copy; Network To Code"
+theme:
+  name: "material"
+  navigation_depth: 4
+  custom_dir: "docs/assets/overrides"
+  hljs_languages:
+    - "django"
+    - "yaml"
+  features:
+    # - "content.action.edit"
+    # - "content.action.view"
+    - "content.code.copy"
+    - "navigation.footer"
+    - "navigation.indexes"
+    - "navigation.tabs"
+    - "navigation.tabs.sticky"
+    - "navigation.tracking"
+    - "search.highlight"
+    - "search.share"
+    - "search.suggest"
+  favicon: "assets/favicon.ico"
+  logo: "assets/nautobot_logo.svg"
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: "default"
+      primary: "black"
+      toggle:
+        icon: "material/weather-sunny"
+        name: "Switch to dark mode"
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: "slate"
+      primary: "black"
+      toggle:
+        icon: "material/weather-night"
+        name: "Switch to light mode"
+extra_css:
+  - "assets/extra.css"
+
+extra:
+  generator: false
+  ntc_sponsor: true
+  social:
+    - icon: "fontawesome/solid/rss"
+      link: "https://blog.networktocode.com/blog/tags/nautobot"
+      name: "Network to Code Blog"
+    - icon: "fontawesome/brands/youtube"
+      link: "https://www.youtube.com/playlist?list=PLjA0bhxgryJ2Ts4GJMDA-tPzVWEncv4pb"
+      name: "Nautobot Videos"
+    - icon: "fontawesome/brands/slack"
+      link: "https://www.networktocode.com/community/"
+      name: "Network to Code Community"
+    - icon: "fontawesome/brands/twitter"
+      link: "https://twitter.com/networktocode"
+      name: "Network to Code Twitter"
+markdown_extensions:
+  - "markdown_version_annotations":
+      admonition_tag: "???"
+  - "admonition"
+  - "toc":
+      permalink: true
+  - "attr_list"
+  - "md_in_html"
+  - "pymdownx.details"
+  - "pymdownx.highlight":
+      anchor_linenums: true
+  - "pymdownx.inlinehilite"
+  - "pymdownx.snippets"
+  - "pymdownx.superfences":
+      custom_fences:
+        - name: "mermaid"
+          class: "mermaid"
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - "footnotes"
+  - "meta"
+plugins:
+  - "search"
+  - "glightbox"
+watch:
+  - "README.md"
+
+validation:
+  omitted_files: "warn"
+  absolute_links: "warn"
+  unrecognized_links: "warn"
+  anchors: "warn"
+
+nav:
+  - Overview: "index.md"
+  - User Guide:
+      - App Overview: "user/app_overview.md"
+      - Getting Started: "user/app_getting_started.md"
+      - Using the App: "user/app_use_cases.md"
+      - Frequently Asked Questions: "user/faq.md"
+      - External Interactions: "user/external_interactions.md"
+      {%- if cookiecutter.model_class_name != "None" %}
+      - Data Models:
+          - {{ cookiecutter.model_class_name | camel_case_to_words }}: "models/{{ cookiecutter.model_class_name | lower }}.md"
+      {%- endif %}
+  - Administrator Guide:
+      - Install and Configure: "admin/install.md"
+      - Upgrade: "admin/upgrade.md"
+      - Uninstall: "admin/uninstall.md"
+      - Compatibility Matrix: "admin/compatibility_matrix.md"
+      - Release Notes:
+          - "admin/release_notes/index.md"
+          - v1.0: "admin/release_notes/version_1.0.md"
+  - Developer Guide:
+      - Extending the App: "dev/extending.md"
+      - Development Environment: "dev/dev_environment.md"
+      - Release Checklist: "dev/release_checklist.md"
+  - Nautobot Docs Home ↗︎: "{{ cookiecutter.docs_base_url }}"
