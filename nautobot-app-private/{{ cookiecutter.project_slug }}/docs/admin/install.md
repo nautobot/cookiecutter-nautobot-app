@@ -2,9 +2,6 @@
 
 Here you will find detailed instructions on how to **install** and **configure** the App within your Nautobot environment.
 
-!!! warning "Developer Note - Remove Me!"
-    Detailed instructions on installing the App. You will need to update this section based on any additional dependencies or prerequisites.
-
 ## Prerequisites
 
 - The app is compatible with Nautobot {{ min_nautobot_version }} and higher.
@@ -16,18 +13,14 @@ Here you will find detailed instructions on how to **install** and **configure**
 ### Access Requirements
 
 !!! warning "Developer Note - Remove Me!"
-    What external systems (if any) it needs access to in order to work.
+    Document what external systems (if any) the App needs access to in order to work.
 
 ## Install Guide
 
-!!! note
-    Apps can be installed manually or using Python's `pip`. See the [nautobot documentation](https://docs.nautobot.com/projects/core/en/stable/plugins/#install-the-package) for more details. The pip package name for this app is [`{{ cookiecutter.app_slug }}`](https://pypi.org/project/{{ cookiecutter.app_slug }}/).
+The app is distributed as a Python package (`{{ cookiecutter.app_slug }}`) which can be installed by Python package managers (e.g. pip, poetry, uv etc.) from an authorized private repository.
 
-The app is available as a Python package via PyPI and can be installed with `pip`:
-
-```shell
-pip install {{ cookiecutter.app_slug }}
-```
+!!! warning "Important"
+    {{ cookiecutter.verbose_name }} is private (licensed) software. To obtain access to the Network To Code private package repository, please contact us through the [customer portal](https://support.networktocode.com/). Then review the [instructions](https://networktocode.atlassian.net/servicedesk/customer/portal/9/topic/741089cc-445d-458c-91b6-f8054f63edb7/article/3882057731) on how to set up the repository in your Python package manager of choice.
 
 To ensure {{ cookiecutter.verbose_name }} is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `{{ cookiecutter.app_slug }}` package:
 
@@ -42,17 +35,11 @@ Once installed, the app needs to be enabled in your Nautobot configuration. The 
 
 ```python
 # In your nautobot_config.py
-PLUGINS = [
-    "nautobot_ssot",
-    "{{ cookiecutter.app_name }}",
-]
+PLUGINS = ["{{ cookiecutter.app_name }}"]
 
 PLUGINS_CONFIG = {
-    "nautobot_ssot": {
-        "hide_example_jobs": True,
-    },
-    '{{ cookiecutter.app_name }}': {
-    #     ADD YOUR SETTINGS HERE
+    "{{ cookiecutter.app_name }}": {
+        # ADD YOUR SETTINGS HERE
     },
 }
 ```
@@ -82,6 +69,4 @@ The app behavior can be controlled with the following list of settings:
 
 | Key     | Example | Default | Description                          |
 | ------- | ------ | -------- | ------------------------------------- |
-| `enable_backup` | `True` | `True` | A boolean to represent whether or not to run backup configurations within the app. |
-| `platform_slug_map` | `{"cisco_wlc": "cisco_aireos"}` | `None` | A dictionary in which the key is the platform slug and the value is what netutils uses in any "network_os" parameter. |
-| `per_feature_bar_width` | `0.15` | `0.15` | The width of the table bar within the overview report |
+| n/a | n/a | n/a | n/a |
