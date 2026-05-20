@@ -1,0 +1,1 @@
+../../../nautobot-app/{{ cookiecutter.project_slug }}/{{ cookiecutter.app_name }}/__init__.py

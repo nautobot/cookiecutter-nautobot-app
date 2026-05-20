@@ -1,0 +1,1 @@
+../../../../nautobot-app/{{ cookiecutter.project_slug }}/docs/dev/contributing.md
