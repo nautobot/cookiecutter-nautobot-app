@@ -1,0 +1,1 @@
+Replaced the unmaintained `toml` dev dependency with stdlib `tomllib` (Python 3.11+) and `tomli` (Python 3.10 fallback).
