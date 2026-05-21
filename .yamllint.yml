@@ -21,3 +21,6 @@ ignore: |
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/invoke.example.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/mkdocs.yml
+  nautobot-app-private/{{ cookiecutter.project_slug }}/invoke.mysql.yml
+  nautobot-app-private/{{ cookiecutter.project_slug }}/invoke.example.yml
+  nautobot-app-private/{{ cookiecutter.project_slug }}/mkdocs.yml
