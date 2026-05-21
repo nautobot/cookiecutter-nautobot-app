@@ -15,13 +15,21 @@ glightbox: false
 
 This is a private (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation will strictly be done through the private Artifactory repository provided upon purchase. No other distribution methods (PyPI, GitHub Releases, Wheels, etc.) will be available or supported.
 
-> Developer Note - Remove Me! Add a 1-2 paragraph description of what the App does, what problems it solves, and the key functionality it adds to Nautobot.
+<!--
+Developer Note - Remove Me!
+
+Add a 1-2 paragraph description of what the App does, what problems it solves, and the key functionality it adds to Nautobot.
+-->
 
 To get started, check out the [Installation Guide](./admin/install.md). You can then follow the [Getting Started](./user/app_getting_started.md) guide, or explore practical [Use Cases](./user/app_use_cases.md) to see how to integrate the App into your automation pipeline.
 
 ### Screenshots
 
-> Developer Note - Remove Me! Add representative screenshots of the App in action using the pattern below. Use `#only-light` and `#only-dark` suffixes for light/dark theme variants. Place files in `docs/images/`.
+<!--
+Developer Note - Remove Me!
+
+Add representative screenshots of the App in action using the pattern below. Use `#only-light` and `#only-dark` suffixes for light/dark theme variants. Place files in `docs/images/`.
+-->
 
 <!--
 <figure markdown="span">

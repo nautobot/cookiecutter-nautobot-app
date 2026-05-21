@@ -12,8 +12,11 @@ Here you will find detailed instructions on how to **install** and **configure**
 
 ### Access Requirements
 
-!!! warning "Developer Note - Remove Me!"
-    Document what external systems (if any) the App needs access to in order to work.
+<!--
+Developer Note - Remove Me!
+
+Document what external systems (if any) the App needs access to in order to work.
+-->
 
 ## Install Guide
 
@@ -62,8 +65,11 @@ sudo systemctl restart nautobot nautobot-worker nautobot-scheduler
 
 ## App Configuration
 
-!!! warning "Developer Note - Remove Me!"
-    Any configuration required to get the App set up. Edit the table below as per the examples provided.
+<!--
+Developer Note - Remove Me!
+
+Any configuration required to get the App set up. Edit the table below as per the examples provided.
+-->
 
 The app behavior can be controlled with the following list of settings:
 

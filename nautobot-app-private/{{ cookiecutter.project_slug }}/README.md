@@ -18,7 +18,11 @@ The logo of the project is a placeholder (docs/images/icon-{{ cookiecutter.app_s
 
 Installation will strictly be done through the private Artifactory repository provided upon purchase. No other distribution methods (PyPI, GitHub Releases, Wheels, etc.) will be used for this App.
 
-> Developer Note: Add a long (2-3 paragraphs) description of what the App does, what problems it solves, what functionality it adds to Nautobot, what external systems it works with etc.
+<!--
+Developer Note - Remove Me!
+
+Add a long (2-3 paragraphs) description of what the App does, what problems it solves, what functionality it adds to Nautobot, what external systems it works with etc.
+-->
 
 ## Documentation
 
