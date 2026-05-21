@@ -16,7 +16,11 @@ The logo of the project is a placeholder (docs/images/icon-{{ cookiecutter.app_s
 
 {{ cookiecutter.verbose_name }} is a private (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application provided by Network to Code.
 
-Installation will strictly be done through the private Artifactory repository provided upon purchase. No other distribution methods (PyPI, GitHub Releases, Wheels, etc.) will be used for this App.
+<!--
+Developer Note - Remove Me!
+
+Installation is done through the private Artifactory repository provided upon purchase. The App is not published to PyPI.
+-->
 
 <!--
 Developer Note - Remove Me!

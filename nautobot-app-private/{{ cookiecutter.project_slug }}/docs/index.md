@@ -13,7 +13,11 @@ glightbox: false
 
 ## Overview
 
-This is a private (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation will strictly be done through the private Artifactory repository provided upon purchase. No other distribution methods (PyPI, GitHub Releases, Wheels, etc.) will be available or supported.
+<!--
+Developer Note - Remove Me!
+
+This is a private (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation is done through the private Artifactory repository provided upon purchase. The App is not published to PyPI.
+-->
 
 <!--
 Developer Note - Remove Me!

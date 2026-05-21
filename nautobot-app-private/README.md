@@ -6,7 +6,7 @@
 
 This folder provides a Cookiecutter template for a **private (licensed) Nautobot App** that adheres to Network to Code's Development Standards. The cookie provides a development environment to develop and test your Nautobot App with, which is provided by Docker Compose.
 
-Private apps generated from this template are intended to be distributed exclusively through Network to Code's private Artifactory repository. They ship a `COPYRIGHT` notice (no open-source LICENSE), publish only to Artifactory (no PyPI, no public GitHub release artifacts), and have all GitHub-related content stripped from the public documentation site.
+Private apps generated from this template are distributed through Network to Code's private Artifactory repository. They ship a `COPYRIGHT` notice (no open-source LICENSE), do not publish to PyPI, and have all GitHub-related content stripped from the public documentation site. Release artifacts are still attached to the GitHub release as a backup for Artifactory.
 
 ### IMPORTANT Cookie Notes
 
