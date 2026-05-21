@@ -15,12 +15,16 @@ Guiding Principles:
 
 Types of changes:
 
+- `Breaking` for breaking changes.
+- `Security` in case of vulnerabilities.
 - `Added` for new features.
 - `Changed` for changes in existing functionality.
 - `Deprecated` for soon-to-be removed features.
 - `Removed` for now removed features.
 - `Fixed` for any bug fixes.
-- `Security` in case of vulnerabilities.
+- `Dependencies` for any changes to dependencies that are not fixing a security vulnerability. Dependency updates to resolve security vulnerabilities belong in `security`.
+- `Documentation` for documentation updates.
+- `Housekeeping` for updates that don't affect users (CI changes, code cleanup).
 -->
 
 This document describes all new features and changes in the release `1.0`. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
