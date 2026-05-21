@@ -16,7 +16,7 @@ glightbox: false
 <!--
 Developer Note - Remove Me!
 
-This is a private (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation is done through the private Artifactory repository provided upon purchase. The App is not published to PyPI.
+This is a commercial (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation is done through the private Artifactory repository provided upon purchase. The App is not published to PyPI.
 -->
 
 <!--
@@ -48,7 +48,7 @@ More screenshots can be found in the [Using the App](./user/app_use_cases.md) pa
 
 ## Learn More
 
-Interested in learning more about Nautobot private software? Fill out [this form](https://networktocode.com/contact/) or email us at [info@networktocode.com](mailto:info@networktocode.com)!
+Interested in learning more about Nautobot commercial software? Fill out [this form](https://networktocode.com/contact/) or email us at [info@networktocode.com](mailto:info@networktocode.com)!
 
 ## Support
 

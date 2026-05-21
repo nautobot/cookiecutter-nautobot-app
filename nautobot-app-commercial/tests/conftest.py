@@ -1,5 +1,6 @@
 # pylint: disable=duplicate-code
 """Cookie tests configuration"""
+
 import shutil
 from os import environ
 from pathlib import Path
@@ -10,6 +11,7 @@ from pytest import fixture
 def init_examples_project(project_name):
     """Initialize the examples project folder (by deleting and reconstructing it if
     already created, or just create).
+
     Args:
         project_name (str): Cookiecutter example project name
     Returns:
@@ -27,7 +29,7 @@ def init_examples_project(project_name):
 
 
 @fixture
-def cookies_baked_nautobot_app_private(cookies):
+def cookies_baked_nautobot_app_commercial(cookies):
     """Sets up an example cookiecutter project
     Args:
         cookies: wrapper for cookiecutter API when generating project
@@ -48,7 +50,7 @@ def cookies_baked_nautobot_app_private(cookies):
     # pylint: disable-next=protected-access
     environ["COOKIECUTTER_CONFIG"] = str(cookies._config_file)
     for app_slug, extra_context in extra_contexts.items():
-        results[app_slug] = cookies.bake(extra_context=extra_context, template="nautobot-app-private")
+        results[app_slug] = cookies.bake(extra_context=extra_context, template="nautobot-app-commercial")
 
         assert results[app_slug].exception is None
 

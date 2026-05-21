@@ -1,12 +1,13 @@
 # pylint: disable=duplicate-code
 """Cookie tests"""
+
 from os import environ
 
 
 def test_bake_project(cookies):
     # pylint: disable-next=protected-access
     environ["COOKIECUTTER_CONFIG"] = str(cookies._config_file)
-    result = cookies.bake(template="nautobot-app-private")
+    result = cookies.bake(template="nautobot-app-commercial")
 
     assert result.exit_code == 0
     assert result.exception is None
@@ -18,11 +19,11 @@ def test_bake_project(cookies):
     assert "COPYRIGHT" in found_toplevel_files
 
 
-def test_bake_nautobot_execution(cookies_baked_nautobot_app_private):
+def test_bake_nautobot_execution(cookies_baked_nautobot_app_commercial):
     """
     Tests creation of example nautobot with the cookiecutter default values
     """
-    results, examples_projects = cookies_baked_nautobot_app_private
+    results, examples_projects = cookies_baked_nautobot_app_commercial
     app_slug = "nautobot-app-os-upgrades"
     assert results[app_slug].exit_code == 0
     assert results[app_slug].exception is None

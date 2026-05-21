@@ -3,7 +3,7 @@
     "full_name": "Network to Code, LLC",
     "email": "info@networktocode.com",
     "github_org": "networktocode-llc",
-    "app_short_name": "My Private App",
+    "app_short_name": "My Commercial App",
     "app_name": "nautobot_{{ cookiecutter.app_short_name.lower().replace(' ', '_').replace('-', '_') }}",
     "verbose_name": "Nautobot {{ cookiecutter.app_short_name.title().replace('_', ' ').replace('-', ' ') }}",
     "app_slug": "nautobot-{{ cookiecutter.app_short_name.lower().replace(' ', '-').replace('_', '-') }}",

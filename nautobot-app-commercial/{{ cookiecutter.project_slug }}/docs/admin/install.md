@@ -23,7 +23,7 @@ Document what external systems (if any) the App needs access to in order to work
 The app is distributed as a Python package (`{{ cookiecutter.app_slug }}`) which can be installed by Python package managers (e.g. pip, poetry, uv etc.) from an authorized private repository.
 
 !!! warning "Important"
-    {{ cookiecutter.verbose_name }} is private (licensed) software. To obtain access to the Network To Code private package repository, please contact us through the [customer portal](https://support.networktocode.com/). Then review the [instructions](https://networktocode.atlassian.net/servicedesk/customer/portal/9/topic/741089cc-445d-458c-91b6-f8054f63edb7/article/3882057731) on how to set up the repository in your Python package manager of choice.
+    {{ cookiecutter.verbose_name }} is commercial (licensed) software. To obtain access to the Network To Code private package repository, please contact us through the [customer portal](https://support.networktocode.com/). Then review the [instructions](https://networktocode.atlassian.net/servicedesk/customer/portal/9/topic/741089cc-445d-458c-91b6-f8054f63edb7/article/3882057731) on how to set up the repository in your Python package manager of choice.
 
 To ensure {{ cookiecutter.verbose_name }} is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `{{ cookiecutter.app_slug }}` package:
 

@@ -14,7 +14,7 @@ The logo of the project is a placeholder (docs/images/icon-{{ cookiecutter.app_s
 
 ## Overview
 
-{{ cookiecutter.verbose_name }} is a private (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application provided by Network to Code.
+{{ cookiecutter.verbose_name }} is a commercial (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application provided by Network to Code.
 
 <!--
 Developer Note - Remove Me!
