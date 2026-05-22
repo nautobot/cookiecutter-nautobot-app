@@ -36,12 +36,11 @@ The following table lists the inputs that you will be prompted for when generati
 | **full_name** | Used in the **author** field within `pyproject.toml` and `NautobotAppConfig` |
 | **email** | Used in the **author** field within `pyproject.toml` |
 | **github_org** | Used to construct **repo_url**. Defaults to `networktocode-llc` for commercial apps. |
-| **app_short_name** | The human-friendly short name of the app (e.g., `OS Upgrades`, `Tools`, `Ansible Automation`). Drives the derived `app_name`, `verbose_name`, `app_slug`, `project_slug`, and `base_url`. |
-| **app_name** | The Python module name of the app (derived: `nautobot_<short_name_snake>`) |
-| **verbose_name** | Human-readable name used in `NautobotAppConfig` (derived: `Nautobot <Short Name>`) |
-| **app_slug** | Python packaging name (derived: `nautobot-<short_name_kebab>`) |
-| **project_slug** | Used to construct **repo_url** (derived: `nautobot-app-<short_name_kebab>`) |
-| **base_url** | Defines the app's base url used in Nautobot (derived: `<short_name_kebab>`) |
+| **app_name** | The Python module name of the app (snake_case, e.g., `my_commercial_app`). Drives every other derived value. |
+| **verbose_name** | Human-readable name used in `NautobotAppConfig` (derived from `app_name`). |
+| **app_slug** | Python packaging name (kebab-case, derived from `app_name`). |
+| **project_slug** | Used to construct **repo_url** (derived: `nautobot-app-<app_slug>`). |
+| **base_url** | Defines the app's base url used in Nautobot (derived: `<app_slug>`). |
 | **camel_name** | Used to define the app's subclassing of `NautobotAppConfig`, e.g. `MyAppConfig(NautobotAppConfig):` |
 | **project_short_description** | Used in the **description** field within `NautobotAppConfig` |
 | **model_class_name** | If you want to generate initial files (`models.py`, `forms.py`, `filters.py`, `navigation.py`, `tables.py`, `views`, and API models), initialize this name to a valid model name. Default `None`. |

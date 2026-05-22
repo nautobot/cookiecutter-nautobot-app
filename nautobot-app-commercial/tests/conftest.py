@@ -41,10 +41,10 @@ def cookies_baked_nautobot_app_commercial(cookies):
     results = {}
     extra_contexts = {
         "nautobot-app-os-upgrades": {
-            "app_short_name": "OS Upgrades",
+            "app_name": "os_upgrades",
         },
         "nautobot-app-tools": {
-            "app_short_name": "Tools",
+            "app_name": "tools",
         },
     }
     # pylint: disable-next=protected-access
