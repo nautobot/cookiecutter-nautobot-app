@@ -14,7 +14,7 @@
     "model_class_name": "None",
     "open_source_license": "Not open source",
     "docs_base_url": "https://docs.nautobot.com",
-    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/latest",
+    "docs_app_url": "{{ cookiecutter.docs_base_url }}/projects/{{ cookiecutter.app_slug }}/en/stable",
     "_extensions": [
         "local_extensions.camel_case_to_kebab",
         "local_extensions.camel_case_to_words",
