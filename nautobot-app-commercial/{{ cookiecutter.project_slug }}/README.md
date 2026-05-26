@@ -16,17 +16,8 @@ The logo of the project is a placeholder (docs/images/icon-{{ cookiecutter.app_s
 
 {{ cookiecutter.verbose_name }} is a commercial (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application provided by Network to Code.
 
-<!--
-Developer Note - Remove Me!
-
 Installation is done through the private Artifactory repository provided upon purchase. The App is not published to PyPI.
--->
 
-<!--
-Developer Note - Remove Me!
-
-Add a long (2-3 paragraphs) description of what the App does, what problems it solves, what functionality it adds to Nautobot, what external systems it works with etc.
--->
 
 ## Documentation
 
