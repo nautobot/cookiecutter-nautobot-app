@@ -13,11 +13,7 @@ glightbox: false
 
 ## Overview
 
-<!--
-Developer Note - Remove Me!
-
-This is a commercial (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation is done through the private Artifactory repository provided upon purchase. The App is not published to PyPI.
--->
+This is a commercial (licensed) [Nautobot](https://docs.nautobot.com/projects/core/en/stable/) Application that can be installed only through a valid license from Network To Code. Installation will strictly be done through the private Artifactory repository provided upon purchase. No other distribution methods (PyPI, GitHub Releases, Wheels, etc.) are available or supported.
 
 !!! warning "Developer Note - Remove Me!"
     Add a 1-2 paragraph description of what the App does, what problems it solves, and the key functionality it adds to Nautobot.
