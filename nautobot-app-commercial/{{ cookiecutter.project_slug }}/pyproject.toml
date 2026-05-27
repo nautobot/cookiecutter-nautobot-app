@@ -1,10 +1,14 @@
 [tool.poetry]
-name = "cookiecutter-nautobot-app"
-package-mode = false
-description = "Cookiecutter template for baking Nautobot App cookies."
-authors = ["Network to Code, LLC <info@networktocode.com>"]
+name = "{{ cookiecutter.app_slug }}"
+version = "0.1.0a0"
+description = "{{ cookiecutter.project_short_description }}"
+authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
+license = "NTC License"
 readme = "README.md"
-repository = "https://github.com/nautobot/cookiecutter-nautobot-app"
+homepage = "{{ cookiecutter.repo_url }}"
+repository = "{{ cookiecutter.repo_url }}"
+documentation = "{{ cookiecutter.docs_app_url }}/"
+keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
@@ -15,30 +19,40 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
 ]
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+packages = [
+    { include = "{{ cookiecutter.app_name }}" },
+]
+include = [
+    # Poetry by default will exclude files that are in .gitignore
+    { path = "{{ cookiecutter.app_name }}/static/{{ cookiecutter.app_name }}/docs/**/*", format = ["sdist", "wheel"] },
+    { path = "COPYRIGHT", format = ["sdist", "wheel"] }
+]
 
 [tool.poetry.dependencies]
-cookiecutter = "^2.3.0"
 python = ">=3.10,<3.15"
-pyyaml = "*"
+# Used for local development
+nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
+django-debug-toolbar = "*"
 invoke = "*"
-isort = "*"
+ipython = "*"
 pylint = "*"
-pytest = "*"
-pytest-cookies = "*"
+pylint-django = ">=2.5.4"
+pylint-nautobot = ">=0.3.1"
 ruff = "0.5.5"
 yamllint = "*"
+toml = "*"
 # Python implementation of markdownlint
 pymarkdownlnt = "~0.9.30"
 Markdown = "*"
-# Change log management and generation
-towncrier = ">=24.8.0,<24.9.0"
+towncrier = ">=23.6.0,<=24.8.0"
+to-json-schema = "*"
+jsonschema = "*"
+djlint = ">=1.36.4,<2.0.0"
+djhtml = ">=3.0.8,<4.0.0"
+tomli = { version = "*", markers = "python_version < '3.11'" }  # tomli is included in the stdlib as of Python 3.11
 
 [tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
@@ -49,13 +63,14 @@ mkdocs = "1.6.0"
 mkdocs-material = "9.5.32"
 # Image lightboxing in mkdocs
 mkdocs-glightbox = "~0.5.2"
-# Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.25.2"
-mkdocstrings-python = "1.10.8"
-mkdocs-autorefs = "1.2.0"
-griffe = "1.1.1"
+
+[tool.poetry.extras]
+all = [
+]
 
 [tool.pylint.main]
+# Include the pylint_django plugin to avoid spurious warnings about Django patterns
+load-plugins = "pylint_django, pylint_nautobot"
 ignore = ".venv"
 
 [tool.pylint.basic]
@@ -65,7 +80,10 @@ no-docstring-rgx = "^(_|test_|Meta$)"
 [tool.pylint.messages_control]
 disable = """,
     line-too-long,
-    duplicate-code,
+    too-many-positional-arguments,
+    nb-warn-dunder-filter-field,
+    nb-no-search-function,
+    nb-no-char-filter-q,
 """
 
 [tool.pylint.miscellaneous]
@@ -78,60 +96,73 @@ notes = """,
 [tool.ruff]
 line-length = 120
 target-version = "py310"
-exclude = [
-  "nautobot-app*",
-]
 
 [tool.ruff.lint]
 select = [
     "D",  # pydocstyle
     "F", "E", "W",  # flake8
-    "PL",  # pylint
     "S",  # bandit
     "I",  # isort
 ]
 ignore = [
     # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
-    "D203",  # 1 blank line required before class docstring
+    "D203", # 1 blank line required before class docstring
 
     # D212 is enabled by default in google convention, and complains if we have a docstring like:
     # """
     # My docstring is on the line after the opening quotes instead of on the same line as them.
     # """
     # We've discussed and concluded that we consider this to be a valid style choice.
-    "D212",  # Multi-line docstring summary should start at the first line
-    "D213",  # Multi-line docstring summary should start at the second line
+    "D212", # Multi-line docstring summary should start at the first line
+    "D213", # Multi-line docstring summary should start at the second line
 
     # Produces a lot of issues in the current codebase.
-    "D401",  # First line of docstring should be in imperative mood
-    "D407",  # Missing dashed underline after section
-    "D416",  # Section name ends in colon
-    "E501",  # Line too long
+    "D401", # First line of docstring should be in imperative mood
+    "D407", # Missing dashed underline after section
+    "D416", # Section name ends in colon
+    "E501", # Line too long
 ]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.pytest.ini_options]
-testpaths = [
-    "nautobot-app/tests",
-    "nautobot-app-commercial/tests",
-    "nautobot-app-chatops/tests",
-    "nautobot-app-ssot/tests",
+[tool.ruff.lint.per-file-ignores]
+"{{ cookiecutter.app_name }}/migrations/*" = [
+    "D",
 ]
-addopts = "--color=yes"
+"{{ cookiecutter.app_name }}/tests/*" = [
+    "D",
+    "S"
+]
+
+[tool.coverage.run]
+disable_warnings = ["already-imported"]
+relative_files = true
+omit = [
+    # Skip Tests
+    "*/tests/*",
+]
+include = [
+    "{{ cookiecutter.app_name }}/*",
+]
 
 [tool.pymarkdown]
 plugins.selectively_enable_rules = true
 plugins.blanks-around-lists.enabled = true
 plugins.list-anchored-indent.enabled = true
+extensions.front-matter.enabled = true
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.towncrier]
+package = "{{ cookiecutter.app_name }}"
 directory = "changes"
-filename = "docs/admin/release_notes/version_3.1.md"
+filename = "docs/admin/release_notes/version_X.Y.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
-issue_format = "[#{issue}](https://github.com/nautobot/cookiecutter-nautobot-app/issues/{issue})"
+issue_format = "#{issue}"
 
 [[tool.towncrier.type]]
 directory = "breaking"
@@ -182,3 +213,8 @@ showcontent = true
 directory = "housekeeping"
 name = "Housekeeping"
 showcontent = true
+
+[tool.djlint]
+ignore = "H005,H006,H008,H011,H012,H013,H014,H015,H016,H019,H020,H021,H022,H023,H025,H026,H030,H031,H037"
+profile="django"
+extend_exclude = "docs/,{{ cookiecutter.app_name }}/static/"

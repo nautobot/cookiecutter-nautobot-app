@@ -60,6 +60,7 @@ namespace.configure(
                 "nautobot-app",
                 "nautobot-app-chatops",
                 "nautobot-app-ssot",
+                "nautobot-app-commercial",
             ],
             "compose_http_timeout": "86400",
         }
