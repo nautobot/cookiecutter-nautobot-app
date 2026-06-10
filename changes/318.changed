@@ -1,0 +1,1 @@
+Added a `--diff` option to the `invoke ruff` tasks.
