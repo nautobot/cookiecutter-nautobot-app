@@ -339,19 +339,10 @@ def generate_release_notes(context, version):
 # ------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
-@task(
-    help={
-        "target": "Module or file or directory to inspect, repeatable (default: project python files and template tests)",
-        "recursive": "Must be set if target is a directory rather than a module or file name",
-    },
-    iterable=["target"],
-)
-def pylint(context, target=None, recursive=False):
+@task
+def pylint(context):
     """Run pylint code analysis."""
-    command = "pylint --rcfile pyproject.toml "
-    if recursive:
-        command += "--recursive=y "
-    command += " ".join(target) if target else collect_files(context)
+    command = f"pylint --rcfile pyproject.toml {collect_files(context)}"
     run_command(context, command)
 
 
