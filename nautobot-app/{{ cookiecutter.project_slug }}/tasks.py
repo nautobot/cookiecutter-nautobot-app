@@ -751,26 +751,49 @@ def hadolint(context):
     run_command(context, command)
 
 
-@task
-def pylint(context):
+@task(
+    help={
+        "target": "Module or file or directory to inspect, repeatable (default: app package)",
+        "recursive": "Must be set if target is a directory rather than a module or file name",
+    },
+    iterable=["target"],
+)
+def pylint(context, target=None, recursive=False):
     """Run pylint code analysis."""
     exit_code = 0
 
     base_pylint_command = 'pylint --verbose --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml'
-    command = f"{base_pylint_command} {{ cookiecutter.app_name }}"
+    command = base_pylint_command
+    if recursive:
+        command += " --recursive=y"
+    command += f" {' '.join(target) if target else '{{ cookiecutter.app_name }}'}"
     if not run_command(context, command, warn=True):
         exit_code = 1
 
     # run the pylint_django migrations checkers on the migrations directory, if one exists
-    migrations_dir = Path(__file__).absolute().parent / Path("{{ cookiecutter.app_name }}") / Path("migrations")
+    app_dir = Path(__file__).absolute().parent / Path("{{ cookiecutter.app_name }}")
+    migrations_dir = app_dir / Path("migrations")
+    migrations_target_module = "{{ cookiecutter.app_name }}.migrations"
+    run_migrations_check = target is None
+    if target is not None:
+        for target_item in target:
+            target_item_normalized = Path(target_item).resolve()
+            if (
+                target_item_normalized in (app_dir, migrations_dir)
+                or target_item == migrations_target_module
+            ):
+                run_migrations_check = True
+                break
+
     if migrations_dir.is_dir():
-        migrations_pylint_command = (
-            f"{base_pylint_command} --load-plugins=pylint_django.checkers.migrations"
-            " --disable=all --enable=fatal,new-db-field-with-default,missing-backwards-migration-callable"
-            " {{ cookiecutter.app_name }}.migrations"
-        )
-        if not run_command(context, migrations_pylint_command, warn=True):
-            exit_code = 1
+        if run_migrations_check:
+            migrations_pylint_command = (
+                f"{base_pylint_command} --load-plugins=pylint_django.checkers.migrations"
+                " --disable=all --enable=fatal,new-db-field-with-default,missing-backwards-migration-callable"
+                " {{ cookiecutter.app_name }}.migrations"
+            )
+            if not run_command(context, migrations_pylint_command, warn=True):
+                exit_code = 1
     else:
         print("No migrations directory found, skipping migrations checks.")
 
