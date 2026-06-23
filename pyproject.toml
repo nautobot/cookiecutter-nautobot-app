@@ -115,6 +115,7 @@ convention = "google"
 [tool.pytest.ini_options]
 testpaths = [
     "nautobot-app/tests",
+    "nautobot-app-commercial/tests",
     "nautobot-app-chatops/tests",
     "nautobot-app-ssot/tests",
 ]
