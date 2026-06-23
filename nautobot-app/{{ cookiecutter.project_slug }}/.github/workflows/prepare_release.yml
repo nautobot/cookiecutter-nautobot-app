@@ -186,7 +186,7 @@ jobs:
 
       - name: "Create Draft Release"
         env:
-          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+          GH_TOKEN: "{% raw %}${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}{% endraw %}"
         run: |
           if [[ "{% raw %}${{ github.event.inputs.bump_rule }}{% endraw %}" == "prerelease" ]]; then
             RELEASE_FLAGS="--prerelease"

@@ -227,7 +227,7 @@ jobs:
       - name: "Create Pull Request"
         if: "steps.branch.outputs.branch_name != ''"
         env:
-          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+          GH_TOKEN: "{% raw %}${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}{% endraw %}"
         run: |
           gh pr create \
             --title "Sync release notes from {% raw %}${{ github.event.release.target_commitish }}{% endraw %} ({% raw %}${{ github.event.release.tag_name }}{% endraw %}) to develop" \
