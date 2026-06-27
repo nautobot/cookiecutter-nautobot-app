@@ -1066,10 +1066,16 @@ def unittest(  # noqa: PLR0913
     run_command(context, command)
 
 
-@task
-def unittest_coverage(context):
+@task(
+    help={
+        "missing": "Show line numbers of statements in each module that were not executed.",
+    },
+)
+def unittest_coverage(context, missing=False):
     """Report on code test coverage as measured by 'invoke unittest --coverage'."""
     command = "coverage report --skip-covered"
+    if missing:
+        command += " --show-missing"
 
     run_command(context, command)
 
