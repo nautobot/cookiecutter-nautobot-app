@@ -170,7 +170,11 @@ def docker_compose(context, command, **kwargs):
 
 @task
 def dump_service_ports_to_disk(context):
-    """Write service port mappings for tools that cannot query Docker directly."""
+    """Useful for downstream utilities without direct docker access to determine ports.
+
+    This function will sometimes be called asynchronously while containers are still
+    firing up, hence the `attempt` loop.
+    """
     service_ports = {}
 
     for _ in range(4):
