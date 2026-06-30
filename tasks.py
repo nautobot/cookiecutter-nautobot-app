@@ -436,15 +436,27 @@ def markdownlint(context, fix=False):
     command = "pymarkdown scan --recurse docs *.md"
     run_command(context, command)
 
+
 @task
 def lint(context, fix=False):
     """Run all linters."""
-    hadolint(context)
-    markdownlint(context, fix=fix)
-    yamllint(context)
-    ruff(context, fix=fix)
-    pylint(context)
-    build_and_check_docs(context)
+    linters = (
+        lambda: hadolint(context),
+        lambda: markdownlint(context, fix=fix),
+        lambda: yamllint(context),
+        lambda: ruff(context, fix=fix),
+        lambda: pylint(context),
+        lambda: build_and_check_docs(context),
+    )
+
+    # Run each linter even if preceeding linter has failure
+    for linter in linters:
+        try:
+            linter()
+        except Exception:  # noqa: S110
+            # Left empty in order to run all linters, logging already performed
+            pass
+
 
 @task(
     help={
