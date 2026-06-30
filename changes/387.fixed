@@ -1,0 +1,1 @@
+Fixed github actions not running on pull requests when using automated releases.

@@ -1,0 +1,5 @@
+Copyright (c) {% now 'local', '%Y' %} {{ cookiecutter.full_name }}. All rights reserved.
+
+This software is confidential and proprietary. You must have a valid license agreement to use it.
+
+For questions about licensing or support, contact your account manager or e-mail {{ cookiecutter.email }}.
