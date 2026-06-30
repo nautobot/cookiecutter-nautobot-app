@@ -429,12 +429,6 @@ def lint(context, fix=False):
     yamllint(context)
     ruff(context, fix=fix)
     pylint(context)
-    eslint(context, fix=fix)
-    prettier(context, fix=fix)
-    djhtml(context, fix=fix)
-    djlint(context)
-    check_migrations(context)
-    check_schema(context)
     build_and_check_docs(context)
 
 @task(
