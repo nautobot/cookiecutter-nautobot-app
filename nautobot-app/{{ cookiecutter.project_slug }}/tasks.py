@@ -198,7 +198,8 @@ def dump_service_ports_to_disk(context):
             except (json.decoder.JSONDecodeError, AttributeError, IndexError, KeyError):
                 continue
 
-        if set(["nautobot", "worker"]).issubset(service_ports.keys()):
+        # Confirm nautobot has started
+        if set(["nautobot"]).issubset(service_ports.keys()):
             break
 
         sleep(5)
