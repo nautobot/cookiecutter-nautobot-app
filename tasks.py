@@ -421,6 +421,21 @@ def markdownlint(context, fix=False):
     command = "pymarkdown scan --recurse docs *.md"
     run_command(context, command)
 
+@task
+def lint(context, fix=False):
+    """Run all linters."""
+    hadolint(context)
+    markdownlint(context, fix=fix)
+    yamllint(context)
+    ruff(context, fix=fix)
+    pylint(context)
+    eslint(context, fix=fix)
+    prettier(context, fix=fix)
+    djhtml(context, fix=fix)
+    djlint(context)
+    check_migrations(context)
+    check_schema(context)
+    build_and_check_docs(context)
 
 @task(
     help={
