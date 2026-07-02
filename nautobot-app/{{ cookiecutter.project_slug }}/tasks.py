@@ -895,9 +895,17 @@ def djlint(context, target=None):
     command = "djlint --lint "
     command += " ".join(target)
 
-    exit_code = 0 if run_command(context, command, warn=True) else 1
-    if exit_code != 0:
-        raise Exit(code=exit_code)
+    # As of djlint 1.39.5, djlint returns a non-zero exit code when no files match the lint run
+    # (https://github.com/djlint/djLint/issues/1112)
+    result = run_command(context, command, warn=True, hide="both", pty=False)
+    print(result.stdout, end="")
+
+    if result.ok:
+        return
+    if "No files to check" in result.stdout:
+        return
+    print(result.stderr, end="")
+    raise Exit(code=result.return_code or 1)
 
 
 @task(
