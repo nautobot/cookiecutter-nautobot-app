@@ -1,0 +1,1 @@
+Fixed djlint CI failure for apps with no Django templates, caused by djlint 1.39.5 returning a non-zero exit code when no files match the lint run.
