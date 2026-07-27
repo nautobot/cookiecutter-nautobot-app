@@ -7,10 +7,6 @@ on:  # yamllint disable-line rule:truthy rule:comments
 env:
   POETRY_VERSION: "2.1.3"
   PYTHON_VERSION: "3.12"
-  # Poetry credentials for the private "artifactory-pypi" package source,
-  # needed by any step that resolves/installs dependencies via Poetry.
-  POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
-  POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
 
 jobs:
   build:
@@ -25,6 +21,11 @@ jobs:
           poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
           python-version: "{% raw %}${{ env.PYTHON_VERSION }}{% endraw %}"
           poetry-install-options: "--no-root"
+        # Poetry credentials for the private "artifactory-pypi" package source, scoped to the
+        # steps that resolve/install dependencies via Poetry.
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
       - name: "Build Documentation"
         run: "poetry run invoke build-and-check-docs"
       - name: "Run Poetry Build"
@@ -72,6 +73,9 @@ jobs:
         with:
           poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
           poetry-install-options: "--dry-run"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
 
       - name: "Retrieve built package from cache"
         uses: "actions/download-artifact@v4"
@@ -142,6 +146,9 @@ jobs:
         with:
           poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
           poetry-install-options: "--no-root"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
 
       - name: "Create release branch and bump version"
         id: "branch"
