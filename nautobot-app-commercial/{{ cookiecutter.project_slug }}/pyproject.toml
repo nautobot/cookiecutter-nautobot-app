@@ -32,6 +32,17 @@ include = [
 python = ">=3.10,<3.15"
 # Used for local development
 nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
+# Packages published to Network to Code's private Artifactory rather than public PyPI must
+# declare `source = "artifactory-pypi"`, for example:
+# nautobot-tools = {version = ">=1.1.0,<2.0.0", source = "artifactory-pypi"}
+
+# Private Network to Code package source. Resolving from it requires the credentials described in
+# `docs/dev/dev_environment.md` (POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME/PASSWORD locally,
+# and the ARTIFACTORY_USERNAME/ARTIFACTORY_PASSWORD repository secrets in CI).
+[[tool.poetry.source]]
+name = "artifactory-pypi"
+url = "https://nautobot.jfrog.io/artifactory/api/pypi/pypi-virtual/simple"
+priority = "supplemental"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"

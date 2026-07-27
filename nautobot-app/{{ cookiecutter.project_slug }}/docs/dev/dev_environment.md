@@ -168,6 +168,28 @@ First, you may create/overwrite the `development/creds.env` file - it stores a b
 ```shell
 cp development/creds.example.env development/creds.env
 ```
+{%- if cookiecutter.__commercial %}
+
+### Artifactory credentials for private dependencies
+
+Packages published to Network to Code's private JFrog Artifactory PyPI repository rather than public PyPI are resolved through the `artifactory-pypi` source defined in `pyproject.toml`, which requires authentication.
+
+Export your Artifactory credentials in the shell you run `invoke` commands from before building the image:
+
+```shell
+export ARTIFACTORY_USERNAME="your-artifactory-username"
+export ARTIFACTORY_PASSWORD="your-artifactory-api-token"
+```
+
+`invoke build` passes these to the image build as Docker BuildKit secrets, so they are never written into image layers. If they are unset, the build still succeeds but Poetry can only resolve packages from public indexes.
+
+If you also run Poetry directly on your host (outside Docker), configure the same credentials for Poetry:
+
+```shell
+export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="your-artifactory-username"
+export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="your-artifactory-api-token"
+```
+{%- endif %}
 
 ### Invoke - Building the Docker Image
 

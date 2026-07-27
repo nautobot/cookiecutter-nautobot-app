@@ -12,6 +12,12 @@ on: # yamllint disable-line rule:truthy rule:comments
 
 env:
   APP_NAME: "{{ cookiecutter.app_slug }}"
+{%- if cookiecutter.__commercial %}
+  # Poetry credentials for the private "artifactory-pypi" package source,
+  # used by host-side `poetry lock` / `poetry install` steps.
+  POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+  POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
 
 jobs:
   generate-lockfile:
@@ -198,6 +204,11 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
+{%- if cookiecutter.__commercial %}
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: pylint"
         run: "poetry run invoke pylint"
       - name: "Checking: App Config"
@@ -253,6 +264,11 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
+{%- if cookiecutter.__commercial %}
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Use Mysql invoke settings when needed"
         run: "cp invoke.mysql.yml invoke.yml"
         if: "matrix.db-backend == 'mysql'"
@@ -303,6 +319,11 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
+{%- if cookiecutter.__commercial %}
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Use Mysql invoke settings when needed"

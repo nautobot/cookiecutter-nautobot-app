@@ -126,6 +126,13 @@ def docker_compose(context, command, **kwargs):
         "COMPOSE_HTTP_TIMEOUT": context.{{ cookiecutter.app_name }}.compose_http_timeout,
         "NAUTOBOT_VER": context.{{ cookiecutter.app_name }}.nautobot_ver,
         "PYTHON_VER": context.{{ cookiecutter.app_name }}.python_ver,
+{%- if cookiecutter.__commercial %}
+        # Poetry credentials for the private "artifactory-pypi" package source, consumed as
+        # BuildKit secrets in docker-compose.base.yml. Defaulted to empty strings because
+        # compose errors on unset environment-sourced secrets.
+        "ARTIFACTORY_USERNAME": os.environ.get("ARTIFACTORY_USERNAME", ""),
+        "ARTIFACTORY_PASSWORD": os.environ.get("ARTIFACTORY_PASSWORD", ""),
+{%- endif %}
         **kwargs.pop("env", {}),
     }
     compose_command_tokens = [
