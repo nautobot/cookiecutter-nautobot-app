@@ -57,8 +57,9 @@ services:
 {%- if cookiecutter.__commercial %}
 
 # Poetry credentials for the private "artifactory-pypi" package source, passed to the image
-# build as BuildKit secrets. Sourced from the shell environment running `docker compose`;
-# tasks.py defaults them to empty strings so builds still work without credentials.
+# build as BuildKit secrets. Sourced from the shell environment running `docker compose`
+# (tasks.py resolves them from the shell environment or development/creds.env, defaulting to
+# empty strings so builds still work without credentials).
 secrets:
   artifactory_username:
     environment: "ARTIFACTORY_USERNAME"

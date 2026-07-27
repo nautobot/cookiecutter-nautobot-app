@@ -36,13 +36,14 @@ nautobot = ">={{ min_nautobot_version }},<{{ upper_bound_nautobot_version }}"
 # declare `source = "artifactory-pypi"`, for example:
 # nautobot-tools = {version = ">=1.1.0,<2.0.0", source = "artifactory-pypi"}
 
-# Private Network to Code package source. Resolving from it requires the credentials described in
+# Private Network to Code package source. With `priority = "explicit"`, only packages that declare
+# `source = "artifactory-pypi"` are resolved from it. Resolving requires the credentials described in
 # `docs/dev/dev_environment.md` (POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME/PASSWORD locally,
 # and the ARTIFACTORY_USERNAME/ARTIFACTORY_PASSWORD repository secrets in CI).
 [[tool.poetry.source]]
 name = "artifactory-pypi"
 url = "https://nautobot.jfrog.io/artifactory/api/pypi/pypi-virtual/simple"
-priority = "supplemental"
+priority = "explicit"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"

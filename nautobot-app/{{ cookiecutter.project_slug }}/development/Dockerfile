@@ -1,4 +1,5 @@
-# -------------------------------------------------------------------------------------
+{% if cookiecutter.__commercial %}# syntax=docker/dockerfile:1
+{% endif %}# -------------------------------------------------------------------------------------
 # Nautobot App Developement Dockerfile Template
 # Version: 1.1.0
 #
@@ -61,16 +62,13 @@ ARG PYTHON_VER
 # In CI, this should be done outside of the Dockerfile to prevent cross-compile build failures
 {%- if cookiecutter.__commercial %}
 # The artifactory_* BuildKit secrets provide Poetry credentials for the private "artifactory-pypi"
-# package source; when absent or empty, Poetry resolves from public indexes only. Mounted secrets
-# are never persisted into image layers.
+# package source; when absent or empty, Poetry will not attempt to install packages from the
+# artifactory-pypi repo. Mounted secrets are never persisted into image layers.
 {%- endif %}
 ARG CI
 {%- if cookiecutter.__commercial %}
-RUN --mount=type=secret,id=artifactory_username \
-    --mount=type=secret,id=artifactory_password \
-    if [ -s /run/secrets/artifactory_username ]; then \
-    export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="$(cat /run/secrets/artifactory_username)" \
-    POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="$(cat /run/secrets/artifactory_password)"; fi && \
+RUN --mount=type=secret,id=artifactory_username,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME \
+    --mount=type=secret,id=artifactory_password,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD \
     if [ -z "${CI+x}" ]; then \
 {%- else %}
 RUN if [ -z "${CI+x}" ]; then \
@@ -81,11 +79,8 @@ RUN if [ -z "${CI+x}" ]; then \
 
 # Install the app
 {%- if cookiecutter.__commercial %}
-RUN --mount=type=secret,id=artifactory_username \
-    --mount=type=secret,id=artifactory_password \
-    if [ -s /run/secrets/artifactory_username ]; then \
-    export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="$(cat /run/secrets/artifactory_username)" \
-    POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="$(cat /run/secrets/artifactory_password)"; fi && \
+RUN --mount=type=secret,id=artifactory_username,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME \
+    --mount=type=secret,id=artifactory_password,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD \
     poetry install --extras all --with dev
 {%- else %}
 RUN poetry install --extras all --with dev

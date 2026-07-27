@@ -128,10 +128,10 @@ def docker_compose(context, command, **kwargs):
         "PYTHON_VER": context.{{ cookiecutter.app_name }}.python_ver,
 {%- if cookiecutter.__commercial %}
         # Poetry credentials for the private "artifactory-pypi" package source, consumed as
-        # BuildKit secrets in docker-compose.base.yml. Defaulted to empty strings because
-        # compose errors on unset environment-sourced secrets.
-        "ARTIFACTORY_USERNAME": os.environ.get("ARTIFACTORY_USERNAME", ""),
-        "ARTIFACTORY_PASSWORD": os.environ.get("ARTIFACTORY_PASSWORD", ""),
+        # BuildKit secrets in docker-compose.base.yml. Sourced from the shell environment,
+        # falling back to development/creds.env. Defaulted to empty strings because compose
+        # errors on unset environment-sourced secrets.
+        **_artifactory_creds(context),
 {%- endif %}
         **kwargs.pop("env", {}),
     }
@@ -209,7 +209,22 @@ def build(context, force_rm=False, cache=True):
     print(f"Building Nautobot with Python {context.{{ cookiecutter.app_name }}.python_ver}...")
     docker_compose(context, command)
 
+{% if cookiecutter.__commercial %}
+def _artifactory_creds(context):
+    """Resolve Artifactory credentials from the shell environment, falling back to development/creds.env."""
+    creds = {"ARTIFACTORY_USERNAME": "", "ARTIFACTORY_PASSWORD": ""}
+    creds_env_path = os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, "creds.env")
+    if os.path.isfile(creds_env_path):
+        with open(creds_env_path, encoding="utf-8") as creds_env_file:
+            for line in creds_env_file:
+                key, _, value = line.strip().partition("=")
+                if key in creds:
+                    creds[key] = value.strip("\"'")
+    for key in creds:
+        creds[key] = os.environ.get(key) or creds[key]
+    return creds
 
+{% endif %}
 def _ensure_creds_env_file(context):
     """Ensure that the development/creds.env file exists."""
     if not os.path.exists(
