@@ -18,6 +18,6 @@
     "_extensions": [
         "local_extensions.camel_case_to_kebab",
         "local_extensions.camel_case_to_words",
-        "local_extensions.NautobotVersions"
+        "local_extensions.CommercialNautobotVersions"
     ]
 }
