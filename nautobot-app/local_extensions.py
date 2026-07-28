@@ -39,7 +39,7 @@ class NautobotVersions(Extension):  # pylint: disable=abstract-method
         environment.globals.update(upper_bound_nautobot_version="4.0.0")
 
 
-class CommercialNautobotVersions(NautobotVersions):
+class CommercialNautobotVersions(NautobotVersions):  # pylint: disable=abstract-method
     """Jinja2 extension to set a minimum/maximum Nautobot version for commercial apps."""
 
     def __init__(self, environment: Environment):
