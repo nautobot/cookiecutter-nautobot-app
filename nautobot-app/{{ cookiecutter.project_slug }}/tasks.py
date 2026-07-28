@@ -212,7 +212,7 @@ def build(context, force_rm=False, cache=True):
 {% if cookiecutter.__commercial %}
 def _artifactory_creds(context):
     """Resolve Artifactory credentials from the shell environment, falling back to development/creds.env."""
-    creds = {"ARTIFACTORY_USERNAME": "", "ARTIFACTORY_PASSWORD": ""}
+    creds = {"POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME": "", "POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD": ""}
     creds_env_path = os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, "creds.env")
     if os.path.isfile(creds_env_path):
         with open(creds_env_path, encoding="utf-8") as creds_env_file:

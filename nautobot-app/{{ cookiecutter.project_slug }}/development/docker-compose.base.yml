@@ -62,7 +62,7 @@ services:
 # empty strings so builds still work without credentials).
 secrets:
   artifactory_username:
-    environment: "ARTIFACTORY_USERNAME"
+    environment: "POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME"
   artifactory_password:
-    environment: "ARTIFACTORY_PASSWORD"
+    environment: "POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD"
 {%- endif %}

@@ -177,25 +177,18 @@ Packages published to Network to Code's private JFrog Artifactory PyPI repositor
 Add your Artifactory credentials to `development/creds.env` alongside the other development credentials:
 
 ```shell
-ARTIFACTORY_USERNAME="your-artifactory-username"
-ARTIFACTORY_PASSWORD="your-artifactory-api-token"
+POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="your-artifactory-username"
+POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="your-artifactory-api-token"
 ```
 
 Alternatively, export the same variables in the shell you run `invoke` commands from; the shell environment takes precedence over `creds.env`:
 
 ```shell
-export ARTIFACTORY_USERNAME="your-artifactory-username"
-export ARTIFACTORY_PASSWORD="your-artifactory-api-token"
-```
-
-`invoke build` passes these to the image build as Docker BuildKit secrets, so they are never written into image layers. If they are unset, the build still succeeds as long as no dependency is pinned to the `artifactory-pypi` source; Poetry cannot install a package pinned to that source without valid credentials.
-
-If you also run Poetry directly on your host (outside Docker), configure the same credentials for Poetry:
-
-```shell
 export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="your-artifactory-username"
 export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="your-artifactory-api-token"
 ```
+
+These are the same variables Poetry reads natively for HTTP basic authentication against the `artifactory-pypi` source, so a single pair of credentials covers both running Poetry directly on your host and the containerized workflow: `invoke build` passes them to the image build as Docker BuildKit secrets, so they are never written into image layers. If they are unset, the build still succeeds as long as no dependency is pinned to the `artifactory-pypi` source; Poetry cannot install a package pinned to that source without valid credentials.
 {%- endif %}
 
 ### Invoke - Building the Docker Image
