@@ -28,6 +28,11 @@ jobs:
           POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
       - name: "Build Documentation"
         run: "poetry run invoke build-and-check-docs"
+        # The docs build runs `invoke` through docker compose, which needs the same Poetry
+        # credentials to build the Nautobot image (tasks.py passes them as BuildKit secrets).
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
       - name: "Run Poetry Build"
         run: "poetry build"
 
