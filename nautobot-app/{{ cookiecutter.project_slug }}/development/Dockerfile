@@ -1,5 +1,7 @@
-{% if cookiecutter.__commercial %}# syntax=docker/dockerfile:1
-{% endif %}# -------------------------------------------------------------------------------------
+{% if cookiecutter.__commercial -%}
+# syntax=docker/dockerfile:1
+{% endif -%}
+# -------------------------------------------------------------------------------------
 # Nautobot App Developement Dockerfile Template
 # Version: 1.1.0
 #
