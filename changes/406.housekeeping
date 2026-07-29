@@ -1,0 +1,2 @@
+Added a private `__commercial` cookiecutter variable so shared template files can emit commercial-only content without being duplicated across the four cookies.
+Excluded the templated `development/docker-compose.base.yml` and `.github/workflows/ci.yml` files from `yamllint`, as their conditional Jinja blocks are not parseable as YAML.

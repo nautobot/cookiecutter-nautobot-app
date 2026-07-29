@@ -1,3 +1,6 @@
+{% if cookiecutter.__commercial -%}
+# syntax=docker/dockerfile:1
+{% endif -%}
 # -------------------------------------------------------------------------------------
 # Nautobot App Developement Dockerfile Template
 # Version: 1.1.0
@@ -59,14 +62,31 @@ ARG PYTHON_VER
 
 # Constrain the Nautobot version to NAUTOBOT_VER, fall back to installing from git branch if not available on PyPi
 # In CI, this should be done outside of the Dockerfile to prevent cross-compile build failures
+{%- if cookiecutter.__commercial %}
+# The artifactory_* BuildKit secrets provide Poetry credentials for the private "artifactory-pypi"
+# package source; when absent or empty, Poetry will not attempt to install packages from the
+# artifactory-pypi repo. Mounted secrets are never persisted into image layers.
+{%- endif %}
 ARG CI
+{%- if cookiecutter.__commercial %}
+RUN --mount=type=secret,id=artifactory_username,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME \
+    --mount=type=secret,id=artifactory_password,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD \
+    if [ -z "${CI+x}" ]; then \
+{%- else %}
 RUN if [ -z "${CI+x}" ]; then \
+{%- endif %}
     INSTALLED_NAUTOBOT_VER=$(pip show nautobot | grep "^Version" | sed "s/Version: //"); \
     poetry add --lock nautobot@${INSTALLED_NAUTOBOT_VER} --python ${PYTHON_VER} || \
     poetry add --lock git+https://github.com/nautobot/nautobot.git#${NAUTOBOT_VER} --python ${PYTHON_VER}; fi
 
 # Install the app
+{%- if cookiecutter.__commercial %}
+RUN --mount=type=secret,id=artifactory_username,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME \
+    --mount=type=secret,id=artifactory_password,env=POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD \
+    poetry install --extras all --with dev
+{%- else %}
 RUN poetry install --extras all --with dev
+{%- endif %}
 
 COPY development/nautobot_config.py ${NAUTOBOT_ROOT}/nautobot_config.py
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE

@@ -21,8 +21,18 @@ jobs:
           poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
           python-version: "{% raw %}${{ env.PYTHON_VERSION }}{% endraw %}"
           poetry-install-options: "--no-root"
+        # Poetry credentials for the private "artifactory-pypi" package source, scoped to the
+        # steps that resolve/install dependencies via Poetry.
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
       - name: "Build Documentation"
         run: "poetry run invoke build-and-check-docs"
+        # The docs build runs `invoke` through docker compose, which needs the same Poetry
+        # credentials to build the Nautobot image (tasks.py passes them as BuildKit secrets).
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
       - name: "Run Poetry Build"
         run: "poetry build"
 
@@ -68,6 +78,9 @@ jobs:
         with:
           poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
           poetry-install-options: "--dry-run"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
 
       - name: "Retrieve built package from cache"
         uses: "actions/download-artifact@v4"
@@ -138,6 +151,9 @@ jobs:
         with:
           poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
           poetry-install-options: "--no-root"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
 
       - name: "Create release branch and bump version"
         id: "branch"
