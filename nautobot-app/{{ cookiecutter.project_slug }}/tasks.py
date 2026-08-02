@@ -206,7 +206,7 @@ def dump_service_ports_to_disk(context):
         if set(["nautobot"]).issubset(service_ports.keys()):
             break
 
-        sleep(5)
+        sleep(15)
 
     with open(".service_ports.json", "w", encoding="utf-8") as file:
         json.dump(service_ports, file, indent=4)
