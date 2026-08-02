@@ -25,7 +25,6 @@ from invoke.collection import Collection
 from invoke.exceptions import Exit, UnexpectedExit
 from invoke.tasks import task as invoke_task
 
-
 ORIGINAL_COMPOSE_FILES = [
     "docker-compose.base.yml",
     "docker-compose.redis.yml",
@@ -158,9 +157,7 @@ def docker_compose(context, command, **kwargs):
         compose_file_path = os.path.join(
             context.{{ cookiecutter.app_name }}.compose_dir, "docker-compose.ephemeral-ports.yml"
         )
-        compose_command_tokens.append(
-            f' -f "{compose_file_path}"'
-        )
+        compose_command_tokens.append(f' -f "{compose_file_path}"')
 
     compose_command_tokens.append(command)
 
