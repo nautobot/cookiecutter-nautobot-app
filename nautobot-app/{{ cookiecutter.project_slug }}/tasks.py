@@ -132,6 +132,13 @@ def docker_compose(context, command, **kwargs):
         "COMPOSE_HTTP_TIMEOUT": context.{{ cookiecutter.app_name }}.compose_http_timeout,
         "NAUTOBOT_VER": context.{{ cookiecutter.app_name }}.nautobot_ver,
         "PYTHON_VER": context.{{ cookiecutter.app_name }}.python_ver,
+{%- if cookiecutter.__commercial %}
+        # Poetry credentials for the private "artifactory-pypi" package source, consumed as
+        # BuildKit secrets in docker-compose.base.yml. Sourced from the shell environment,
+        # falling back to development/creds.env. Defaulted to empty strings because compose
+        # errors on unset environment-sourced secrets.
+        **_artifactory_creds(context),
+{%- endif %}
         **kwargs.pop("env", {}),
     }
     compose_command_tokens = [
@@ -259,7 +266,22 @@ def build(context, force_rm=False, cache=True):
     print(f"Building Nautobot with Python {context.{{ cookiecutter.app_name }}.python_ver}...")
     docker_compose(context, command)
 
+{% if cookiecutter.__commercial %}
+def _artifactory_creds(context):
+    """Resolve Artifactory credentials from the shell environment, falling back to development/creds.env."""
+    creds = {"POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME": "", "POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD": ""}
+    creds_env_path = os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, "creds.env")
+    if os.path.isfile(creds_env_path):
+        with open(creds_env_path, encoding="utf-8") as creds_env_file:
+            for line in creds_env_file:
+                key, _, value = line.strip().partition("=")
+                if key in creds:
+                    creds[key] = value.strip("\"'")
+    for key in creds:
+        creds[key] = os.environ.get(key) or creds[key]
+    return creds
 
+{% endif %}
 def _ensure_creds_env_file(context):
     """Ensure that the development/creds.env file exists."""
     if not os.path.exists(
@@ -955,9 +977,17 @@ def djlint(context, target=None):
     command = "djlint --lint "
     command += " ".join(target)
 
-    exit_code = 0 if run_command(context, command, warn=True) else 1
-    if exit_code != 0:
-        raise Exit(code=exit_code)
+    # As of djlint 1.39.5, djlint returns a non-zero exit code when no files match the lint run
+    # (https://github.com/djlint/djLint/issues/1112)
+    result = run_command(context, command, warn=True, hide="both", pty=False)
+    print(result.stdout, end="")
+
+    if result.ok:
+        return
+    if "No files to check" in result.stdout:
+        return
+    print(result.stderr, end="")
+    raise Exit(code=result.return_code or 1)
 
 
 @task(
