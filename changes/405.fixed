@@ -1,0 +1,1 @@
+Changed `.gitignore` to allow committing shared Claude Code configuration, ignoring only per-user local files.

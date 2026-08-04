@@ -307,9 +307,9 @@ development/*.txt
 # Invoke overrides
 invoke.yml
 
-# Claude Code
-CLAUDE.md
-.claude/
+# Claude Code local settings
+.claude/settings.local.json
+CLAUDE.local.md
 
 # OpenAI Codex CLI
 AGENTS.md

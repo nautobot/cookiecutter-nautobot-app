@@ -14,13 +14,21 @@ ignore: |
   nautobot-app/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app/{{ cookiecutter.project_slug }}/invoke.example.yml
   nautobot-app/{{ cookiecutter.project_slug }}/mkdocs.yml
+  nautobot-app/{{ cookiecutter.project_slug }}/development/docker-compose.base.yml
+  nautobot-app/{{ cookiecutter.project_slug }}/.github/workflows/ci.yml
   nautobot-app-chatops/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app-chatops/{{ cookiecutter.project_slug }}/invoke.example.yml
   nautobot-app-chatops/{{ cookiecutter.project_slug }}/invoke.mattermost.yml
   nautobot-app-chatops/{{ cookiecutter.project_slug }}/mkdocs.yml
+  nautobot-app-chatops/{{ cookiecutter.project_slug }}/development/docker-compose.base.yml
+  nautobot-app-chatops/{{ cookiecutter.project_slug }}/.github/workflows/ci.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/invoke.example.yml
   nautobot-app-ssot/{{ cookiecutter.project_slug }}/mkdocs.yml
+  nautobot-app-ssot/{{ cookiecutter.project_slug }}/development/docker-compose.base.yml
+  nautobot-app-ssot/{{ cookiecutter.project_slug }}/.github/workflows/ci.yml
   nautobot-app-commercial/{{ cookiecutter.project_slug }}/invoke.mysql.yml
   nautobot-app-commercial/{{ cookiecutter.project_slug }}/invoke.example.yml
   nautobot-app-commercial/{{ cookiecutter.project_slug }}/mkdocs.yml
+  nautobot-app-commercial/{{ cookiecutter.project_slug }}/development/docker-compose.base.yml
+  nautobot-app-commercial/{{ cookiecutter.project_slug }}/.github/workflows/ci.yml
