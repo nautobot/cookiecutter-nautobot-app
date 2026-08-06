@@ -1,2 +1,0 @@
-Added the private `artifactory-pypi` Poetry package source to the `nautobot-app-commercial` cookie, so baked commercial apps can resolve dependencies published only to Network to Code's Artifactory.
-Added Artifactory credential plumbing to the `nautobot-app-commercial` cookie, standardizing on the `POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME` and `POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD` environment variables everywhere: read natively by Poetry, passed to the development image build as Docker BuildKit secrets, and exposed to Poetry in CI.
