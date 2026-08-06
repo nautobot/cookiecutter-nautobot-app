@@ -1,0 +1,6 @@
+# Set Mattermost host ports to ephemeral values to avoid conflicts with other local services.
+---
+services:
+  mattermost:
+    ports: !override
+      - "8065"

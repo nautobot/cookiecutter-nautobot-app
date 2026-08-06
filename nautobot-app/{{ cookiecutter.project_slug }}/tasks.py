@@ -12,6 +12,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import concurrent.futures
+import json
 import os
 import re
 import shutil
@@ -22,6 +24,13 @@ from time import sleep
 from invoke.collection import Collection
 from invoke.exceptions import Exit, UnexpectedExit
 from invoke.tasks import task as invoke_task
+
+ORIGINAL_COMPOSE_FILES = [
+    "docker-compose.base.yml",
+    "docker-compose.redis.yml",
+    "docker-compose.postgres.yml",
+    "docker-compose.dev.yml",
+]
 
 
 def is_truthy(arg):
@@ -56,13 +65,9 @@ namespace.configure(
             "project_name": "{{ cookiecutter.app_slug }}",
             "python_ver": "3.12",
             "local": False,
+            "ephemeral_ports": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
-            "compose_files": [
-                "docker-compose.base.yml",
-                "docker-compose.redis.yml",
-                "docker-compose.postgres.yml",
-                "docker-compose.dev.yml",
-            ],
+            "compose_files": ORIGINAL_COMPOSE_FILES.copy(),
             "compose_http_timeout": "86400",
         }
     }
@@ -145,6 +150,15 @@ def docker_compose(context, command, **kwargs):
         compose_file_path = os.path.join(context.{{ cookiecutter.app_name }}.compose_dir, compose_file)
         compose_command_tokens.append(f' -f "{compose_file_path}"')
 
+    if (
+        context.{{ cookiecutter.app_name }}.ephemeral_ports
+        and context.{{ cookiecutter.app_name }}.compose_files == ORIGINAL_COMPOSE_FILES
+    ):
+        compose_file_path = os.path.join(
+            context.{{ cookiecutter.app_name }}.compose_dir, "docker-compose.ephemeral-ports.yml"
+        )
+        compose_command_tokens.append(f' -f "{compose_file_path}"')
+
     compose_command_tokens.append(command)
 
     # If `service` was passed as a kwarg, add it to the end.
@@ -152,10 +166,50 @@ def docker_compose(context, command, **kwargs):
     if service is not None:
         compose_command_tokens.append(service)
 
-    print(f'Running docker compose command "{command}"')
+    if "hide" not in kwargs:
+        print(f'Running docker compose command "{command}"')
     compose_command = " ".join(compose_command_tokens)
 
     return context.run(compose_command, env=build_env, **kwargs)
+
+
+@task
+def dump_service_ports_to_disk(context):
+    """Useful for downstream utilities without direct docker access to determine ports.
+
+    This function will sometimes be called asynchronously while containers are still
+    firing up, hence the `attempt` loop.
+    """
+    service_ports = {}
+
+    for _ in range(4):
+        result = docker_compose(context, "ps --format json", hide=True)
+
+        for line in result.stdout.splitlines():
+            try:
+                service_def = json.loads(line)
+                service_name = re.search(
+                    r"com\.docker\.compose\.service=(?P<service>\w+)", service_def["Labels"]
+                ).group("service")
+
+                ports_found = {}
+                for port in service_def["Publishers"]:
+                    if port.get("PublishedPort", 0):
+                        ports_found[port["TargetPort"]] = port["PublishedPort"]
+
+                if ports_found:
+                    service_ports[service_name] = ports_found
+            except (json.decoder.JSONDecodeError, AttributeError, IndexError, KeyError):
+                continue
+
+        # Confirm nautobot has started
+        if set(["nautobot"]).issubset(service_ports.keys()):
+            break
+
+        sleep(15)
+
+    with open(".service_ports.json", "w", encoding="utf-8") as file:
+        json.dump(service_ports, file, indent=4)
 
 
 def run_command(context, command, service="nautobot", **kwargs):
@@ -320,7 +374,9 @@ def debug(context, service=None):
     """Start specified or all services and its dependencies in debug mode."""
     service = " ".join(service) if service else ""
     print(f"Starting {service or 'all services'} in debug mode...")
-    docker_compose(context, "up", service=service)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.submit(dump_service_ports_to_disk, context)
+        docker_compose(context, "up", service=service)
 
 
 @task(
@@ -334,6 +390,7 @@ def start(context, service=None):
     service = " ".join(service) if service else ""
     print(f"Starting {service or 'all services'} in detached mode...")
     docker_compose(context, "up --detach", service=service)
+    dump_service_ports_to_disk(context)
 
 
 @task(
