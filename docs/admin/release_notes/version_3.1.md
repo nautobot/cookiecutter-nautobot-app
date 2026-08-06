@@ -18,8 +18,6 @@ This document describes all new features and changes in the release. The format 
 - [#386](https://github.com/nautobot/cookiecutter-nautobot-app/issues/386) - Added opt-in ephemeral Docker host ports for generated app development environments.
 - [#388](https://github.com/nautobot/cookiecutter-nautobot-app/issues/388) - Added `nautobot-app-commercial` template for creating commercial (licensed) Nautobot Apps distributed through NTC's private Artifactory repository.
 - [#393](https://github.com/nautobot/cookiecutter-nautobot-app/issues/393) - Added a `--missing` option to the `unittest-coverage` invoke target to show missing coverage lines.
-- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Added the private `artifactory-pypi` Poetry package source to the `nautobot-app-commercial` cookie, so baked commercial apps can resolve dependencies published only to Network to Code's Artifactory.
-- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Added Artifactory credential plumbing to the `nautobot-app-commercial` cookie, standardizing on the `POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME` and `POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD` environment variables everywhere: read natively by Poetry, passed to the development image build as Docker BuildKit secrets, and exposed to Poetry in CI.
 
 ### Changed
 
@@ -38,22 +36,15 @@ This document describes all new features and changes in the release. The format 
 - [#387](https://github.com/nautobot/cookiecutter-nautobot-app/issues/387) - Fixed github actions not running on pull requests when using automated releases.
 - [#405](https://github.com/nautobot/cookiecutter-nautobot-app/issues/405) - Changed `.gitignore` to allow committing shared Claude Code configuration, ignoring only per-user local files.
 
-### Documentation
-
-- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Documented how to configure Artifactory credentials for the local development environment in apps baked from the `nautobot-app-commercial` cookie.
-- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Documented the private package source, the opt-in flow for private dependencies, and the required repository secrets in the `nautobot-app-commercial` README.
-
 ### Housekeeping
 
 - [#385](https://github.com/nautobot/cookiecutter-nautobot-app/issues/385) - Added a release workflow job to sync release notes from `ltm` branches back to `develop` via an automated pull request.
 - [#389](https://github.com/nautobot/cookiecutter-nautobot-app/issues/389) - Replaced the unmaintained `toml` dev dependency with stdlib `tomllib` (Python 3.11+) and `tomli` (Python 3.10 fallback).
 - [#390](https://github.com/nautobot/cookiecutter-nautobot-app/issues/390) - Bumped CI workflow matrix to test against Python 3.14.
-- [#392](https://github.com/nautobot/cookiecutter-nautobot-app/issues/392) - Updated GH_TOKEN in github workflows to use a service account token for commercial apps NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN.
-- [#402](https://github.com/nautobot/cookiecutter-nautobot-app/issues/402) - Fixed djlint CI failure for apps with no Django templates, caused by djlint 1.39.5 returning a non-zero exit code when no files match the lint run.
+- [#402](https://github.com/nautobot/cookiecutter-nautobot-app/issues/402) - Fixed djlint CI failure for apps with no Django templates
 - [#403](https://github.com/nautobot/cookiecutter-nautobot-app/issues/403) - Changed the release workflow to define the Python and Poetry versions as workflow-level environment variables.
 - [#404](https://github.com/nautobot/cookiecutter-nautobot-app/issues/404) - Added a release workflow job that opens a pull request from `main` into `next` after a release is published from `main`.
-- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Added a private `__commercial` cookiecutter variable so shared template files can emit commercial-only content without being duplicated across the four cookies.
-- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Excluded the templated `development/docker-compose.base.yml` and `.github/workflows/ci.yml` files from `yamllint`, as their conditional Jinja blocks are not parseable as YAML.
+- [#406](https://github.com/nautobot/cookiecutter-nautobot-app/issues/406) - Excluded the templated `development/docker-compose.base.yml` and `.github/workflows/ci.yml` files from `yamllint`.
 
 ## [nautobot-app-v3.1.3 (2026-04-09)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v3.1.3)
 
