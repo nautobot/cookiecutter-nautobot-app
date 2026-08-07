@@ -25,6 +25,13 @@ jobs:
           poetry-version: "2.1.3"
           poetry-install-options: "--only-root"
       - name: "Regenerate poetry.lock"
+{%- if cookiecutter.__commercial %}
+        # Poetry credentials for the private "artifactory-pypi" package source, scoped to the
+        # steps that resolve/install dependencies via Poetry.
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
         run: "poetry lock --regenerate"
       - name: "Upload poetry.lock"
         uses: "actions/upload-artifact@v4"
@@ -47,6 +54,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: ruff format"
         run: "poetry run invoke ruff --action format"
   ruff-lint:
@@ -65,6 +77,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: ruff"
         run: "poetry run invoke ruff --action lint"
   check-docs-build:
@@ -97,6 +114,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Checking: poetry lock file"
         run: "poetry run invoke lock --check"
   djlint:
@@ -115,6 +137,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: djlint"
         run: "poetry run invoke djlint"
   yamllint:
@@ -133,6 +160,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: yamllint"
         run: "poetry run invoke yamllint"
   markdownlint:
@@ -151,6 +183,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: markdownlint"
         run: "poetry run invoke markdownlint"
   check-in-docker:
@@ -176,9 +213,18 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
+{%- if cookiecutter.__commercial %}
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ matrix.python-version }}{% endraw %}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -198,6 +244,11 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
+{%- if cookiecutter.__commercial %}
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Linting: pylint"
         run: "poetry run invoke pylint"
       - name: "Checking: App Config"
@@ -210,14 +261,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.10"]  # 3.13 stable is tested in unittest_report stage.
+        python-version: ["3.10"]  # 3.14 stable is tested in unittest_report stage.
         db-backend: ["postgresql"]
         nautobot-version: ["stable"]
         include:
           - python-version: "3.10"
             db-backend: "postgresql"
             nautobot-version: "{{ min_nautobot_version }}"
-          - python-version: "3.13"
+          - python-version: "3.14"
             db-backend: "mysql"
             nautobot-version: "stable"
     runs-on: "ubuntu-latest"
@@ -231,9 +282,18 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
+{%- if cookiecutter.__commercial %}
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ matrix.python-version }}{% endraw %}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -253,6 +313,11 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
+{%- if cookiecutter.__commercial %}
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Use Mysql invoke settings when needed"
         run: "cp invoke.mysql.yml invoke.yml"
         if: "matrix.db-backend == 'mysql'"
@@ -264,7 +329,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.13"]
+        python-version: ["3.14"]
         db-backend: ["postgresql"]
         nautobot-version: ["stable"]
     runs-on: "ubuntu-latest"
@@ -281,9 +346,18 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Constrain Nautobot version and regenerate lock file"
         env:
           INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
+{%- if cookiecutter.__commercial %}
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ matrix.python-version }}{% endraw %}"
       - name: "Set up Docker Buildx"
         id: "buildx"
@@ -303,6 +377,11 @@ jobs:
             NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
             PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
             CI=true
+{%- if cookiecutter.__commercial %}
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Use Mysql invoke settings when needed"
@@ -349,6 +428,11 @@ jobs:
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
           poetry-version: "2.1.3"
+{%- if cookiecutter.__commercial %}
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+{%- endif %}
       - name: "Check for changelog entry"
         run: |
           {% raw -%}

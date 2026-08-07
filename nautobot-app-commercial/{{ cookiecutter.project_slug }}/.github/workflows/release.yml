@@ -1,0 +1,315 @@
+---
+name: "Release"
+on:  # yamllint disable-line rule:truthy rule:comments
+  release:
+    types: ["published"]
+
+env:
+  POETRY_VERSION: "2.1.3"
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  build:
+    name: "Build package with poetry"
+    runs-on: "ubuntu-latest"
+    if: "startsWith(github.ref, 'refs/tags/v')"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Setup environment"
+        uses: "networktocode/gh-action-setup-poetry-environment@v7"
+        with:
+          poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
+          python-version: "{% raw %}${{ env.PYTHON_VERSION }}{% endraw %}"
+          poetry-install-options: "--no-root"
+        # Poetry credentials for the private "artifactory-pypi" package source, scoped to the
+        # steps that resolve/install dependencies via Poetry.
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+      - name: "Build Documentation"
+        run: "poetry run invoke build-and-check-docs"
+        # The docs build runs `invoke` through docker compose, which needs the same Poetry
+        # credentials to build the Nautobot image (tasks.py passes them as BuildKit secrets).
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+      - name: "Run Poetry Build"
+        run: "poetry build"
+
+      - name: "Check that the release tag matches the version in pyproject.toml"
+        run: |
+          if [ "{% raw %}${{ github.ref_name }}{% endraw %}" != "v$(poetry version -s)" ]; then exit 1; fi
+
+      - uses: "actions/upload-artifact@v4"
+        with:
+          name: "distfiles"
+          path: "dist/"
+          if-no-files-found: "error"
+
+  publish-github:
+    name: "Publish to GitHub"
+    runs-on: "ubuntu-latest"
+    if: "startsWith(github.ref, 'refs/tags/v')"
+    permissions:
+      contents: "write"
+    needs: "build"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Retrieve built package from cache"
+        uses: "actions/download-artifact@v4"
+        with:
+          name: "distfiles"
+          path: "dist/"
+
+      - name: "Upload binaries to release"
+        run: "gh release upload {% raw %}${{ github.ref_name }}{% endraw %} dist/*.{tar.gz,whl}"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+
+  publish-artifactory:
+    name: "Push Package to JFrog Artifactory"
+    runs-on: "ubuntu-latest"
+    if: "startsWith(github.ref, 'refs/tags/v')"
+    needs: "build"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Setup environment"
+        uses: "networktocode/gh-action-setup-poetry-environment@v7"
+        with:
+          poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
+          poetry-install-options: "--dry-run"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+
+      - name: "Retrieve built package from cache"
+        uses: "actions/download-artifact@v4"
+        with:
+          name: "distfiles"
+          path: "dist/"
+
+      - name: "Publish package distributions to JFrog Artifactory"
+        env:
+          POETRY_REPOSITORIES_ARTIFACTORY_URL: "{% raw %}${{ vars.ARTIFACTORY_URL }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+        run: "poetry publish --repository artifactory --dist-dir dist"
+
+  slack-notify:
+    needs:
+      - "publish-github"
+      - "publish-artifactory"
+    runs-on: "ubuntu-latest"
+    env:
+      # Secrets cannot be directly referenced in if: conditionals. They must be set as a job env var first.
+      # Ref: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#example-using-secrets
+      SLACK_WEBHOOK_URL: "{% raw %}${{ secrets.OSS_PYPI_SLACK_WEBHOOK_URL }}{% endraw %}"
+      SLACK_WEBHOOK_TYPE: "INCOMING_WEBHOOK"
+      SLACK_MESSAGE: >-
+        *NOTIFICATION: NEW-RELEASE-PUBLISHED*\n
+        Repository: <{% raw %}${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}{% endraw %}>\n
+        Release: <{% raw %}${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}|${{ github.ref_name }}{% endraw %}>\n
+        Published by: <{% raw %}${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}{% endraw %}>
+    steps:
+      - name: "Send a notification to Slack"
+        if: "{% raw %}${{ env.SLACK_WEBHOOK_URL != '' }}{% endraw %}"
+        uses: "slackapi/slack-github-action@fcfb566f8b0aab22203f066d80ca1d7e4b5d05b3"  # v1.27.1
+        with:
+          payload: |
+            {
+              "text": "{% raw %}${{ env.SLACK_MESSAGE }}{% endraw %}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "{% raw %}${{ env.SLACK_MESSAGE }}{% endraw %}"
+                  }
+                }
+              ]
+            }
+
+  create-post-release-pr:
+    if: "contains(fromJSON('[\"main\", \"develop\"]'), github.event.release.target_commitish) || startsWith(github.event.release.target_commitish, 'next') || startsWith(github.event.release.target_commitish, 'ltm-')"
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+    name: "{% raw %}${{ github.event.release.target_commitish == 'main' && 'Create a PR from main into develop' || format('Create a PR to merge into {0}', github.event.release.target_commitish) }}{% endraw %}"
+    needs:
+      - "publish-github"
+      - "publish-artifactory"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout source branch"
+        uses: "actions/checkout@v4"
+        with:
+          ref: "{% raw %}${{ github.event.release.target_commitish }}{% endraw %}"
+          fetch-depth: 0
+
+      - name: "Setup environment"
+        uses: "networktocode/gh-action-setup-poetry-environment@v7"
+        with:
+          poetry-version: "{% raw %}${{ env.POETRY_VERSION }}{% endraw %}"
+          poetry-install-options: "--no-root"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+
+      - name: "Create release branch and bump version"
+        id: "branch"
+        run: |
+
+          git config user.name "{% raw %}${{ github.actor }}{% endraw %}"
+          git config user.email "{% raw %}${{ github.actor }}{% endraw %}@users.noreply.github.com"
+
+          SOURCE_BRANCH="{% raw %}${{ github.event.release.target_commitish }}{% endraw %}"
+          if [ "$SOURCE_BRANCH" = "main" ]; then
+            TARGET_BRANCH="develop"
+          else
+            TARGET_BRANCH="$SOURCE_BRANCH"
+          fi
+
+          TAG_NAME="{% raw %}${{ github.event.release.tag_name }}{% endraw %}"
+          VERSION="${TAG_NAME#v}"
+
+          BRANCH_NAME="release-${VERSION}-to-${TARGET_BRANCH}"
+
+          # Ensure release branch doesn't already exist
+          if git rev-parse --verify origin/$BRANCH_NAME > /dev/null 2>&1; then
+            echo "Error: Release branch $BRANCH_NAME already exists."
+            exit 1
+          fi
+
+          git checkout -b "$BRANCH_NAME"
+
+          poetry version prerelease
+          git add pyproject.toml && git commit -m "Bump version"
+          git push origin "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "target_branch=$TARGET_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: "Create Pull Request"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN }}{% endraw %}"
+        run: |
+          gh pr create \
+            --title "Post release {% raw %}${{ github.event.release.tag_name }} to ${{ steps.branch.outputs.target_branch }}{% endraw %}" \
+            --body "Please do a merge commit." \
+            --base "{% raw %}${{ steps.branch.outputs.target_branch }}{% endraw %}" \
+            --head "{% raw %}${{ steps.branch.outputs.branch_name }}{% endraw %}"
+
+  sync-ltm-release-notes-to-develop:
+    if: "startsWith(github.event.release.target_commitish, 'ltm-')"
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+    name: "Sync release notes from {% raw %}${{ github.event.release.target_commitish }}{% endraw %} to develop"
+    runs-on: "ubuntu-latest"
+    needs:
+      - "publish-github"
+      - "publish-artifactory"
+    steps:
+      - name: "Checkout develop"
+        uses: "actions/checkout@v4"
+        with:
+          ref: "develop"
+          fetch-depth: 0
+
+      - name: "Create branch and sync release notes from ltm"
+        id: "branch"
+        run: |
+          git config user.name "{% raw %}${{ github.actor }}{% endraw %}"
+          git config user.email "{% raw %}${{ github.actor }}{% endraw %}@users.noreply.github.com"
+
+          SOURCE_BRANCH="{% raw %}${{ github.event.release.target_commitish }}{% endraw %}"
+          TAG_NAME="{% raw %}${{ github.event.release.tag_name }}{% endraw %}"
+          BRANCH_NAME="release-${TAG_NAME#v}-notes-to-develop"
+
+          # Fetch the ltm source branch so we can checkout files from it
+          git fetch origin "$SOURCE_BRANCH"
+
+          # Ensure release branch doesn't already exist
+          if git rev-parse --verify "origin/$BRANCH_NAME" > /dev/null 2>&1; then
+            echo "Error: Release branch $BRANCH_NAME already exists."
+            exit 1
+          fi
+
+          git switch -c "$BRANCH_NAME"
+          git checkout "origin/$SOURCE_BRANCH" -- docs/admin/release_notes/
+
+          # Check if there are any changes in /release_notes
+          if git diff --staged --quiet; then
+            echo "No release notes changes to sync from $SOURCE_BRANCH to develop."
+            exit 0
+          fi
+
+          git commit -m "Sync release notes from $SOURCE_BRANCH"
+          git push origin "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: "Create Pull Request"
+        if: "steps.branch.outputs.branch_name != ''"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN }}{% endraw %}"
+        run: |
+          gh pr create \
+            --title "Sync release notes from {% raw %}${{ github.event.release.target_commitish }}{% endraw %} ({% raw %}${{ github.event.release.tag_name }}{% endraw %}) to develop" \
+            --body "Please do a merge commit." \
+            --base "develop" \
+            --head "{% raw %}${{ steps.branch.outputs.branch_name }}{% endraw %}"
+
+  create-pr-to-next:
+    if: "github.event.release.target_commitish == 'main'"
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+    name: "Create a PR from main into next"
+    needs:
+      - "publish-github"
+      - "publish-artifactory"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout main"
+        uses: "actions/checkout@v4"
+        with:
+          ref: "main"
+          fetch-depth: 0
+
+      - name: "Create release branch from main"
+        id: "branch"
+        run: |
+          # Skip if there is no 'next' branch to merge into.
+          if ! git ls-remote --exit-code --heads origin next > /dev/null 2>&1; then
+            echo "No 'next' branch exists; skipping main -> next PR."
+            exit 0
+          fi
+
+          TAG_NAME="{% raw %}${{ github.event.release.tag_name }}{% endraw %}"
+          VERSION="${TAG_NAME#v}"
+
+          BRANCH_NAME="release-${VERSION}-to-next"
+
+          # Ensure release branch doesn't already exist
+          if git rev-parse --verify origin/$BRANCH_NAME > /dev/null 2>&1; then
+            echo "Error: Release branch $BRANCH_NAME already exists."
+            exit 1
+          fi
+
+          # Base off main, since it's in the released state.
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: "Create a PR to next"
+        if: "steps.branch.outputs.branch_name != ''"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN }}{% endraw %}"
+        run: |
+          gh pr create \
+            --title "Post release {% raw %}${{ github.event.release.tag_name }}{% endraw %} to next" \
+            --body "Please do a merge commit." \
+            --base "next" \
+            --head "{% raw %}${{ steps.branch.outputs.branch_name }}{% endraw %}"

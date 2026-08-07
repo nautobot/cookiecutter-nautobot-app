@@ -3,6 +3,7 @@
   nautobot_ver: "{{ min_nautobot_version }}"
   python_ver: "3.12"
   # local: false
+  # ephemeral_ports: false
   # compose_dir: "/full/path/to/{{ cookiecutter.project_slug }}/development"
 
 # The following is an example of using MySQL as the database backend

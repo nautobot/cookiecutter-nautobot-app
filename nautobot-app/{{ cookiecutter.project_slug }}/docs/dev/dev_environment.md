@@ -19,6 +19,7 @@ The [Invoke](http://www.pyinvoke.org/) library is used to provide some helper co
 - `local`: a boolean flag indicating if invoke tasks should be run on the host or inside the docker containers (default: False, commands will be run in docker containers)
 - `compose_dir`: the full path to a directory containing the project compose files
 - `compose_files`: a list of compose files applied in order (see [Multiple Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) for more information)
+- `ephemeral_ports`: Setting this value to `true` and not using any custom compose files will make all Nautobot containers with published ports expose themselves with dynamic ports. This is useful when running multiple Nautobot versions at the same time on the same machine so you won't experience system port conflicts. If setting `compose_files`, this will have no effect so please ensure to manually add the applicable `docker-compose.ephemeral-ports.yml` file or files to your list.
 
 Using **Invoke** these configuration options can be overridden using [several methods](https://docs.pyinvoke.org/en/stable/concepts/configuration.html). Perhaps the simplest is setting an environment variable `INVOKE_{{ cookiecutter.app_name.upper() }}_VARIABLE_NAME` where `VARIABLE_NAME` is the variable you are trying to override. The only exception is `compose_files`, because it is a list it must be overridden in a YAML file. There is an example `invoke.yml` (`invoke.example.yml`) in this directory which can be used as a starting point.
 
@@ -44,6 +45,8 @@ invoke start
 ```
 
 The Nautobot server can now be accessed at [http://localhost:8080](http://localhost:8080) and the live documentation at [http://localhost:8001](http://localhost:8001).
+
+Every `invoke start` and `invoke debug` writes the published host port mappings to `.service_ports.json`, listing only the services that publish a port to the host. When ephemeral ports are enabled, Docker assigns dynamic host ports and this file captures the resulting values; with fixed ports it captures the static values instead. You can also inspect them with `invoke ps` or `docker compose port`, for example `docker compose port nautobot 8080`. To enable ephemeral ports with an environment variable, set `INVOKE_{{ cookiecutter.app_name.upper() }}_EPHEMERAL_PORTS=1`; to disable them, unset the environment variable, set it to an empty value, or set it to `0`.
 
 To either stop or destroy the development environment use the following options.
 
@@ -168,6 +171,28 @@ First, you may create/overwrite the `development/creds.env` file - it stores a b
 ```shell
 cp development/creds.example.env development/creds.env
 ```
+{%- if cookiecutter.__commercial %}
+
+### Artifactory credentials for private dependencies
+
+Packages published to Network to Code's private JFrog Artifactory PyPI repository rather than public PyPI are resolved through the `artifactory-pypi` source defined in `pyproject.toml`, which requires authentication.
+
+Add your Artifactory credentials to `development/creds.env` alongside the other development credentials:
+
+```shell
+POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="your-artifactory-username"
+POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="your-artifactory-api-token"
+```
+
+Alternatively, export the same variables in the shell you run `invoke` commands from; the shell environment takes precedence over `creds.env`:
+
+```shell
+export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME="your-artifactory-username"
+export POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD="your-artifactory-api-token"
+```
+
+These are the same variables Poetry reads natively for HTTP basic authentication against the `artifactory-pypi` source, so a single pair of credentials covers both running Poetry directly on your host and the containerized workflow: `invoke build` passes them to the image build as Docker BuildKit secrets, so they are never written into image layers. If they are unset, the build still succeeds as long as no dependency is pinned to the `artifactory-pypi` source; Poetry cannot install a package pinned to that source without valid credentials.
+{%- endif %}
 
 ### Invoke - Building the Docker Image
 

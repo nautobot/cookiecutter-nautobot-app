@@ -10,4 +10,9 @@
     - "docker-compose.redis.yml"
     - "docker-compose.postgres.yml"
     - "docker-compose.dev.yml"
+    # Uncomment the ephemeral-ports overrides below to use dynamic host ports with this
+    # custom compose file list. The `ephemeral_ports` invoke option only auto-applies when
+    # compose_files is left at its default, so it has no effect here and is intentionally omitted.
+    # - "docker-compose.ephemeral-ports.yml"
     - "mattermost/docker-compose.yml"
+    # - "mattermost/docker-compose.ephemeral-ports.yml"
