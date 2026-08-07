@@ -10,6 +10,18 @@ This document describes all new features and changes in the release. The format 
 - Added support for PyPI Trusted Publisher in release workflow.
 
 <!-- towncrier release notes start -->
+
+## [nautobot-app-v2.7.3 (2026-08-07)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.7.3)
+
+### Added
+
+- [#329](https://github.com/nautobot/cookiecutter-nautobot-app/issues/329) - Added a CI job to check that pull requests into `main` are only allowed from branches starting with `release`.
+
+### Changed
+
+- [#395](https://github.com/nautobot/cookiecutter-nautobot-app/issues/395) - Added `target` and `recursive` options to `invoke pylint` tasks.
+- [#396](https://github.com/nautobot/cookiecutter-nautobot-app/issues/396) - Added a `--diff` option to the `invoke ruff` tasks.
+
 ## [nautobot-app-v2.7.2 (2025-12-02)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.7.2)
 
 ### Fixed
