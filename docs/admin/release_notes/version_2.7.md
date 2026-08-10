@@ -13,10 +13,6 @@ This document describes all new features and changes in the release. The format 
 
 ## [nautobot-app-v2.7.3 (2026-08-07)](https://github.com/nautobot/cookiecutter-nautobot-app/releases/tag/nautobot-app-v2.7.3)
 
-### Added
-
-- [#329](https://github.com/nautobot/cookiecutter-nautobot-app/issues/329) - Added a CI job to check that pull requests into `main` are only allowed from branches starting with `release`.
-
 ### Changed
 
 - [#395](https://github.com/nautobot/cookiecutter-nautobot-app/issues/395) - Added `target` and `recursive` options to `invoke pylint` tasks.
