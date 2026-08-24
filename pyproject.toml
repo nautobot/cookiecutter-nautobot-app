@@ -32,7 +32,7 @@ isort = "*"
 pylint = "*"
 pytest = "*"
 pytest-cookies = "*"
-ruff = "0.5.5"
+ruff = "0.16.4"
 yamllint = "*"
 # Python implementation of markdownlint
 pymarkdownlnt = "~0.9.30"
