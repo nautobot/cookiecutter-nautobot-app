@@ -28,7 +28,7 @@ jobs:
             invoke_local_env: "INVOKE_NAUTOBOT_MY_COMMERCIAL_APP_LOCAL"
     steps:
       - name: "Check out repository code"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v7"
       - name: "Setup Poetry"
         uses: "networktocode/gh-action-setup-poetry-environment@v6"
         with:
