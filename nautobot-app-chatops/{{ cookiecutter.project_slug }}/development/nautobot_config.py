@@ -129,17 +129,17 @@ PLUGINS = [
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        "enable_slack": os.environ.get("ENABLE_SLACK", False),
+        "enable_slack": os.environ.get("ENABLE_SLACK", False),  # noqa: PLW1508
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        "enable_webex": os.environ.get("ENABLE_WEBEX", False),
+        "enable_webex": os.environ.get("ENABLE_WEBEX", False),  # noqa: PLW1508
         "webex_token": os.environ.get("WEBEX_TOKEN"),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
-        "enable_mattermost": os.environ.get("ENABLE_MATTERMOST", False),
+        "enable_mattermost": os.environ.get("ENABLE_MATTERMOST", False),  # noqa: PLW1508
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
-        "enable_ms_teams": os.environ.get("ENABLE_MS_TEAMS", False),
+        "enable_ms_teams": os.environ.get("ENABLE_MS_TEAMS", False),  # noqa: PLW1508
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
     },

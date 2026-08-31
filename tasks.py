@@ -316,7 +316,7 @@ def build_and_check_docs(context):
 @task(name="help")
 def help_task(context):
     """Print the help of available tasks."""
-    import tasks  # pylint: disable=all
+    import tasks  # noqa: PLC0415  # pylint: disable=all
 
     root = Collection.from_module(tasks)
     for task_name in sorted(root.task_names):
@@ -372,7 +372,7 @@ def autoformat(context):
     },
     iterable=["action", "target"],
 )
-def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):  # noqa: PLR0913
+def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):  # noqa: PLR0913,PLR0917
     """Run ruff to perform code formatting and/or linting."""
     if not action:
         action = ["lint", "format"]
