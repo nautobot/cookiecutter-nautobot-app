@@ -18,7 +18,7 @@ this repository's tooling and style.
 
 - **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
 - **SSOT Framework:** Built on **DiffSync** library for data synchronization. Uses `nautobot_ssot.contrib` classes for Nautobot integration patterns.
-- **Python:** `>=3.10,<3.15`, as declared in `pyproject.toml`.
+- **Python:** `>=3.11,<3.15`, as declared in `pyproject.toml`.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over inline comments**; clear, explicit code.
@@ -35,6 +35,7 @@ Always use Poetry for dependency management and virtualenvs.
   `poetry run invoke <task> [args]`
 
 Examples:
+
 - `poetry run invoke autoformat`
 - `poetry run invoke ruff`
 - `poetry run invoke pylint`
@@ -154,6 +155,7 @@ Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `F
 **How it works:** Inherit from a composite class (e.g., `ViewTestCases.PrimaryObjectViewTestCase`) and provide declarative data (`model`, `form_data`, `csv_data`, `bulk_edit_data`) in `setUpTestData`. The framework generates and runs all relevant test methods automatically.
 
 **Works well with:**
+
 - Standard CRUD operations using `NautobotUIViewSet` / `NautobotModelViewSet`
 - Consistent permission testing (403/302 without, 200 with)
 - API contract testing (serializer validation, depth params, bulk ops)
@@ -161,6 +163,7 @@ Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `F
 - Performance regression testing (`assertApproximateNumQueries`)
 
 **Does not cover:**
+
 - Highly custom views (wizards, multi-step forms, non-CRUD actions)
 - Custom DRF `@action` endpoints beyond standard CRUD
 - Non-model-backed views (dashboards, reports)
@@ -300,10 +303,12 @@ Options:
 ```
 
 **When to use which**  
+
 - Use `poetry run invoke tests` for the full testing suite experience (ruff, yamllint, markdownlint, check_migrations, pylint, build_and_check_docs, validate_app_config, unittest, unitttest_coverage, coverage_lcov).  
 - Use `poetry run invoke unittest` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core's CI jobs.
 
 **Common recipes**  
+
 - Run with coverage:  
   `poetry run invoke unittest --coverage`
 - Target a specific module (label):  
@@ -353,6 +358,7 @@ class VLANModel(NautobotModel):
 ```
 
 **Key Rules:**
+
 - Model fields must match Nautobot model fields exactly
 - Use `_identifiers` for unique identification (natural keys)
 - Use `_attributes` for data that can change
@@ -664,8 +670,6 @@ class DeviceNoteUIViewSet(NautobotUIViewSet):
     form_class = DeviceNoteForm
 ```
 
-```
-
 **DiffSync Model (SSOT)**
 ```python
 """DiffSync model for Device synchronization."""
@@ -756,6 +760,7 @@ Use them for import paths, base-class usage, testing mixins, viewset patterns, j
 - **Nautobot App — BGP Models:** https://github.com/nautobot/nautobot-app-bgp-models
 
 **Guidance for agents**  
+
 - Prefer examples from these repos over generic Django code.  
 - Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`, `NautobotUIViewSet`, etc.).  
 - Follow **testing** patterns under `nautobot/apps/testing` (mixins and tags) rather than ad‑hoc tests.  

@@ -22,7 +22,7 @@ this repository's tooling and style.
 - **ChatOps:** This app extends Nautobot ChatOps functionality with **worker
   functions**, **subcommands**, and **dispatcher patterns** for chat platform
   integration (Slack, Microsoft Teams, Webex, Mattermost).
-- **Python:** `>=3.10,<3.15`, as declared in `pyproject.toml`.
+- **Python:** `>=3.11,<3.15`, as declared in `pyproject.toml`.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over
@@ -40,6 +40,7 @@ Always use Poetry for dependency management and virtualenvs.
   `poetry run invoke <task> [args]`
 
 Examples:
+
 - `poetry run invoke autoformat`
 - `poetry run invoke ruff`
 - `poetry run invoke pylint`
@@ -180,6 +181,7 @@ Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `F
 **How it works:** Inherit from a composite class (e.g., `ViewTestCases.PrimaryObjectViewTestCase`) and provide declarative data (`model`, `form_data`, `csv_data`, `bulk_edit_data`) in `setUpTestData`. The framework generates and runs all relevant test methods automatically.
 
 **Works well with:**
+
 - Standard CRUD operations using `NautobotUIViewSet` / `NautobotModelViewSet`
 - Consistent permission testing (403/302 without, 200 with)
 - API contract testing (serializer validation, depth params, bulk ops)
@@ -187,6 +189,7 @@ Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `F
 - Performance regression testing (`assertApproximateNumQueries`)
 
 **Does not cover:**
+
 - Highly custom views (wizards, multi-step forms, non-CRUD actions)
 - Custom DRF `@action` endpoints beyond standard CRUD
 - Non-model-backed views (dashboards, reports)
@@ -342,6 +345,7 @@ Options:
   jobs.
 
 **Common recipes**  
+
 - Run with coverage:  
   `poetry run invoke unittest --coverage`
 - Target a specific module (label):  
@@ -368,6 +372,7 @@ ChatOps apps follow a **three-layer architecture**: input (views/sockets) → wo
 → output (dispatchers).
 
 **Worker module organization:**
+
 - Main worker function in `worker.py` using `handle_subcommands()`
 - Subcommands using `@subcommand_of()` decorator
 - Each subcommand function takes `dispatcher` as first argument
@@ -397,6 +402,7 @@ def get_device_info(dispatcher, device_name):
 **Required signature:** `def subcommand_func(dispatcher, arg1, arg2=None, ...):`
 
 **Return values:**
+
 - `return False` - Command incomplete (prompting user), don't log
 - `return True` - Command succeeded
 - `return CommandStatusChoices.STATUS_SUCCEEDED` - Command succeeded
@@ -416,6 +422,7 @@ dispatcher.prompt_for_text(action_id=action, help_text="Enter number", label="Li
 platform-specific APIs directly.
 
 **Common dispatcher methods:**
+
 - `dispatcher.send_markdown(text)` - Simple markdown message
 - `dispatcher.send_blocks(blocks)` - Rich formatted blocks
 - `dispatcher.send_large_table(headers, *rows)` - Table data
@@ -464,10 +471,12 @@ def get_device_info(dispatcher, site_name=None, device_name=None):
 ### 8.5 Platform Considerations & Output Formatting
 
 **Text limits:** Different platforms have different limits:
+
 - Slack: ~4000 characters for messages, ~3000 for blocks
 - Microsoft Teams: ~69 character line wrapping, no preformatted text in cards
 
 **Responsive design:**
+
 - Use `send_large_table()` for data that might exceed platform limits
 - Use `send_blocks()` for rich formatting when possible
 - Fall back to `send_markdown()` for simple text
@@ -810,6 +819,7 @@ job/celery conventions, and UI Component Framework examples.
   https://github.com/nautobot/nautobot-app-bgp-models
 
 **Guidance for agents**
+
 - Prefer examples from these repos over generic Django code.
 - Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`,
   `NautobotUIViewSet`, etc.).
