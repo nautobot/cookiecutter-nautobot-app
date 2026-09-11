@@ -22,7 +22,7 @@ this repository's tooling and style.
 - **ChatOps:** This app extends Nautobot ChatOps functionality with **worker
   functions**, **subcommands**, and **dispatcher patterns** for chat platform
   integration (Slack, Microsoft Teams, Webex, Mattermost).
-- **Python:** `>=3.11,<3.15`, as declared in `pyproject.toml`.
+- **Python:** `>=3.10,<3.15`, as declared in `pyproject.toml`.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over
