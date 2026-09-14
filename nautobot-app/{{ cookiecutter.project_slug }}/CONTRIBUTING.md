@@ -18,7 +18,9 @@ This page is the short version, plus the policy on AI assistance.
    poetry run invoke tests
    ```
 
-6. Open the pull request against `develop`, and complete the checklist in the template.
+6. Open the pull request against the branch you started from: `develop` for normal
+   work, or the matching `ltm-<major.minor>` branch for an LTM fix. Complete the
+   checklist in the template.
 
 ## AI-Assisted Contributions
 

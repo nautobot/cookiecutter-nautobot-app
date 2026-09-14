@@ -16,9 +16,8 @@ this repository's tooling and style.
 
 ## 0) Quick Facts (for Agents)
 
-- **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
+- **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses PostgreSQL or MySQL, Redis, and Celery via Nautobot. Prefer **Nautobot helper APIs** first, then idiomatic **Django**.
 - **SSOT Framework:** Built on **DiffSync** library for data synchronization. Uses `nautobot_ssot.contrib` classes for Nautobot integration patterns.
-- **Python:** `>=3.11,<3.15`, as declared in `pyproject.toml`.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over inline comments**; clear, explicit code.
@@ -29,9 +28,9 @@ this repository's tooling and style.
 
 Always use Poetry for dependency management and virtualenvs.
 
-- Install deps:  
+- Install deps:
   `poetry install`
-- **Run tasks (required):**  
+- **Run tasks (required):**
   `poetry run invoke <task> [args]`
 
 Examples:
@@ -52,15 +51,15 @@ Prefer `invoke` tasks over ad‑hoc commands. **When suggesting commands, prefix
 ## 2) Style, Lint, and Documentation
 
 - **Ruff** is used for formatting and linting; **Pylint** for static analysis. Generated code must pass both.
-- **Imports:**  
-    - Place **all imports at the top** of the file (after the module docstring).  
-    - No wildcard imports; prefer absolute imports and explicit symbols.  
-    - Aliasing Nautobot app modules is fine for clarity, e.g.:  
+- **Imports:**
+    - Place **all imports at the top** of the file (after the module docstring).
+    - No wildcard imports; prefer absolute imports and explicit symbols.
+    - Aliasing Nautobot app modules is fine for clarity, e.g.:
       `from nautobot.ipam import models as ipam_models`
     - Prefer imports from `nautobot.apps` instead of `nautobot.core`
-- **Docstrings > inline comments:**  
-    - Keep inline comments to the minimum for non‑obvious logic.  
-    - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.  
+- **Docstrings > inline comments:**
+    - Keep inline comments to the minimum for non‑obvious logic.
+    - Put purpose/params/returns/side‑effects in **module/class/function docstrings**.
 - Write straightforward, readable code over clever one‑liners.
 - **Docs:**
     - If you add/change features, update `docs/` accordingly.
@@ -77,7 +76,7 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 
 - **Models:** `PrimaryModel` (full Nautobot features) or `BaseModel` as appropriate.
 - **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits, `NautobotFilterForm` for filter forms).
-- **FilterSets:** `NautobotModelFilterSet` (`Meta.fields = "__all__"` unless strongly justified).
+- **FilterSets:** `NautobotFilterSet` (`Meta.fields = "__all__"` unless strongly justified).
 - **Serializers:** `NautobotModelSerializer` (writeable) / `BaseModelSerializer` (simple read‑only).
 - **API views:** `NautobotModelViewSet`.
 - **UI views:** `NautobotUIViewSet` (unifies list/detail/edit/delete).
@@ -92,39 +91,45 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 - Prefer natural keys (e.g., unique `name`) or PKs; add `slug` only with clear rationale.
 - Use constant `CHARFIELD_MAX_LENGTH` for text lengths unless you have a very good reason not to.
 - Avoid `null=True` on strings; use empty string `""` when semantically empty.
-- For `ManyToManyField`, declare an explicit **through** model. We follow the convention of using both model names and the word Assignment for **through** models. Ex. `AccessPointDeviceAssignment`
+- For `ManyToManyField`, add an explicit **through** model only when the
+  relationship itself needs extra fields. Name a through model after both
+  models plus the word Assignment. Ex. `AccessPointDeviceAssignment`
 - If searchable, populate `searchable_models` on the `NautobotAppConfig` in the `__init__.py` file.
 
 ---
 
 ## 5) Forms, Filters, Templates, and UI Patterns
 
-- **Forms:**  
-    - Use `DynamicModelChoiceField` for large foreign keys.  
+- **Forms:**
+    - Use `DynamicModelChoiceField` for foreign keys, regardless of size.
     - Put complex validation in `clean()` (model or form as appropriate).
-- **Filters:**  
-    - Use `RelatedMembershipBooleanFilter` for boolean relationship filters (`has_*`).  
+- **Filters:**
+    - Use `RelatedMembershipBooleanFilter` for boolean relationship filters (`has_*`).
     - Use `NaturalKeyOrPKMultipleChoiceFilter` for FK filters where applicable.
     - Use `SearchFilter` for `q` parameter search logic.
 - **Templates (rare — prefer UI Component Framework):**
     - **Prefer the UI Component Framework** for detail views unless strongly justified.
-    - When templates are necessary, extend Nautobot base templates; prefer provided filters (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand‑rolled anchors.
-- **UI Patterns:**  
-    - Prefer **tabs** (via `NautobotUIViewSet`) for distinct data categories.  
-    - Use full‑width detail layouts for dense content.  
-    - Provide **stats tiles** / instance counts if helpful.  
-    - For long‑running actions, use **AJAX modal + polling** (Jobs/Celery).  
+    - When templates are necessary, extend Nautobot base templates; prefer provided
+      django template and jinja filters (`|hyperlinked_object`, `|placeholder`,
+      etc.) over `mark_safe` or hand-rolled anchors.
+- **UI Patterns:**
+    - Prefer **tabs** (via `NautobotUIViewSet`) for distinct data categories.
+    - Use full‑width detail layouts for dense content.
+    - Provide **stats tiles** / instance counts if helpful via `StatsPanel`.
+    - For long‑running actions, use **AJAX modal + polling** (Jobs/Celery).
     - Use inline edit sparingly and always re‑validate server‑side.
 
 ---
 
 ## 6) Migrations
 
-- **Do not generate migrations automatically.** Migration generation should be done by a developer, not by AI.
+- **Do not generate migrations yourself.** `makemigrations` generates schema
+  migrations. A developer writes data migrations. AI does neither.
 - If models change, remind the developer to:
     - `poetry run invoke check-migrations`
     - `poetry run invoke makemigrations -n <meaningful_name>`
-- Keep schema and data migrations separate and reversible.
+- Keep schema and data migrations separate. Make data migrations reversible if
+  possible.
 - Use descriptive migration names (e.g., `devicenote_initial`, `provider_increase_account_length`).
 - Ruff‑format generated migrations for consistency.
 
@@ -138,9 +143,9 @@ When scaffolding features, use Nautobot’s base classes and helpers first:
 
 - **Unit tests:** inherit from `nautobot.apps.testing.TestCase` (auto‑tagged `unit`).
 - **View tests:** use `nautobot.apps.testing.ViewTestCases` mixins.
-- **API tests:** use `nautobot.apps.testing.APIViewTestCases` mixins  
-  (`CreateObjectViewTestCase`, `ListObjectsViewTestCase`, `GetObjectViewTestCase`,  
-  `UpdateObjectViewTestCase`, `DeleteObjectViewTestCase`, and bulk variants).  
+- **API tests:** use `nautobot.apps.testing.APIViewTestCases` mixins
+  (`CreateObjectViewTestCase`, `ListObjectsViewTestCase`, `GetObjectViewTestCase`,
+  `UpdateObjectViewTestCase`, `DeleteObjectViewTestCase`, and bulk variants).
   These enforce `?brief=` behavior (declare `brief_fields`) and exercise bulk endpoints.
 - **Filter tests:** use `nautobot.apps.testing.FilterTestCases` (generic boolean/multi‑choice/tags tests).
 - **Form tests:** use `nautobot.core.testing.FormTestCases.BaseFormTestCase`.
@@ -185,7 +190,7 @@ Nautobot provides **namespace classes** (`ViewTestCases`, `APIViewTestCases`, `F
 
 ### 7.4 Running Tests
 
-- All tests (fast fixtures enabled):  
+- All tests (fast fixtures enabled):
 
 **Help**
 ```
@@ -208,8 +213,8 @@ Options:
 
 ### 7.5 Test Data & Fixtures
 
-- Prefer creating objects via model `.create()`/`.save()` inside tests.  
-- Avoid calling factories in `setUp()` / `setUpTestData()`; factory output can be stateful.  
+- Prefer creating objects via model `.create()`/`.save()` inside tests.
+- Avoid calling factories in `setUp()` / `setUpTestData()`; factory output can be stateful.
 - Rely on cached/seeded fixtures where provided by the runner to keep tests fast and deterministic.
 
 ### 7.6 API Test Skeleton (what the agent should scaffold)
@@ -275,13 +280,23 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
 
 ### 7.9 OpenAPI Schema Checks
 
-Nautobot's built-in test infrastructure includes OpenAPI schema validation. Ensure your app's serializers and endpoints remain schema-valid by running the full test suite (`poetry run invoke tests`). Do not generate custom OpenAPI schema tests — the framework handles this automatically.
+`invoke tests` runs the tests under this app's label only. It does not validate
+the OpenAPI schema, and the scaffold ships no schema test. Run the check
+explicitly when you add or change a serializer or an API view:
+
+```shell
+poetry run invoke exec --command "nautobot-server spectacular --validate --fail-on-warn --file /dev/null"
+```
+
+The command fails on a serializer that drf-spectacular cannot resolve. Fix the
+warning at its source, with a type hint or an `@extend_schema_field`
+annotation, rather than by suppressing it.
 
 ### 7.10 Unittest Task (Django/Nautobot runner)
 
 In addition to `invoke tests` (the default Nautobot test runner), this repo can use **Django’s unittest-style runner** via the `unittest` Invoke task when present. Prefer this when you want stock unittest selection semantics or when a plugin/app intends to mirror Nautobot core’s runner behavior.
 
-**Help**  
+**Help**
 ```
 poetry run invoke unittest -h
 ```
@@ -302,24 +317,24 @@ Options:
   -v, --verbose                 Verbose test output
 ```
 
-**When to use which**  
+**When to use which**
 
-- Use `poetry run invoke tests` for the full testing suite experience (ruff, yamllint, markdownlint, check_migrations, pylint, build_and_check_docs, validate_app_config, unittest, unitttest_coverage, coverage_lcov).  
+- Use `poetry run invoke tests` for the full testing suite experience (ruff, yamllint, markdownlint, check_migrations, pylint, build_and_check_docs, validate_app_config, unittest, unitttest_coverage, coverage_lcov).
 - Use `poetry run invoke unittest` for Django/unittest-native selection (labels/patterns), quick targeted runs, or parity with Nautobot core's CI jobs.
 
-**Common recipes**  
+**Common recipes**
 
-- Run with coverage:  
+- Run with coverage:
   `poetry run invoke unittest --coverage`
-- Target a specific module (label):  
+- Target a specific module (label):
   `poetry run invoke unittest --label myapp.tests.test_api`
-- Match by pattern (method/class):  
-  `poetry run invoke unittest --pattern "WidgetAPITests and test_list_objects"`
-- Re-use the DB between runs for speed:  
+- Match by pattern (method/class):
+  `poetry run invoke unittest --label myapp.tests.test_api.WidgetAPITests --pattern test_list_objects`
+- Re-use the DB between runs for speed:
   `poetry run invoke unittest --keepdb`
-- Fail fast & suppress noise from passing tests:  
+- Fail fast & suppress noise from passing tests:
   `poetry run invoke unittest --failfast --buffer`
-- Skip docs build if unchanged:  
+- Skip docs build if unchanged:
   `poetry run invoke unittest --skip-docs-build`
 
 > **Note:** Always prefix with `poetry run` to ensure tests execute inside the project’s Poetry environment.
@@ -376,7 +391,7 @@ class MySSoTNautobotAdapter(NautobotAdapter):
     """DiffSync adapter for Nautobot."""
     vlan = VLANModel
     top_level = ("vlan",)
-    
+
     # Optional: override parameter loading
     def load_param_time_zone(self, parameter_name, database_object):
         """Custom loader for time_zone parameter."""
@@ -403,8 +418,8 @@ class MySSoTRemoteAdapter(Adapter):
         """Load data from remote system."""
         for vlan in self.api_client.get_vlans():
             loaded_vlan = self.vlan(
-                vid=vlan["vlan_id"], 
-                group__name=vlan["grouping"], 
+                vid=vlan["vlan_id"],
+                group__name=vlan["grouping"],
                 description=vlan["description"]
             )
             self.add(loaded_vlan)
@@ -413,12 +428,14 @@ class MySSoTRemoteAdapter(Adapter):
 ### 8.4 Job Implementation
 
 ```python
+from django.urls import reverse
+from nautobot.apps.jobs import Job, register_jobs
 from nautobot_ssot.jobs import DataSource
-from nautobot.extras.jobs import Job
+from nautobot_ssot.jobs.base import DataMapping
 
 class ExampleDataSource(DataSource, Job):
     """SSoT Job class."""
-    
+
     class Meta:
         name = "Example Data Source"
         description = "Sync VLANs from external system"
@@ -426,7 +443,7 @@ class ExampleDataSource(DataSource, Job):
     def load_source_adapter(self):
         """Load the source (remote) adapter."""
         self.source_adapter = MySSoTRemoteAdapter(
-            api_client=APIClient(), 
+            api_client=APIClient(),
             job=self
         )
         self.source_adapter.load()
@@ -442,13 +459,15 @@ class ExampleDataSource(DataSource, Job):
         # Implementation for object lookup
         pass
 
-    def data_mappings(self):
+    @classmethod
+    def data_mappings(cls):
         """Return data mapping information for UI."""
-        return [
-            {"source": "Remote System VLANs", "target": "Nautobot VLANs"}
-        ]
+        return (
+            DataMapping("Remote System VLANs", None, "Nautobot VLANs", reverse("ipam:vlan_list")),
+        )
 
 jobs = [ExampleDataSource]
+register_jobs(*jobs)
 ```
 
 ### 8.5 Many-to-Many Relationships
@@ -471,15 +490,14 @@ Test SSOT jobs with DiffSync-specific test cases:
 
 ```python
 from nautobot.apps.testing import TestCase
-from nautobot_ssot.tests.utils import SSOTTestCase
 
-class TestMySSoTJob(SSOTTestCase):
+class TestMySSoTJob(TestCase):
     """Test SSOT job functionality."""
-    
+
     def test_data_sync(self):
         """Test data synchronization."""
         # Test adapter loading
-        # Test diff calculation  
+        # Test diff calculation
         # Test sync execution
         pass
 ```
@@ -497,41 +515,41 @@ class TestMySSoTJob(SSOTTestCase):
 
 ## 9) Celery & Jobs
 
-- For long‑running work or external calls, prefer **Celery tasks** or **Nautobot Jobs**.  
+- For long‑running work or external calls, prefer **Celery tasks** or **Nautobot Jobs**.
 - Do **not** block web requests with heavy processing.
 
 ---
 
 ## 10) Security & Secrets
 
-- Never hard‑code secrets/tokens/credentials.  
-- Use Nautobot Secrets / External Integrations.  
+- Never hard‑code secrets/tokens/credentials.
+- Use Nautobot Secrets / External Integrations.
 - Scrub PII and sensitive network details from examples/tests.
 
 ---
 
 ## 11) Performance & DB
 
-- Prefer queryset filters/bulk ops over per‑row loops.  
-- Use `select_related` / `prefetch_related` where appropriate.  
+- Prefer queryset filters/bulk ops over per‑row loops.
+- Use `select_related` / `prefetch_related` where appropriate.
 - Add indexes for frequently filtered fields; justify in migration message.
 
 ---
 
 ## 12) Git & Branching
 
-- Small, focused branches.  
-- PRs must include tests, migration notes (if any), and "how to test" steps.  
-- Reference related issues.  
+- Small, focused branches.
+- PRs must include tests, migration notes (if any), and "how to test" steps.
+- Reference related issues.
 - Target the `develop` branch for PRs (not `main`, which is reserved for releases).
 
 ---
 
 ## 13) PR Hygiene — What the Agent Should Suggest
 
-- Clear, action‑oriented title and description.  
-- Link to issue(s) and include screenshots/GIFs for UI work.  
-- Call out any migrations and potential data impacts.  
+- Clear, action‑oriented title and description.
+- Link to issue(s) and include screenshots/GIFs for UI work.
+- Call out any migrations and potential data impacts.
 - Keep the diff small and logically cohesive.
 - Add a changelog fragment at `changes/<issue>.<type>`. Valid types are `added`,
   `changed`, `deprecated`, `fixed`, `removed`, and `security`. Write one complete
@@ -561,14 +579,14 @@ Maintainers accept AI-assisted contributions under these conditions.
 **SSOT Job**
 ```python
 """SSOT Job for syncing external data."""
-from nautobot_ssot.jobs import DataSource
-from nautobot.extras.jobs import Job
-from nautobot_ssot.contrib import NautobotAdapter, NautobotModel
 from diffsync import Adapter
+from nautobot.apps.jobs import Job, register_jobs
+from nautobot_ssot.contrib import NautobotAdapter, NautobotModel
+from nautobot_ssot.jobs import DataSource
 
 class ExternalDataSource(DataSource, Job):
     """Sync data from external system to Nautobot."""
-    
+
     class Meta:
         name = "External Data Sync"
         description = "Synchronize data from external system"
@@ -584,6 +602,7 @@ class ExternalDataSource(DataSource, Job):
         self.target_adapter.load()
 
 jobs = [ExternalDataSource]
+register_jobs(*jobs)
 ```
 
 **Model**
@@ -734,13 +753,13 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 
 ## 16) Final Checklist (for every change)
 
-- [ ] Commands are shown as `poetry run invoke ...`  
-- [ ] Imports are at the top; docstrings explain intent/usage  
-- [ ] Nautobot base classes, viewsets, and helpers are used  
-- [ ] Tests cover models/filters/API/views with Nautobot base classes & mixins  
-- [ ] Migrations are checked/generated, named meaningfully, and reversible  
-- [ ] Querysets are optimized; indexes added if needed  
-- [ ] No secrets/PII in code, tests, or docs  
+- [ ] Commands are shown as `poetry run invoke ...`
+- [ ] Imports are at the top; docstrings explain intent/usage
+- [ ] Nautobot base classes, viewsets, and helpers are used
+- [ ] Tests cover models/filters/API/views with Nautobot base classes & mixins
+- [ ] Migrations are checked/generated, named meaningfully, and data migrations are reversible where possible
+- [ ] Querysets are optimized; indexes added if needed
+- [ ] No secrets/PII in code, tests, or docs
 - [ ] Ruff & Pylint clean
 - [ ] PR description includes “how to test” and references related issues
 
@@ -748,7 +767,7 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 
 ## 17) Authoritative Nautobot Repositories & Examples
 
-When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.  
+When proposing or generating **Nautobot-specific code**, prefer patterns proven in the official repositories below.
 Use them for import paths, base-class usage, testing mixins, viewset patterns, job/celery conventions, and UI Component Framework examples.
 
 - **Nautobot Core:** https://github.com/nautobot/nautobot/
@@ -759,12 +778,12 @@ Use them for import paths, base-class usage, testing mixins, viewset patterns, j
 - **Nautobot App — Firewall Models:** https://github.com/nautobot/nautobot-app-firewall-models
 - **Nautobot App — BGP Models:** https://github.com/nautobot/nautobot-app-bgp-models
 
-**Guidance for agents**  
+**Guidance for agents**
 
-- Prefer examples from these repos over generic Django code.  
-- Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`, `NautobotUIViewSet`, etc.).  
-- Follow **testing** patterns under `nautobot/apps/testing` (mixins and tags) rather than ad‑hoc tests.  
-- Reuse **filter/serializer** patterns and import paths exactly as shown in the official code.  
+- Prefer examples from these repos over generic Django code.
+- Mirror **base class** usage (`PrimaryModel`, `NautobotModelViewSet`, `NautobotUIViewSet`, etc.).
+- Follow **testing** patterns under `nautobot/apps/testing` (mixins and tags) rather than ad‑hoc tests.
+- Reuse **filter/serializer** patterns and import paths exactly as shown in the official code.
 - Avoid Nautobot 1.x and 2.x-only patterns; target **Nautobot 3.x** APIs and the
-  UI Component Framework. See `pyproject.toml` for the supported version range.  
+  UI Component Framework. See `pyproject.toml` for the supported version range.
 - If proposing URLs, prefer helper utilities (e.g., `get_route_for_model`) visible in Nautobot core, not hard‑coded strings.

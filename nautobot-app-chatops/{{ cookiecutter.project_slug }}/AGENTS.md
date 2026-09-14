@@ -17,12 +17,11 @@ this repository's tooling and style.
 ## 0) Quick Facts (for Agents)
 
 - **Stack:** Django app that runs inside **Nautobot** (network SoT &
-  automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic
-  **Django** and **Nautobot helper APIs**.
+  automation). Uses PostgreSQL or MySQL, Redis, and Celery via Nautobot. Prefer
+  **Nautobot helper APIs** first, then idiomatic **Django**.
 - **ChatOps:** This app extends Nautobot ChatOps functionality with **worker
   functions**, **subcommands**, and **dispatcher patterns** for chat platform
   integration (Slack, Microsoft Teams, Webex, Mattermost).
-- **Python:** `>=3.10,<3.15`, as declared in `pyproject.toml`.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over
@@ -34,9 +33,9 @@ this repository's tooling and style.
 
 Always use Poetry for dependency management and virtualenvs.
 
-- Install deps:  
+- Install deps:
   `poetry install`
-- **Run tasks (required):**  
+- **Run tasks (required):**
   `poetry run invoke <task> [args]`
 
 Examples:
@@ -59,16 +58,16 @@ with `poetry run`.**
 
 - **Ruff** is used for formatting and linting; **Pylint** for static analysis.
   Generated code must pass both.
-- **Imports:**  
-    - Place **all imports at the top** of the file (after the module docstring).  
-    - No wildcard imports; prefer absolute imports and explicit symbols.  
-    - Aliasing Nautobot app modules is fine for clarity, e.g.:  
+- **Imports:**
+    - Place **all imports at the top** of the file (after the module docstring).
+    - No wildcard imports; prefer absolute imports and explicit symbols.
+    - Aliasing Nautobot app modules is fine for clarity, e.g.:
       `from nautobot.ipam import models as ipam_models`
     - Prefer imports from `nautobot.apps` instead of `nautobot.core`
-- **Docstrings > inline comments:**  
-    - Keep inline comments to the minimum for non-obvious logic.  
+- **Docstrings > inline comments:**
+    - Keep inline comments to the minimum for non-obvious logic.
     - Put purpose/params/returns/side-effects in **module/class/function
-      docstrings**.  
+      docstrings**.
 - Write straightforward, readable code over clever one-liners.
 - **Docs:**
     - If you add/change features, update `docs/` accordingly.
@@ -87,7 +86,7 @@ When scaffolding features, use Nautobot's base classes and helpers first:
 - **Models:** `PrimaryModel` (full Nautobot features) or `BaseModel` as
   appropriate.
 - **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits, `NautobotFilterForm` for filter forms).
-- **FilterSets:** `NautobotModelFilterSet` (`Meta.fields = "__all__"` unless
+- **FilterSets:** `NautobotFilterSet` (`Meta.fields = "__all__"` unless
   strongly justified).
 - **Serializers:** `NautobotModelSerializer` (writeable) / `BaseModelSerializer`
   (simple read-only).
@@ -108,9 +107,9 @@ maintainability.
 - Use constant `CHARFIELD_MAX_LENGTH` for text lengths unless you have a very good
   reason not to.
 - Avoid `null=True` on strings; use empty string `""` when semantically empty.
-- For `ManyToManyField`, declare an explicit **through** model. We follow the
-  convention of using both model names and the word Assignment for **through**
-  models. Ex. `AccessPointDeviceAssignment`
+- For `ManyToManyField`, add an explicit **through** model only when the
+  relationship itself needs extra fields. Name a through model after both
+  models plus the word Assignment. Ex. `AccessPointDeviceAssignment`
 - If searchable, populate `searchable_models` on the `NautobotAppConfig` in the
   `__init__.py` file.
 
@@ -118,34 +117,37 @@ maintainability.
 
 ## 5) Forms, Filters, Templates, and UI Patterns
 
-- **Forms:**  
-    - Use `DynamicModelChoiceField` for large foreign keys.  
+- **Forms:**
+    - Use `DynamicModelChoiceField` for foreign keys, regardless of size.
     - Put complex validation in `clean()` (model or form as appropriate).
-- **Filters:**  
+- **Filters:**
     - Use `RelatedMembershipBooleanFilter` for boolean relationship filters
-      (`has_*`).  
+      (`has_*`).
     - Use `NaturalKeyOrPKMultipleChoiceFilter` for FK filters where applicable.
     - Use `SearchFilter` for `q` parameter search logic.
 - **Templates (rare — prefer UI Component Framework):**
     - **Prefer the UI Component Framework** for detail views unless strongly justified.
-    - When templates are necessary, extend Nautobot base templates; prefer provided filters
-      (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand-rolled anchors.
-- **UI Patterns:**  
-    - Prefer **tabs** (via `NautobotUIViewSet`) for distinct data categories.  
-    - Use full-width detail layouts for dense content.  
-    - Provide **stats tiles** / instance counts if helpful.  
-    - For long-running actions, use **AJAX modal + polling** (Jobs/Celery).  
+    - When templates are necessary, extend Nautobot base templates; prefer provided
+      django template and jinja filters (`|hyperlinked_object`, `|placeholder`,
+      etc.) over `mark_safe` or hand-rolled anchors.
+- **UI Patterns:**
+    - Prefer **tabs** (via `NautobotUIViewSet`) for distinct data categories.
+    - Use full-width detail layouts for dense content.
+    - Provide **stats tiles** / instance counts if helpful via `StatsPanel`.
+    - For long-running actions, use **AJAX modal + polling** (Jobs/Celery).
     - Use inline edit sparingly and always re-validate server-side.
 
 ---
 
 ## 6) Migrations
 
-- **Do not generate migrations automatically.** Migration generation should be done by a developer, not by AI.
+- **Do not generate migrations yourself.** `makemigrations` generates schema
+  migrations. A developer writes data migrations. AI does neither.
 - If models change, remind the developer to:
     - `poetry run invoke check-migrations`
     - `poetry run invoke makemigrations -n <meaningful_name>`
-- Keep schema and data migrations separate and reversible.
+- Keep schema and data migrations separate. Make data migrations reversible if
+  possible.
 - Use descriptive migration names (e.g., `devicenote_initial`, `provider_increase_account_length`).
 - Ruff-format generated migrations for consistency.
 
@@ -304,7 +306,17 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
 
 ### 7.9 OpenAPI Schema Checks
 
-Nautobot's built-in test infrastructure includes OpenAPI schema validation. Ensure your app's serializers and endpoints remain schema-valid by running the full test suite (`poetry run invoke tests`). Do not generate custom OpenAPI schema tests — the framework handles this automatically.
+`invoke tests` runs the tests under this app's label only. It does not validate
+the OpenAPI schema, and the scaffold ships no schema test. Run the check
+explicitly when you add or change a serializer or an API view:
+
+```shell
+poetry run invoke exec --command "nautobot-server spectacular --validate --fail-on-warn --file /dev/null"
+```
+
+The command fails on a serializer that drf-spectacular cannot resolve. Fix the
+warning at its source, with a type hint or an `@extend_schema_field`
+annotation, rather than by suppressing it.
 
 ### 7.10 Unittest Task (Django/Nautobot runner)
 
@@ -313,7 +325,7 @@ use **Django's unittest-style runner** via the `unittest` Invoke task when
 present. Prefer this when you want stock unittest selection semantics or when a
 plugin/app intends to mirror Nautobot core's runner behavior.
 
-**Help**  
+**Help**
 ```bash
 poetry run invoke unittest -h
 ```
@@ -344,19 +356,19 @@ Options:
   (labels/patterns), quick targeted runs, or parity with Nautobot core's CI
   jobs.
 
-**Common recipes**  
+**Common recipes**
 
-- Run with coverage:  
+- Run with coverage:
   `poetry run invoke unittest --coverage`
-- Target a specific module (label):  
+- Target a specific module (label):
   `poetry run invoke unittest --label myapp.tests.test_api`
-- Match by pattern (method/class):  
-  `poetry run invoke unittest --pattern "WidgetAPITests and test_list_objects"`
-- Re-use the DB between runs for speed:  
+- Match by pattern (method/class):
+  `poetry run invoke unittest --label myapp.tests.test_api.WidgetAPITests --pattern test_list_objects`
+- Re-use the DB between runs for speed:
   `poetry run invoke unittest --keepdb`
-- Fail fast & suppress noise from passing tests:  
+- Fail fast & suppress noise from passing tests:
   `poetry run invoke unittest --failfast --buffer`
-- Skip docs build if unchanged:  
+- Skip docs build if unchanged:
   `poetry run invoke unittest --skip-docs-build`
 
 > **Note:** Always prefix with `poetry run` to ensure tests execute inside the
@@ -425,15 +437,18 @@ platform-specific APIs directly.
 
 - `dispatcher.send_markdown(text)` - Simple markdown message
 - `dispatcher.send_blocks(blocks)` - Rich formatted blocks
-- `dispatcher.send_large_table(headers, *rows)` - Table data
+- `dispatcher.send_large_table(header, rows, title=None)` - Table data
 - `dispatcher.prompt_from_menu(action, text, choices)` - Interactive menu
 - `dispatcher.prompt_for_text(action_id, help_text, label)` - Text input prompt
-- `dispatcher.command_response_header(command, subcommand)` - Standard header blocks
+- `dispatcher.command_response_header(command, subcommand, args, description="information", image_element=None)`
+  Standard header blocks. `args` is required, and it is a list of tuples,
+  either `(arg_name, human_readable_value, literal_value)` or
+  `(arg_name, literal_value)`. Pass `[]` when there are no arguments to show.
 
 **Block formatting example:**
 ```python
 dispatcher.send_blocks([
-    *dispatcher.command_response_header("mycommand", "get-device"),
+    *dispatcher.command_response_header("mycommand", "get-device", []),
     dispatcher.markdown_block(f"Device: **{device.name}**"),
     dispatcher.markdown_block(f"Status: {device.status}"),
 ])
@@ -453,7 +468,7 @@ def get_device_info(dispatcher, site_name=None, device_name=None):
         ]
         dispatcher.prompt_from_menu("mycommand get-device-info", "Select site", sites)
         return False
-  
+
     if not device_name:
         devices = Device.objects.filter(location__slug=site_name)
         choices = [(dev.name, dev.name) for dev in devices]
@@ -461,7 +476,7 @@ def get_device_info(dispatcher, site_name=None, device_name=None):
             f"mycommand get-device-info {site_name}", "Select device", choices
         )
         return False
-  
+
     # Process the command
     device = Device.objects.get(name=device_name)
     dispatcher.send_markdown(f"Device **{device.name}** status: {device.status}")
@@ -486,7 +501,7 @@ def get_device_info(dispatcher, site_name=None, device_name=None):
 # For large datasets that may exceed platform limits
 dispatcher.send_large_table(
     ["Device", "Site", "Status", "IP Address"],
-    *[(dev.name, dev.location.name, dev.status, dev.primary_ip) for dev in devices]
+    [(dev.name, dev.location.name, dev.status, dev.primary_ip) for dev in devices],
 )
 ```
 
@@ -522,23 +537,23 @@ from . import worker
 
 class MyCommandWorkerTest(ChatOpsTestCase):
     """Test mycommand worker functions."""
-  
+
     def test_get_device_info_success(self):
         """Test successful device info retrieval."""
         mock_dispatcher = Mock()
         device = self.device_factory()
-  
+
         result = worker.get_device_info(mock_dispatcher, device.name)
-  
+
         self.assertTrue(result)
         mock_dispatcher.send_markdown.assert_called_once()
-  
+
     def test_get_device_info_missing_params(self):
         """Test prompting when parameters missing."""
         mock_dispatcher = Mock()
-  
+
         result = worker.get_device_info(mock_dispatcher)
-  
+
         self.assertFalse(result)
         mock_dispatcher.prompt_from_menu.assert_called_once()
 ```
@@ -558,8 +573,8 @@ class MyCommandWorkerTest(ChatOpsTestCase):
 
 ## 10) Security & Secrets
 
-- Never hard-code secrets/tokens/credentials.  
-- Use Nautobot Secrets / External Integrations.  
+- Never hard-code secrets/tokens/credentials.
+- Use Nautobot Secrets / External Integrations.
 - Scrub PII and sensitive network details from examples/tests.
 - **ChatOps security:** Commands inherit Nautobot user permissions; ensure
   proper user account linking between chat platforms and Nautobot accounts.
@@ -568,26 +583,26 @@ class MyCommandWorkerTest(ChatOpsTestCase):
 
 ## 11) Performance & DB
 
-- Prefer queryset filters/bulk ops over per-row loops.  
-- Use `select_related` / `prefetch_related` where appropriate.  
+- Prefer queryset filters/bulk ops over per-row loops.
+- Use `select_related` / `prefetch_related` where appropriate.
 - Add indexes for frequently filtered fields; justify in migration message.
 
 ---
 
 ## 12) Git & Branching
 
-- Small, focused branches.  
-- PRs must include tests, migration notes (if any), and "how to test" steps.  
-- Reference related issues.  
+- Small, focused branches.
+- PRs must include tests, migration notes (if any), and "how to test" steps.
+- Reference related issues.
 - Target the `develop` branch for PRs (not `main`, which is reserved for releases).
 
 ---
 
 ## 13) PR Hygiene --- What the Agent Should Suggest
 
-- Clear, action-oriented title and description.  
-- Link to issue(s) and include screenshots/GIFs for UI work.  
-- Call out any migrations and potential data impacts.  
+- Clear, action-oriented title and description.
+- Link to issue(s) and include screenshots/GIFs for UI work.
+- Call out any migrations and potential data impacts.
 - Keep the diff small and logically cohesive.
 - Add a changelog fragment at `changes/<issue>.<type>`. Valid types are `added`,
   `changed`, `deprecated`, `fixed`, `removed`, and `security`. Write one complete
@@ -634,11 +649,11 @@ def get_device_status(dispatcher, device_name=None):
             "mycommand get-device-status", "Select device", choices
         )
         return False
-  
+
     try:
         device = Device.objects.get(name=device_name)
         dispatcher.send_blocks([
-            *dispatcher.command_response_header("mycommand", "get-device-status"),
+            *dispatcher.command_response_header("mycommand", "get-device-status", []),
             dispatcher.markdown_block(f"**Device:** {device.name}"),
             dispatcher.markdown_block(f"**Status:** {device.status}"),
             dispatcher.markdown_block(f"**Location:** {device.location}"),
@@ -659,25 +674,25 @@ from . import worker
 
 class MyCommandWorkerTest(TestCase):
     """Test mycommand worker functions."""
-  
+
     def test_get_device_status_success(self):
         """Test successful device status retrieval."""
         mock_dispatcher = Mock()
         device = Device.objects.create(
             name="test-device", device_type=self.device_type, location=self.location
         )
-  
+
         result = worker.get_device_status(mock_dispatcher, device.name)
-  
+
         self.assertTrue(result)
         mock_dispatcher.send_blocks.assert_called_once()
-  
+
     def test_get_device_status_prompts_when_no_device(self):
         """Test prompting when no device specified."""
         mock_dispatcher = Mock()
-  
+
         result = worker.get_device_status(mock_dispatcher)
-  
+
         self.assertFalse(result)
         mock_dispatcher.prompt_from_menu.assert_called_once()
 ```
@@ -700,7 +715,7 @@ class DeviceNote(PrimaryModel):
         blank=True,
         null=True,
     )
-  
+
     class Meta:
         ordering = ("name",)
 
@@ -783,18 +798,18 @@ front-matter to apply specialized guidance to certain subtrees (e.g., `docs/`,
 
 ## 16) Final Checklist (for every change)
 
-- [ ] Commands are shown as `poetry run invoke ...`  
-- [ ] Imports are at the top; docstrings explain intent/usage  
-- [ ] Nautobot base classes, viewsets, and helpers are used  
+- [ ] Commands are shown as `poetry run invoke ...`
+- [ ] Imports are at the top; docstrings explain intent/usage
+- [ ] Nautobot base classes, viewsets, and helpers are used
 - [ ] **ChatOps workers use `@subcommand_of()` decorator and proper dispatcher
       interface**
 - [ ] **ChatOps functions return appropriate status (True/False/status tuple)**
 - [ ] **ChatOps commands handle missing parameters with progressive prompting**
 - [ ] Tests cover models/filters/API/views **and ChatOps workers** with Nautobot
-      base classes & mixins  
-- [ ] Migrations are checked/generated, named meaningfully, and reversible  
-- [ ] Querysets are optimized; indexes added if needed  
-- [ ] No secrets/PII in code, tests, or docs  
+      base classes & mixins
+- [ ] Migrations are checked/generated, named meaningfully, and data migrations are reversible where possible
+- [ ] Querysets are optimized; indexes added if needed
+- [ ] No secrets/PII in code, tests, or docs
 - [ ] Ruff & Pylint clean
 - [ ] PR description includes "how to test" and references related issues
 

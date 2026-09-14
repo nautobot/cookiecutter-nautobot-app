@@ -15,8 +15,7 @@ patterns** and this repository's tooling and style.
 
 ## 0) Quick Facts (for Agents)
 
-- **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses Postgres, Redis, and Celery via Nautobot. Prefer idiomatic **Django** and **Nautobot helper APIs**.
-- **Python:** `>=3.11,<3.15`, as declared in `pyproject.toml`.
+- **Stack:** Django app that runs inside **Nautobot** (network SoT & automation). Uses PostgreSQL or MySQL, Redis, and Celery via Nautobot. Prefer **Nautobot helper APIs** first, then idiomatic **Django**.
 - **Dependency & venv:** **Poetry** only.
 - **Task runner:** `invoke` (always via Poetry).
 - **Style:** Ruff + Pylint; **imports at the top**; prefer **docstrings over inline comments**; clear, explicit code.
@@ -75,7 +74,7 @@ When scaffolding features, use Nautobot's base classes and helpers first:
 
 - **Models:** `PrimaryModel` (full Nautobot features) or `BaseModel` as appropriate.
 - **Forms:** `NautobotModelForm` (+ `NautobotBulkEditForm` for bulk edits, `NautobotFilterForm` for filter forms).
-- **FilterSets:** `NautobotModelFilterSet` (`Meta.fields = "__all__"` unless strongly justified).
+- **FilterSets:** `NautobotFilterSet` (`Meta.fields = "__all__"` unless strongly justified).
 - **Serializers:** `NautobotModelSerializer` (writeable) / `BaseModelSerializer` (simple read‑only).
 - **API views:** `NautobotModelViewSet`.
 - **UI views:** `NautobotUIViewSet` (unifies list/detail/edit/delete).
@@ -90,7 +89,9 @@ When scaffolding features, use Nautobot's base classes and helpers first:
 - Prefer natural keys (e.g., unique `name`) or PKs; add `slug` only with clear rationale.
 - Use constant `CHARFIELD_MAX_LENGTH` for text lengths unless you have a very good reason not to.
 - Avoid `null=True` on strings; use empty string `""` when semantically empty.
-- For `ManyToManyField`, declare an explicit **through** model. We follow the convention of using both model names and the word Assignment for **through** models. Ex. `AccessPointDeviceAssignment`
+- For `ManyToManyField`, add an explicit **through** model only when the
+  relationship itself needs extra fields. Name a through model after both
+  models plus the word Assignment. Ex. `AccessPointDeviceAssignment`
 - If searchable, populate `searchable_models` on the `NautobotAppConfig` in the `__init__.py` file.
 
 ---
@@ -182,14 +183,16 @@ object_detail_content = ObjectDetailContent(
 ## 6) Forms, Filters, and UI Patterns
 
 - **Forms:**
-    - Use `DynamicModelChoiceField` for large foreign keys.
+    - Use `DynamicModelChoiceField` for foreign keys, regardless of size.
     - Put complex validation in `clean()` (model or form as appropriate).
 - **Filters:**
     - Use `RelatedMembershipBooleanFilter` for boolean relationship filters (`has_*`).
     - Use `NaturalKeyOrPKMultipleChoiceFilter` for FK filters where applicable.
     - Use `SearchFilter` for `q` parameter search logic.
 - **Templates (when needed):**
-    - Extend Nautobot base templates; prefer provided filters (`|hyperlinked_object`, `|placeholder`, etc.) over `mark_safe`/hand‑rolled anchors.
+    - When templates are necessary, extend Nautobot base templates; prefer provided
+      django template and jinja filters (`|hyperlinked_object`, `|placeholder`,
+      etc.) over `mark_safe` or hand-rolled anchors.
 - **UI Patterns:**
     - **Prefer Component Framework** for detail views (see Section 5).
     - Use **tabs** (via `ObjectDetailContent` extra_tabs) for distinct data categories.
@@ -201,11 +204,13 @@ object_detail_content = ObjectDetailContent(
 
 ## 7) Migrations
 
-- **Do not generate migrations automatically.** Migration generation should be done by a developer, not by AI.
+- **Do not generate migrations yourself.** `makemigrations` generates schema
+  migrations. A developer writes data migrations. AI does neither.
 - If models change, remind the developer to:
     - `poetry run invoke check-migrations`
     - `poetry run invoke makemigrations -n <meaningful_name>`
-- Keep schema and data migrations separate and reversible.
+- Keep schema and data migrations separate. Make data migrations reversible if
+  possible.
 - Use descriptive migration names (e.g., `devicenote_initial`, `provider_increase_account_length`).
 - Ruff‑format generated migrations for consistency.
 
@@ -356,7 +361,17 @@ class WidgetUIViewTests(ViewTestCases.PrimaryObjectViewTestCase):
 
 ### 8.9 OpenAPI Schema Checks
 
-Nautobot's built-in test infrastructure includes OpenAPI schema validation. Ensure your app's serializers and endpoints remain schema-valid by running the full test suite (`poetry run invoke tests`). Do not generate custom OpenAPI schema tests — the framework handles this automatically.
+`invoke tests` runs the tests under this app's label only. It does not validate
+the OpenAPI schema, and the scaffold ships no schema test. Run the check
+explicitly when you add or change a serializer or an API view:
+
+```shell
+poetry run invoke exec --command "nautobot-server spectacular --validate --fail-on-warn --file /dev/null"
+```
+
+The command fails on a serializer that drf-spectacular cannot resolve. Fix the
+warning at its source, with a type hint or an `@extend_schema_field`
+annotation, rather than by suppressing it.
 
 ### 8.10 Unittest Task (Django/Nautobot runner)
 
@@ -395,7 +410,7 @@ Options:
 - Target a specific module (label):
   `poetry run invoke unittest --label myapp.tests.test_api`
 - Match by pattern (method/class):
-  `poetry run invoke unittest --pattern "WidgetAPITests and test_list_objects"`
+  `poetry run invoke unittest --label myapp.tests.test_api.WidgetAPITests --pattern test_list_objects`
 - Re-use the DB between runs for speed:
   `poetry run invoke unittest --keepdb`
 - Fail fast & suppress noise from passing tests:
@@ -666,7 +681,7 @@ If needed, add `.github/instructions/*.instructions.md` with path‑scoped front
 - [ ] Nautobot base classes, viewsets, and helpers are used
 - [ ] **Detail views use Component Framework** (not custom templates unless necessary)
 - [ ] Tests cover models/filters/API/views with Nautobot base classes & mixins
-- [ ] Migrations are checked/generated, named meaningfully, and reversible
+- [ ] Migrations are checked/generated, named meaningfully, and data migrations are reversible where possible
 - [ ] Querysets are optimized; indexes added if needed
 - [ ] No secrets/PII in code, tests, or docs
 - [ ] Ruff & Pylint clean
