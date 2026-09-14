@@ -16,6 +16,12 @@ def test_bake_project(cookies):
     assert "pyproject.toml" in found_toplevel_files
     assert "README.md" in found_toplevel_files
     assert "LICENSE" in found_toplevel_files
+    assert "CONTRIBUTING.md" in found_toplevel_files
+    assert "AGENTS.md" in found_toplevel_files
+    assert "CLAUDE.md" in found_toplevel_files
+    assert "GEMINI.md" in found_toplevel_files
+    assert ".cursorrules" in found_toplevel_files
+    assert (result.project_path / ".github" / "copilot-instructions.md").is_file()
 
 
 def test_bake_nautobot_execution(cookies_baked_nautobot_app_ssot):
