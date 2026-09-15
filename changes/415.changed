@@ -1,0 +1,3 @@
+Changed GHA `action/checkout@v4` to `action/checkout@v7` which is the latest.
+Changed Docker owned GHA action `"docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"  # v3.10.0` to `"docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e"  # v4.3.0`
+Changed Docker owned GHA action `"docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25"  # v5.4.0` to `"docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a"  # v7.3.0`
