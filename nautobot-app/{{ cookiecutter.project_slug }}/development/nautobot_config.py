@@ -14,7 +14,15 @@ DEBUG = is_truthy(os.getenv("NAUTOBOT_DEBUG", "false"))
 _TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 if DEBUG and not _TESTING:
-    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda _request: True}
+    # Show the debug toolbar unless the client opted out (e.g. Playwright, curl, load tests) via the
+    # X-Disable-Debug-Toolbar request header. It can also be disabled by setting
+    # NAUTOBOT_SHOW_DJDT_TOOLBAR in the environment to a falsy value. Enabled by default.
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda request: (
+            not request.headers.get("X-Disable-Debug-Toolbar")
+            and is_truthy(os.getenv("NAUTOBOT_SHOW_DJDT_TOOLBAR", "true"))
+        ),
+    }
 
     if "debug_toolbar" not in INSTALLED_APPS:  # noqa: F405
         INSTALLED_APPS.append("debug_toolbar")  # noqa: F405
