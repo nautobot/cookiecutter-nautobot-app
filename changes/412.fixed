@@ -1,0 +1,1 @@
+Fixed `changes/.gitignore` being lost when baking the commercial, SSoT, and ChatOps templates, which left generated apps with a `changes` directory that disappeared on first commit.
