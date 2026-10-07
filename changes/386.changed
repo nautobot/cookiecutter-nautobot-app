@@ -1,1 +1,0 @@
-Aligned the generated app `docs` container to serve and publish on port 8001, matching `mkdocs.yml` and Nautobot core.
