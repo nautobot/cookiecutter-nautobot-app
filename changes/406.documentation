@@ -1,2 +1,0 @@
-Documented how to configure Artifactory credentials for the local development environment in apps baked from the `nautobot-app-commercial` cookie.
-Documented the private package source, the opt-in flow for private dependencies, and the required repository secrets in the `nautobot-app-commercial` README.

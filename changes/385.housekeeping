@@ -1,1 +1,0 @@
-Added a release workflow job to sync release notes from `ltm` branches back to `develop` via an automated pull request.

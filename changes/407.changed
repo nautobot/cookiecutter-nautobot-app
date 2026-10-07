@@ -1,1 +1,0 @@
-Changed the minimum supported Nautobot version to 3.2.0 for apps baked from the `nautobot-app-commercial` cookie, updating both the baked `pyproject.toml` constraint and the CI test matrix.

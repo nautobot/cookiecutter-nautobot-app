@@ -1,1 +1,0 @@
-Changed the release workflow to define the Python and Poetry versions as workflow-level environment variables.
