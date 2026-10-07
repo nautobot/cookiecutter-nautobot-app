@@ -413,7 +413,8 @@ jobs:
     needs: "generate-lockfile"
     if: >
       contains(fromJson('["develop","ltm-1.6"]'), github.base_ref) &&
-      (github.head_ref != 'main') && (!startsWith(github.head_ref, 'release'))
+      (github.head_ref != 'main') && (!startsWith(github.head_ref, 'release')) &&
+      github.actor != 'dependabot[bot]'
     runs-on: "ubuntu-latest"
     steps:
       - name: "Check out repository code"
