@@ -1,0 +1,198 @@
+---
+# Dependabot auto-merge
+#
+# Merges Dependabot pull requests (security or version updates) that only bump a transitive dependency,
+# so nobody has to review a lock-file change for a package this app does not declare.
+#
+# Eligibility. A pull request is merged only when all of the following are true:
+#   - The CI workflow ran for a pull_request event on a dependabot/ branch and succeeded.
+#   - The pull request branch is in this repository, not a fork.
+#   - The pull request was opened by dependabot[bot].
+#   - The pull request changes only poetry.lock, or poetry.lock plus the changes/<PR number>.dependencies
+#     fragment this workflow adds.
+#   - The title matches "Bump <name> from <old> to <new>". Grouped updates such as
+#     "Bump the pip group with 3 updates" do not match.
+#   - The bumped package is not declared in pyproject.toml in any group, according to
+#     `poetry show --top-level` run on the base branch. Declared dependencies are left for a human.
+#   - The pull request head is still the commit CI tested.
+#
+# How it runs. The workflow runs twice for each eligible pull request, once after each successful CI run:
+#   1. After CI passes on Dependabot's commit, it commits changes/<PR number>.dependencies containing
+{%- if cookiecutter.__commercial %}
+#      "Updated dependency `<name>` to `<new>`." and pushes it with NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN.
+{%- else %}
+#      "Updated dependency `<name>` to `<new>`." and pushes it with GH_NAUTOBOT_BOT_TOKEN.
+{%- endif %}
+#      A push made with GITHUB_TOKEN does not start workflow runs, so CI would never run on the new commit.
+#   2. After CI passes on the fragment commit, it repeats every check, confirms the fragment text, approves
+#      the pull request, and merges it pinned to the tested head commit with --match-head-commit.
+# The merge happens only after CI passes on the final head commit, so it works when develop requires
+# status checks, and the repository's allow_auto_merge setting is not needed.
+#
+# A pull request that is not eligible is left alone: no push, comment, label, or merge, so it needs a
+# maintainer. Dependabot stops rebasing a branch that has a commit it did not author, so a pull request
+# declined after the fragment was added also needs a maintainer.
+#
+# The changelog job in ci.yml is skipped for dependabot[bot], because Dependabot's pull_request runs have a
+# read-only token and cannot add a fragment. The CI run for the fragment commit is started by the token's
+# account, so the changelog job runs then and finds the fragment.
+#
+# Optional dependency groups. The `poetry show` command below needs a `--with <group>` for every
+# optional group in pyproject.toml. {{ cookiecutter.app_name }}/tests/test_dependabot_automerge.py fails if one
+# is missing.
+#
+# Repository settings a maintainer must apply:
+#   1. Settings > Actions > General: enable "Allow GitHub Actions to create and approve pull requests".
+#      The approve step uses GITHUB_TOKEN.
+{%- if cookiecutter.__commercial %}
+#   2. The NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN secret must be available to this repository and able
+#      to push to branches.
+{%- else %}
+#   2. The GH_NAUTOBOT_BOT_TOKEN secret must be available to this repository and able
+#      to push to branches.
+{%- endif %}
+
+name: "Dependabot auto-merge"
+
+on: # yamllint disable-line rule:truthy rule:comments
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - "completed"
+
+concurrency:
+  group: "dependabot-automerge-{% raw %}${{ github.event.workflow_run.head_branch }}{% endraw %}"
+  cancel-in-progress: false
+
+jobs:
+  # Runs twice per pull request. The first run adds the changelog fragment; the push starts a new CI run,
+  # and the second run, triggered when that CI run succeeds, finds the fragment and hands off to the merge job.
+  changelog-fragment:
+    name: "Add changelog fragment"
+    runs-on: "ubuntu-latest"
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'dependabot/') && github.event.workflow_run.head_repository.full_name == github.repository # yamllint disable-line rule:quoted-strings rule:comments
+    permissions:
+      contents: "read"
+      pull-requests: "read"
+    outputs:
+      merge: "{% raw %}${{ steps.fragment.outputs.merge }}{% endraw %}"
+      pr_number: "{% raw %}${{ steps.fragment.outputs.pr_number }}{% endraw %}"
+      head_sha: "{% raw %}${{ steps.fragment.outputs.head_sha }}{% endraw %}"
+    steps:
+      # Checks out the default branch. Code from the pull request is never executed;
+      # the pull request branch is only checked out to add or verify the fragment file.
+      # A push made with GITHUB_TOKEN does not start a CI run, so this token is used to push the fragment.
+      - name: "Check out repository code"
+        uses: "actions/checkout@v4"
+        with:
+{%- if cookiecutter.__commercial %}
+          token: "{% raw %}${{ secrets.NTC_LLC_NAUTOBOT_APPS_REPO_WORKFLOW_GH_TOKEN }}{% endraw %}"
+{%- else %}
+          token: "{% raw %}${{ secrets.GH_NAUTOBOT_BOT_TOKEN }}{% endraw %}"
+{%- endif %}
+      - name: "Setup environment"
+        uses: "networktocode/gh-action-setup-poetry-environment@v7"
+        with:
+          poetry-version: "2.5.1"
+          poetry-install-options: "--only-root"
+      - name: "Add or verify changelog fragment"
+        id: "fragment"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+          PR_NUMBER: "{% raw %}${{ github.event.workflow_run.pull_requests[0].number }}{% endraw %}"
+          TESTED_SHA: "{% raw %}${{ github.event.workflow_run.head_sha }}{% endraw %}"
+        run: |
+          set -euo pipefail
+
+          decline() {
+            echo "Not merging: $1"
+            echo "merge=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          normalize() {
+            tr 'A-Z' 'a-z' | sed -E 's/[-_.]+/-/g'
+          }
+
+          if [ -z "$PR_NUMBER" ]; then
+            decline "no pull request is associated with this CI run."
+          fi
+
+          pr=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}")
+          author=$(jq -r ".user.login" <<< "$pr")
+          head_oid=$(jq -r ".head.sha" <<< "$pr")
+          head_ref=$(jq -r ".head.ref" <<< "$pr")
+          title=$(jq -r ".title" <<< "$pr")
+          if [ "$author" != "dependabot[bot]" ]; then
+            decline "the pull request was opened by $author, not dependabot[bot]."
+          fi
+          if [ "$head_oid" != "$TESTED_SHA" ]; then
+            decline "the pull request head ($head_oid) is not the commit CI tested ($TESTED_SHA)."
+          fi
+
+          # Read and tested by {{ cookiecutter.app_name }}/tests/test_dependabot_automerge.py; keep it a single-quoted one-line assignment.
+          title_pattern='^Bump ([^[:space:]]+) from ([^[:space:]]+) to ([^[:space:]]+)$'
+          if [[ ! "$title" =~ $title_pattern ]]; then
+            decline "the title does not match 'Bump <name> from <old> to <new>' ($title)."
+          fi
+          name="${BASH_REMATCH[1]}"
+          new_version="${BASH_REMATCH[3]}"
+
+          # Lists every dependency declared in pyproject.toml. Each optional group needs its own --with.
+          top_level=$(poetry show --top-level --format json | jq -r ".[].name" | normalize)
+          if grep -qxF "$(normalize <<< "$name")" <<< "$top_level"; then
+            decline "$name is declared in pyproject.toml and needs human review."
+          fi
+
+          # Only poetry.lock: first run, add the fragment. poetry.lock plus the fragment: second run, merge.
+          fragment="changes/${PR_NUMBER}.dependencies"
+          files=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '[.[].filename] | sort | join(",")')
+          case "$files" in
+            "poetry.lock") has_fragment=false ;;
+            "${fragment},poetry.lock") has_fragment=true ;;
+            *) decline "the pull request changes files other than poetry.lock and ${fragment} ($files)." ;;
+          esac
+
+          git fetch --depth=1 origin "+refs/heads/${head_ref}:refs/remotes/origin/${head_ref}"
+          git switch -c "$head_ref" "origin/${head_ref}"
+          if [ "$(git rev-parse HEAD)" != "$TESTED_SHA" ]; then
+            decline "the branch moved after CI tested it."
+          fi
+
+          expected=$(printf 'Updated dependency `%s` to `%s`.' "$name" "$new_version")
+          if [ "$has_fragment" = true ]; then
+            if [ "$(cat "$fragment")" != "$expected" ]; then
+              decline "${fragment} does not contain the expected text."
+            fi
+            {
+              echo "merge=true"
+              echo "pr_number=${PR_NUMBER}"
+              echo "head_sha=${TESTED_SHA}"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          printf '%s\n' "$expected" > "$fragment"
+          git add "$fragment"
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Add changelog fragment for #${PR_NUMBER}"
+          git push origin "HEAD:refs/heads/${head_ref}"
+          echo "Added ${fragment}; the pull request is merged after CI passes on the new commit."
+          echo "merge=false" >> "$GITHUB_OUTPUT"
+  merge:
+    name: "Merge pull request"
+    needs: "changelog-fragment"
+    if: needs.changelog-fragment.outputs.merge == 'true' # yamllint disable-line rule:quoted-strings rule:comments
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+    env:
+      GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+      PR_NUMBER: "{% raw %}${{ needs.changelog-fragment.outputs.pr_number }}{% endraw %}"
+      HEAD_SHA: "{% raw %}${{ needs.changelog-fragment.outputs.head_sha }}{% endraw %}"
+    steps:
+      - name: "Approve pull request"
+        run: "gh pr review \"$PR_NUMBER\" --repo \"$GITHUB_REPOSITORY\" --approve"
+      - name: "Merge pull request"
+        run: "gh pr merge \"$PR_NUMBER\" --repo \"$GITHUB_REPOSITORY\" --squash --delete-branch --match-head-commit \"$HEAD_SHA\""
