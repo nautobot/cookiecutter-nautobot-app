@@ -1,0 +1,1 @@
+Added a `NAUTOBOT_SHOW_DJDT_TOOLBAR` environment variable to the development configuration that turns `django-debug-toolbar` off for the whole development server, alongside the existing per-request `X-Disable-Debug-Toolbar` header, and documented both in the development environment guide.
