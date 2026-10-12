@@ -138,7 +138,11 @@ jobs:
           new_version="${BASH_REMATCH[3]}"
 
           # Lists every dependency declared in pyproject.toml. Each optional group needs its own --with.
+{%- if cookiecutter.__commercial %}
+          top_level=$(poetry show --top-level --with playwright --format json | jq -r ".[].name" | normalize)
+{%- else %}
           top_level=$(poetry show --top-level --format json | jq -r ".[].name" | normalize)
+{%- endif %}
           if grep -qxF "$(normalize <<< "$name")" <<< "$top_level"; then
             decline "$name is declared in pyproject.toml and needs human review."
           fi

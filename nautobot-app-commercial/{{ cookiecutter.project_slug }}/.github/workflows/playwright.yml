@@ -1,0 +1,126 @@
+---
+name: "Playwright"
+concurrency:  # Cancel any existing runs of this workflow for this same PR
+  group: "{% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}"
+  cancel-in-progress: true
+on: # yamllint disable-line rule:truthy rule:comments
+  push:
+    branches:
+      - "main"
+      - "develop"
+  pull_request: ~
+
+env:
+  APP_NAME: "{{ cookiecutter.app_slug }}"
+
+jobs:
+  playwright:
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.12"]
+        # The Nautobot the app runs on. The test client's Nautobot is `playwright_nautobot_ver`
+        # in tasks.py, read in a step below.
+        nautobot-version: ["{{ min_nautobot_version }}"]
+    runs-on: "ubuntu-latest"
+    env:
+      INVOKE_{{ cookiecutter.app_name.upper() }}_PYTHON_VER: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+      INVOKE_{{ cookiecutter.app_name.upper() }}_NAUTOBOT_VER: "{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v4"
+      - name: "Setup environment"
+        uses: "networktocode/gh-action-setup-poetry-environment@v7"
+        with:
+          poetry-version: "2.1.3"
+          python-version: "{% raw %}${{ matrix.python-version }}{% endraw %}"
+        env:
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+      - name: "Constrain Nautobot version and regenerate lock file"
+        env:
+          INVOKE_{{ cookiecutter.app_name.upper() }}_LOCAL: "true"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          POETRY_HTTP_BASIC_ARTIFACTORY_PYPI_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+        run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ matrix.python-version }}{% endraw %}"
+      - name: "Read the playwright image versions"
+        # The image tag must match the one tasks.py gives the compose service, so read every part
+        # from tasks.py. A bare assignment carries the exit status of the substitution, so a
+        # missing value fails this step.
+        run: |
+          PLAYWRIGHT_NAUTOBOT_VER=$(poetry run python -c "from tasks import namespace; print(namespace.configuration()['{{ cookiecutter.app_name }}']['playwright_nautobot_ver'])")
+          PLAYWRIGHT_VER=$(poetry run python -c "from tasks import _locked_version; print(_locked_version('playwright'))")
+          PYTEST_VER=$(poetry run python -c "from tasks import _locked_version; print(_locked_version('pytest'))")
+          PYTEST_PLAYWRIGHT_VER=$(poetry run python -c "from tasks import _locked_version; print(_locked_version('pytest-playwright'))")
+          for value in "${PLAYWRIGHT_NAUTOBOT_VER}" "${PLAYWRIGHT_VER}" "${PYTEST_VER}" "${PYTEST_PLAYWRIGHT_VER}"; do
+            [ -n "${value}" ] || { echo "A playwright image version is empty; is poetry.lock missing the playwright group?"; exit 1; }
+          done
+          {
+            echo "PLAYWRIGHT_NAUTOBOT_VER=${PLAYWRIGHT_NAUTOBOT_VER}"
+            echo "PLAYWRIGHT_VER=${PLAYWRIGHT_VER}"
+            echo "PYTEST_VER=${PYTEST_VER}"
+            echo "PYTEST_PLAYWRIGHT_VER=${PYTEST_PLAYWRIGHT_VER}"
+          } >> "${GITHUB_ENV}"
+      - name: "Set up Docker Buildx"
+        id: "buildx"
+        uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"  # v3.10.0
+        with:
+          # The docker driver puts each image straight into the local daemon, which is all the
+          # later steps need. The default driver exports each image through a tarball first.
+          driver: "docker"
+      - name: "Build the development image"
+        uses: "docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25"  # v5.4.0
+        with:
+          builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
+          context: "./"
+          push: false
+          tags: "{% raw %}${{ env.APP_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}{% endraw %}"
+          file: "./development/Dockerfile"
+          build-args: |
+            NAUTOBOT_VER={% raw %}${{ matrix.nautobot-version }}{% endraw %}
+            PYTHON_VER={% raw %}${{ matrix.python-version }}{% endraw %}
+            CI=true
+          secrets: |
+            "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+            "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+      - name: "Build the playwright image"
+        # Tag must match the `image` of the playwright service in docker-compose.dev.yml.
+        uses: "docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25"  # v5.4.0
+        with:
+          builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
+          context: "./"
+          push: false
+          tags: "{% raw %}${{ env.APP_NAME }}/playwright:${{ env.PLAYWRIGHT_NAUTOBOT_VER }}-pw${{ env.PLAYWRIGHT_VER }}-pt${{ env.PYTEST_VER }}-pp${{ env.PYTEST_PLAYWRIGHT_VER }}{% endraw %}"
+          file: "./development/Dockerfile-playwright"
+          build-args: |
+            PLAYWRIGHT_NAUTOBOT_VER={% raw %}${{ env.PLAYWRIGHT_NAUTOBOT_VER }}{% endraw %}
+            PLAYWRIGHT_VER={% raw %}${{ env.PLAYWRIGHT_VER }}{% endraw %}
+            PYTEST_VER={% raw %}${{ env.PYTEST_VER }}{% endraw %}
+            PYTEST_PLAYWRIGHT_VER={% raw %}${{ env.PYTEST_PLAYWRIGHT_VER }}{% endraw %}
+      - name: "Start Nautobot"
+        # The image entrypoint migrates and creates the superuser and API token from
+        # development/creds.env, which tasks.py copies from the example on first use. A fresh
+        # database takes several minutes to migrate, hence the long wait.
+        run: |
+          poetry run invoke start --service nautobot
+          for _ in $(seq 1 120); do
+            curl -sf -o /dev/null http://localhost:8080/login/ && exit 0
+            sleep 5
+          done
+          echo "Nautobot did not come up"
+          poetry run invoke logs --service nautobot --tail 100
+          exit 1
+      - name: "Run Playwright tests"
+        run: "poetry run invoke playwright"
+      - name: "Collect the Nautobot log"
+        if: "failure()"
+        run: "poetry run invoke logs --service nautobot --tail 500 > nautobot.log"
+      - name: "Upload failure artifacts"
+        if: "failure()"
+        uses: "actions/upload-artifact@v4"
+        with:
+          name: "playwright-failure-{% raw %}${{ matrix.nautobot-version }}{% endraw %}"
+          path: |
+            nautobot.log
+            test-results/
+          if-no-files-found: "ignore"
