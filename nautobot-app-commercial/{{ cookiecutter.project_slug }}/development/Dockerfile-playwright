@@ -1,0 +1,29 @@
+# The image tag and the pip pin must match: Playwright refuses a browser built for another
+# version. tasks.py passes the version poetry.lock pins.
+ARG PLAYWRIGHT_VER="1.62.0"
+FROM mcr.microsoft.com/playwright/python:v${PLAYWRIGHT_VER}-noble
+
+# An ARG used before FROM is out of scope afterwards, so redeclare it to pin the pip package.
+ARG PLAYWRIGHT_VER
+
+# The tests import nautobot.playwright, so Nautobot 3.3 or later is installed here. It is the
+# test client only. The stack it tests can run an older version. A release installs from PyPI,
+# anything else is treated as a git ref.
+ARG PLAYWRIGHT_NAUTOBOT_VER="next"
+# Same versions poetry.lock holds, so a `local: true` run and the container agree.
+ARG PYTEST_VER
+ARG PYTEST_PLAYWRIGHT_VER
+RUN pip install --no-cache-dir "pytest==${PYTEST_VER}" "pytest-playwright==${PYTEST_PLAYWRIGHT_VER}" \
+        "playwright==${PLAYWRIGHT_VER}" \
+    && (pip install --no-cache-dir "nautobot==${PLAYWRIGHT_NAUTOBOT_VER}" \
+        || pip install --no-cache-dir "nautobot @ git+https://github.com/nautobot/nautobot.git@${PLAYWRIGHT_NAUTOBOT_VER}")
+
+# The app reads its own package metadata, so it must be installed, not just on sys.path.
+# Editable against /source, which compose mounts the working copy over. Without dependencies:
+# the tests import none of them, and a private one would need credentials in this build.
+COPY . /source
+RUN pip install --no-cache-dir --no-deps -e /source
+
+WORKDIR /source
+# Idle as a service; `invoke playwright` runs pytest via compose run/exec.
+CMD ["sleep", "infinity"]

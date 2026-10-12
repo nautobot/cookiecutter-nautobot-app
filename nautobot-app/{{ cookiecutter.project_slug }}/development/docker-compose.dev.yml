@@ -48,6 +48,35 @@ services:
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
+{%- if cookiecutter.__commercial %}
+  playwright:
+    # Browser tests (`invoke playwright`). The profile keeps `invoke start` and `invoke build`
+    # from touching this image; compose run enables it on demand.
+    profiles: ["playwright"]
+    build:
+      context: "../"
+      dockerfile: "development/Dockerfile-playwright"
+      args:
+        # Nautobot for the test client. The stack's own version is NAUTOBOT_VER.
+        PLAYWRIGHT_NAUTOBOT_VER: "${PLAYWRIGHT_NAUTOBOT_VER}"
+        PLAYWRIGHT_VER: "${PLAYWRIGHT_VER}"
+        PYTEST_VER: "${PYTEST_VER}"
+        PYTEST_PLAYWRIGHT_VER: "${PYTEST_PLAYWRIGHT_VER}"
+    # Every pin is in the tag, so a lock bump of any of them builds a new image instead of
+    # reusing the old one.
+    image: "{{ cookiecutter.app_slug }}/playwright:${PLAYWRIGHT_NAUTOBOT_VER}-pw${PLAYWRIGHT_VER}-pt${PYTEST_VER}-pp${PYTEST_PLAYWRIGHT_VER}"
+    # `--url http://host.docker.internal:8080` reaches a Nautobot on the host. Docker Desktop
+    # resolves that name on its own; Linux needs this entry.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # Read by nautobot.playwright.fixtures. `invoke playwright --url` overrides it.
+      NAUTOBOT_PLAYWRIGHT_URL: "http://nautobot:8080"
+    volumes:
+      - "../:/source"
+    working_dir: "/source"
+    tty: true
+{%- endif %}
 # To expose postgres (5432), myql (3306) on db service or redis (6379) to the host uncomment the
 # following. Ensure to match the 2 idented spaces which to have the service nested under services.
 # db:

@@ -10,6 +10,10 @@ environments/
 **/*.pyo
 **/__pycache__/
 **/.pytest_cache/
+{%- if cookiecutter.__commercial %}
+test-results/
+screenshots/
+{%- endif %}
 **/.venv/
 
 
