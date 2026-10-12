@@ -1,0 +1,4 @@
+# Throwaway exploration tests (see .claude/skills/testing-nautobot-ui/SKILL.md). Nothing here is committed.
+*
+!.gitignore
+!__init__.py
