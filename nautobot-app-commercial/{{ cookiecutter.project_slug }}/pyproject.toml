@@ -76,14 +76,47 @@ mkdocs-material = "9.5.32"
 # Image lightboxing in mkdocs
 mkdocs-glightbox = "~0.5.2"
 
+# Playwright testing only; opt in with `poetry install --with playwright`.
+# The tests also need Nautobot 3.3 or later, where nautobot.playwright lives. See docs/dev/playwright.md.
+[tool.poetry.group.playwright]
+optional = true
+
+[tool.poetry.group.playwright.dependencies]
+# Test runner for the Playwright suite. The unittest suites do not use pytest.
+pytest = "~9.1.1"
+# Playwright browser automation and its pytest plugin (fixtures, --headed, --tracing).
+pytest-playwright = "~0.9.0"
+# Pinned: Playwright ties browser builds to the driver release, so upgrades stay deliberate.
+# A host run installs this and fetches matching browsers. The container image is built from the
+# exact version this resolves to in poetry.lock, read by tasks.py, so the two cannot drift.
+playwright = "~1.62.0"
+
 [tool.poetry.extras]
 all = [
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+# Only the Playwright suite. Widening this collects the unittest test cases under pytest,
+# where they do not run correctly.
+testpaths = ["{{ cookiecutter.app_name }}/tests/integration"]
+python_classes = ["Test*", "*TestCase"]
+markers = [
+    "behavioral: checks what the application produced, not just that the page rendered",
 ]
 
 [tool.pylint.main]
 # Include the pylint_django plugin to avoid spurious warnings about Django patterns
 load-plugins = "pylint_django, pylint_nautobot"
 ignore = ".venv"
+# The Playwright tests import pytest, playwright and nautobot.playwright. pylint runs in the
+# development image, which installs no optional dependency groups, so pytest and playwright are
+# never importable there. ruff covers these files, and it runs over the whole repository.
+ignore-paths = [
+    "{{ cookiecutter.app_name }}/tests/integration/",
+    "{{ cookiecutter.app_name }}/tests/look/",
+    "{{ cookiecutter.app_name }}/tests/scratch/",
+]
 
 [tool.pylint.basic]
 # No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
