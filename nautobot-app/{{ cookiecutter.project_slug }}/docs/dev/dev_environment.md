@@ -132,6 +132,9 @@ Each command can be executed with `invoke <command>`. All commands support the a
   unittest         Run Django unit tests for the app.
   djlint           Run djlint to perform django template linting.
   djhtml           Run djhtml to perform django template formatting.
+{%- if cookiecutter.__commercial %}
+  playwright       Run the Playwright tests against a running Nautobot instance.
+{%- endif %}
 ```
 
 ## Project Overview
@@ -493,6 +496,12 @@ To run an individual test, you can run any or all of the following:
 ```
 
 ### Browser Tests and Screenshots
+{%- if cookiecutter.__commercial %}
+
+The Playwright suite in `{{ cookiecutter.app_name }}/tests/integration/` drives a real browser against the
+development stack. [Running the Playwright Tests](playwright.md) covers how to run it, and the
+`testing-nautobot-ui` skill shows how to take a screenshot with it.
+{%- endif %}
 
 #### Keeping the Debug Toolbar Out of the Way
 
