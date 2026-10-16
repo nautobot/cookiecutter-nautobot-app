@@ -18,6 +18,11 @@ def test_bake_project(cookies):
     assert "README.md" in found_toplevel_files
     assert "COPYRIGHT" in found_toplevel_files
 
+    # `changes/.gitignore` is what keeps the empty towncrier fragment directory in git. It is a
+    # symlink into `nautobot-app`; if `changes` itself is ever made a directory symlink again,
+    # cookiecutter will not descend into it and this file will silently vanish from the bake.
+    assert (result.project_path / "changes" / ".gitignore").is_file()
+
 
 def test_bake_nautobot_execution(cookies_baked_nautobot_app_commercial):
     """

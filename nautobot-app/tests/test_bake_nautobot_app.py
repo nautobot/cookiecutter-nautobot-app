@@ -1,5 +1,6 @@
 # pylint: disable=duplicate-code
 """Cookie tests"""
+
 from os import environ
 
 
@@ -16,6 +17,9 @@ def test_bake_project(cookies):
     assert "pyproject.toml" in found_toplevel_files
     assert "README.md" in found_toplevel_files
     assert "LICENSE" in found_toplevel_files
+
+    # `changes/.gitignore` is what keeps the empty towncrier fragment directory in git.
+    assert (result.project_path / "changes" / ".gitignore").is_file()
 
 
 def test_bake_nautobot_execution(cookies_baked_nautobot_app):
