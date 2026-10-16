@@ -1,1 +1,0 @@
-Added a release workflow job that opens a pull request from `main` into `next` after a release is published from `main`.
