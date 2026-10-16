@@ -14,7 +14,7 @@ jobs:
     runs-on: "ubuntu-latest"
     if: "startsWith(github.ref, 'refs/tags/v')"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v7"
       - name: "Setup environment"
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
@@ -54,7 +54,7 @@ jobs:
       contents: "write"
     needs: "build"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v7"
       - name: "Retrieve built package from cache"
         uses: "actions/download-artifact@v4"
         with:
@@ -72,7 +72,7 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     needs: "build"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: "actions/checkout@v7"
       - name: "Setup environment"
         uses: "networktocode/gh-action-setup-poetry-environment@v7"
         with:
@@ -141,7 +141,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout source branch"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v7"
         with:
           ref: "{% raw %}${{ github.event.release.target_commitish }}{% endraw %}"
           fetch-depth: 0
@@ -211,7 +211,7 @@ jobs:
       - "publish-artifactory"
     steps:
       - name: "Checkout develop"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v7"
         with:
           ref: "develop"
           fetch-depth: 0
@@ -272,7 +272,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout main"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v7"
         with:
           ref: "main"
           fetch-depth: 0
