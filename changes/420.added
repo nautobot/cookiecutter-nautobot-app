@@ -1,0 +1,1 @@
+Added a GitHub Actions workflow to automatically merge Dependabot PRs that only update the lockfile for transitive dependencies.

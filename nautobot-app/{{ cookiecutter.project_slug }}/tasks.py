@@ -814,7 +814,7 @@ def build_and_check_docs(context):
 @task(name="help")
 def help_task(context):
     """Print the help of available tasks."""
-    import tasks  # pylint: disable=all
+    import tasks  # noqa: PLC0415  # pylint: disable=all
 
     root = Collection.from_module(tasks)
     for task_name in sorted(root.task_names):
@@ -926,7 +926,7 @@ def autoformat(context):
     },
     iterable=["action", "target"],
 )
-def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):  # noqa: PLR0913
+def ruff(context, action=None, target=None, fix=False, diff=False, output_format="concise"):  # noqa: PLR0913,PLR0917
     """Run ruff to perform code formatting and/or linting."""
     if not action:
         action = ["lint", "format"]
@@ -1020,10 +1020,10 @@ def markdownlint(context, fix=False):
     """Lint Markdown files."""
     # note: at the time of this writing, the `--fix` option is in pending state for pymarkdown on both rules.
     if fix:
-        command = "pymarkdown fix --recurse docs *.md"
+        command = "pymarkdown fix --recurse changes docs *.md"
         run_command(context, command)
     # fix mode doesn't scan/report issues it can't fix, so always run scan even after fixing
-    command = "pymarkdown scan --recurse docs *.md"
+    command = "pymarkdown scan --recurse changes docs *.md"
     run_command(context, command)
 
 
@@ -1059,7 +1059,7 @@ def generate_test_data(context, flush=False, database=None):
         "skip_docs_build": "Skip building the documentation before running tests.",
     }
 )
-def unittest(  # noqa: PLR0913
+def unittest(  # noqa: PLR0913,PLR0917
     context,
     keepdb=False,
     label="{{ cookiecutter.app_name }}",

@@ -1,1 +1,0 @@
-Added support for `--no-input` option to `invoke unittest` and `invoke tests` tasks.

@@ -1,1 +1,0 @@
-Fixed the prepare release workflow bumping the version on prereleases resulting in a version number that is 2 ahead of the last release.
