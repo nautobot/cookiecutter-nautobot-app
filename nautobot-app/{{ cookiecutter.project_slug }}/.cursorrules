@@ -1,0 +1,14 @@
+# Cursor Rules
+
+AGENTS.md in the repository root is the single source of truth for AI agents in
+this repository. Read AGENTS.md before you make any change, and follow it exactly.
+
+Key points, all detailed in AGENTS.md:
+
+- Use Poetry for every command: `poetry run invoke <task>`.
+- Run `poetry run invoke tests` before you propose a change.
+- Import from `nautobot.apps.*`, not from `nautobot.core.*`.
+- Use the Nautobot UI Component Framework for detail views.
+- Do not generate migrations. Ask the developer to run `invoke makemigrations`.
+- Add a changelog fragment at `changes/<issue>.<type>`.
+- Disclose AI assistance in the pull request. See CONTRIBUTING.md.

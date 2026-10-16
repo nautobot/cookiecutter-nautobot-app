@@ -32,3 +32,4 @@
 - [ ] Unit, Integration Tests
 - [ ] Documentation Updates (when adding/changing features)
 - [ ] Outline Remaining Work, Constraints from Design
+- [ ] Disclosed AI assistance, if any (provider and model, e.g. `Anthropic Claude Opus 4.5`)

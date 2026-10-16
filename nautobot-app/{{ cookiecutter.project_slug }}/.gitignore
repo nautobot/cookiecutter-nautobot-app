@@ -316,18 +316,18 @@ public
 CLAUDE.local.md
 
 # OpenAI Codex CLI
-AGENTS.md
+# AGENTS.md is committed; it is this repository's canonical agent instruction file.
 AGENTS.override.md
 .codex/
 
 # Google Gemini CLI
-GEMINI.md
+# GEMINI.md is committed; it points to AGENTS.md.
 .gemini/
 .vertexai/
 
 # Cursor (Anysphere)
+# .cursorrules is committed; it points to AGENTS.md.
 .cursor/
-.cursorrules
 .cursorignore
 .cursorindexingignore
 
