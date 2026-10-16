@@ -1020,10 +1020,10 @@ def markdownlint(context, fix=False):
     """Lint Markdown files."""
     # note: at the time of this writing, the `--fix` option is in pending state for pymarkdown on both rules.
     if fix:
-        command = "pymarkdown fix --recurse docs *.md"
+        command = "pymarkdown fix --recurse changes docs *.md"
         run_command(context, command)
     # fix mode doesn't scan/report issues it can't fix, so always run scan even after fixing
-    command = "pymarkdown scan --recurse docs *.md"
+    command = "pymarkdown scan --recurse changes docs *.md"
     run_command(context, command)
 
 
