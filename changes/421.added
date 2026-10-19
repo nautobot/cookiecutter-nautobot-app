@@ -1,0 +1,1 @@
+Added Playwright browser tests to the commercial app template. Apps generated from it get an `invoke playwright` task with `--look` and `--scratch` options, a `playwright` compose service, an app registration test, a CI workflow and a developer guide.
