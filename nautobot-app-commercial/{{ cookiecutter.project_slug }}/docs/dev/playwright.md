@@ -9,11 +9,11 @@ suite, which still runs with `invoke unittest`.
     Do not add base classes or shared helpers for other apps to reuse. How app browser tests
     should be shared between repositories has not been decided yet.
 
-The process running pytest imports `nautobot.playwright`, which arrived in Nautobot 3.3. The
+The process running pytest imports `nautobot.playwright`, which was added in Nautobot 3.3. The
 instance under test does not need it. The suite, `--look` and scratch tests run against the
 default development stack at `nautobot_ver`. The `playwright` image installs its own Nautobot
-for the client. `playwright_nautobot_ver` in `invoke.yml` sets it, `next` until 3.3 is released,
-and it does not have to match `nautobot_ver`.
+for the client. `playwright_nautobot_ver` in `invoke.yml` sets that version. It is `next` until
+3.3 is released, and it does not have to match `nautobot_ver`.
 
 ## Test against another Nautobot version
 
@@ -27,12 +27,13 @@ Set the stack's version in `invoke.yml`, then run `invoke build` and `invoke sta
 
 ## Run
 
-`invoke playwright` follows the `local` setting in `invoke.yml`, the same as every other task.
+`invoke playwright` reads the `local` setting in `invoke.yml` to decide where to run, the same
+as every other task.
 
 **In the container (default).** With `local` false the tests run in the `playwright` compose
 service, built from `development/Dockerfile-playwright`. It has the browsers, Nautobot and
-this app, and reaches the development stack at `http://nautobot:8080`. Nothing to install on the
-host. This is also the path on a host Playwright does not support, such as Alpine.
+this app, and reaches the development stack at `http://nautobot:8080`. You do not need to install
+anything on the host. Use this path also on a host that Playwright does not support, such as Alpine.
 
 ```bash
 invoke start
@@ -45,9 +46,10 @@ invoke playwright --url https://nautobot.example.com
 `invoke playwright` builds the `playwright` image only when no image with its tag exists. The tag
 is made from `playwright_nautobot_ver` and the locked pytest and Playwright versions, so
 changing any of those builds a new image on the next run. Editing `Dockerfile-playwright` does
-not change the tag, so run `invoke build --playwright` after an edit. A moving `next` needs
-`invoke build --playwright --no-cache`. Without it, Docker reuses the cached layer that installed
-an older `next`, even one cached by another app built from the same Dockerfile.
+not change the tag, so run `invoke build --playwright` after an edit. Because `next` changes
+over time, picking up a newer `next` needs `invoke build --playwright --no-cache`. Without it,
+Docker reuses the cached layer that installed an older `next`, even one cached by another app
+built from the same Dockerfile.
 
 **On the host.** With `local` true pytest runs on your machine. Headed mode, the Playwright
 inspector and codegen only work here.
@@ -94,8 +96,8 @@ invoke playwright --look /dcim/devices/ --url http://host.docker.internal:8080
 ```
 
 Set `NAUTOBOT_PLAYWRIGHT_LOOK_CHARS` to change how much text is printed (default 4000).
-`screenshots/` is gitignored and is not cleared between runs, unlike `test-results/`; looking at
-the same path again overwrites its file.
+`screenshots/` is gitignored and is not cleared between runs, unlike `test-results/`; running
+`--look` on the same path again overwrites the earlier screenshot.
 
 **With Claude Code.** Ask in plain words: "does the installed apps page list this app", "take a
 screenshot of /dcim/devices/", "write a test for the list view filters". The `testing-nautobot-ui`
@@ -104,8 +106,8 @@ It runs `--look` for the first two and follows this guide for the third. There i
 
 For anything the report does not cover, write a short test that uses the same fixtures and put
 it in `{{ cookiecutter.app_name }}/tests/scratch/`. Everything in that directory is gitignored and
-outside the suite, and `invoke playwright --scratch` runs it, with `--pattern` to pick one and
-print output on. The `testing-nautobot-ui` Claude skill describes both paths.
+outside the suite, and `invoke playwright --scratch` runs it with print output on. Add
+`--pattern` to pick one test. The `testing-nautobot-ui` Claude skill describes both paths.
 
 ## In CI
 

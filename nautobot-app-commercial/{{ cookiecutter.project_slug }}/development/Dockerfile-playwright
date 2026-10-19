@@ -1,5 +1,5 @@
-# The image tag and the pip pin must match: Playwright refuses a browser built for another
-# version. tasks.py passes the version poetry.lock pins.
+# The image tag and the pip pin must match: Playwright will not run a browser built for
+# another version. tasks.py passes the version that poetry.lock pins.
 ARG PLAYWRIGHT_VER="1.62.0"
 FROM mcr.microsoft.com/playwright/python:v${PLAYWRIGHT_VER}-noble
 
@@ -7,10 +7,11 @@ FROM mcr.microsoft.com/playwright/python:v${PLAYWRIGHT_VER}-noble
 ARG PLAYWRIGHT_VER
 
 # The tests import nautobot.playwright, so Nautobot 3.3 or later is installed here. It is the
-# test client only. The stack it tests can run an older version. A release installs from PyPI,
-# anything else is treated as a git ref.
+# test client only. The stack it tests can run an older version. A release version is installed
+# from PyPI; any other value is treated as a git ref.
 ARG PLAYWRIGHT_NAUTOBOT_VER="next"
-# Same versions poetry.lock holds, so a `local: true` run and the container agree.
+# tasks.py passes the versions from poetry.lock, so a `local: true` run and the container use the
+# same versions.
 ARG PYTEST_VER
 ARG PYTEST_PLAYWRIGHT_VER
 RUN pip install --no-cache-dir "pytest==${PYTEST_VER}" "pytest-playwright==${PYTEST_PLAYWRIGHT_VER}" \
@@ -19,11 +20,12 @@ RUN pip install --no-cache-dir "pytest==${PYTEST_VER}" "pytest-playwright==${PYT
         || pip install --no-cache-dir "nautobot @ git+https://github.com/nautobot/nautobot.git@${PLAYWRIGHT_NAUTOBOT_VER}")
 
 # The app reads its own package metadata, so it must be installed, not just on sys.path.
-# Editable against /source, which compose mounts the working copy over. Without dependencies:
-# the tests import none of them, and a private one would need credentials in this build.
+# It is installed editable from /source, where compose mounts the working copy. It is installed
+# without dependencies because the tests import none of them, and a private dependency would
+# need credentials in this build.
 COPY . /source
 RUN pip install --no-cache-dir --no-deps -e /source
 
 WORKDIR /source
-# Idle as a service; `invoke playwright` runs pytest via compose run/exec.
+# The container idles as a service; `invoke playwright` runs pytest via compose run/exec.
 CMD ["sleep", "infinity"]

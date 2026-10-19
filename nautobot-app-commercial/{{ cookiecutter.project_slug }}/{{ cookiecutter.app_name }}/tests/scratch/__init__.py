@@ -1,4 +1,4 @@
-"""Throwaway tests behind `invoke playwright --scratch`. Gitignored; pytest reaches it only by explicit path."""
+"""Throwaway tests behind `invoke playwright --scratch`. Gitignored; pytest collects it only from an explicit path."""
 
 import unittest
 

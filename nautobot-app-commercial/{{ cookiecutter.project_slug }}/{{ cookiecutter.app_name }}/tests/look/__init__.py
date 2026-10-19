@@ -1,4 +1,4 @@
-"""The page report behind `invoke playwright --look`. Not a test suite; pytest reaches it only by explicit path."""
+"""The page report for `invoke playwright --look`. Not a test suite; pytest collects it only from an explicit path."""
 
 import unittest
 

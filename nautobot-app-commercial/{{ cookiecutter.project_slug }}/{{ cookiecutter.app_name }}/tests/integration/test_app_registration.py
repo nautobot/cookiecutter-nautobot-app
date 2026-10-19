@@ -6,7 +6,8 @@
 {%- endif -%}
 """The app is installed{% if cookiecutter.model_class_name != "None" %} and its list page is reachable{% endif %}.
 
-Reusable by any app: no page object, no table markup, only the values in `constants.py`.
+Any app can reuse this test. It uses no page object and no table markup, only the values in
+`constants.py`.
 """
 
 from playwright.sync_api import expect
@@ -37,8 +38,9 @@ class AppRegistrationTestCase:
     def test_list_page_loads(self, auth_page, base_url):
         """The list page renders its heading and table, and the sidebar links to it.
 
-        The table rows arrive in a second request after the page frame. A failed request leaves
-        the table body empty, and an empty list still renders one "no records" row.
+        The table rows load in a second request after the page frame. If that request fails, the
+        table body stays empty, while an empty list still renders one "no records" row. A visible
+        first row therefore shows that the second request succeeded.
         The link count is scoped to the sidebar tabs because the Favorites flyout adds a
         second, hidden link for any starred page.
         """

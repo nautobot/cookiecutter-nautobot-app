@@ -50,8 +50,9 @@ services:
       - "../:/source"
 {%- if cookiecutter.__commercial %}
   playwright:
-    # Browser tests (`invoke playwright`). The profile keeps `invoke start` and `invoke build`
-    # from touching this image; compose run enables it on demand.
+    # Browser tests (`invoke playwright`). The profile stops `invoke start` and `invoke build`
+    # from building or starting this service. `compose run playwright` still starts it, because
+    # the command names the service directly.
     profiles: ["playwright"]
     build:
       context: "../"
@@ -62,8 +63,8 @@ services:
         PLAYWRIGHT_VER: "${PLAYWRIGHT_VER}"
         PYTEST_VER: "${PYTEST_VER}"
         PYTEST_PLAYWRIGHT_VER: "${PYTEST_PLAYWRIGHT_VER}"
-    # Every pin is in the tag, so a lock bump of any of them builds a new image instead of
-    # reusing the old one.
+    # The tag includes every pinned version, so when poetry.lock changes any of them, compose
+    # builds a new image instead of reusing the old one.
     image: "{{ cookiecutter.app_slug }}/playwright:${PLAYWRIGHT_NAUTOBOT_VER}-pw${PLAYWRIGHT_VER}-pt${PYTEST_VER}-pp${PYTEST_PLAYWRIGHT_VER}"
     # `--url http://host.docker.internal:8080` reaches a Nautobot on the host. Docker Desktop
     # resolves that name on its own; Linux needs this entry.

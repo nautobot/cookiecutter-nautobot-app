@@ -87,8 +87,9 @@ pytest = "~9.1.1"
 # Playwright browser automation and its pytest plugin (fixtures, --headed, --tracing).
 pytest-playwright = "~0.9.0"
 # Pinned: Playwright ties browser builds to the driver release, so upgrades stay deliberate.
-# A host run installs this and fetches matching browsers. The container image is built from the
-# exact version this resolves to in poetry.lock, read by tasks.py, so the two cannot drift.
+# A host run installs this and fetches matching browsers. tasks.py reads the exact version that
+# poetry.lock resolves this to and builds the container image with it, so the host and the
+# container always use the same version.
 playwright = "~1.62.0"
 
 [tool.poetry.extras]

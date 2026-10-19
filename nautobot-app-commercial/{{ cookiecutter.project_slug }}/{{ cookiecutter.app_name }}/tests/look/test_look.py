@@ -1,8 +1,9 @@
 """One-page report for `invoke playwright --look <path>`: what the page returned, logged, and looks like.
 
-Not part of the suite: it sits outside pytest's `testpaths`, so only the invoke task's explicit
-path reaches it. It logs in as the configured user and reads. No API token, no writes to the
-instance. The report is printed, so the task runs pytest with `-s`.
+Not part of the suite. It is outside pytest's `testpaths`, so pytest collects it only when the
+invoke task passes its path explicitly. It logs in as the configured user and reads the page. It
+uses no API token and writes nothing to the instance. The report is printed, so the task runs
+pytest with `-s`.
 """
 
 import os
@@ -41,13 +42,13 @@ def test_look(auth_page, base_url):
     auth_page.wait_for_load_state("networkidle")
 
     slug = re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-") or "root"
-    # screenshots/ is ours and persists; pytest clears test-results/ every session.
+    # Save to screenshots/, which persists between runs; pytest clears test-results/ every session.
     screenshot = Path("screenshots") / f"look-{slug}.png"
     screenshot.parent.mkdir(exist_ok=True)
     auth_page.screenshot(path=str(screenshot), full_page=True)
 
     headings = auth_page.locator("h1, h2, h3").all_inner_texts()
-    # The main region when the page has one, so the navigation does not use up the text budget.
+    # Read the main region when the page has one, so the navigation text does not use up TEXT_LIMIT.
     main = auth_page.locator("main, #main, [role=main]")
     text = (main.first if main.count() else auth_page.locator("body")).inner_text()
     truncated = len(text) > TEXT_LIMIT

@@ -125,8 +125,8 @@ def task(function=None, *args, **kwargs):
 def _locked_version(package):
     """Return the exact version poetry.lock pins for *package*, or "" before the lock exists or lists it.
 
-    Images build what the lock installs. An empty value lets every other task run on a fresh app
-    with no lock yet; the `playwright` task refuses to start without it.
+    The images install the versions that poetry.lock pins. An empty value lets every other task
+    run on a fresh app that has no lock file yet; the `playwright` task exits with an error instead.
     """
     lock_path = os.path.join(os.path.dirname(__file__), "poetry.lock")
     if not os.path.isfile(lock_path):
@@ -153,8 +153,9 @@ def docker_compose(context, command, **kwargs):
         "NAUTOBOT_VER": context.{{ cookiecutter.app_name }}.nautobot_ver,
         "PYTHON_VER": context.{{ cookiecutter.app_name }}.python_ver,
 {%- if cookiecutter.__commercial %}
-        # Dockerfile-playwright pins: the image tag and every pip install come from the lock, so the
-        # container and a `local: true` run test with the same versions.
+        # Build args for Dockerfile-playwright. The pytest and Playwright versions come from
+        # poetry.lock, so the container and a `local: true` run test with the same versions. The
+        # Nautobot version comes from playwright_nautobot_ver.
         "PLAYWRIGHT_NAUTOBOT_VER": context.{{ cookiecutter.app_name }}.playwright_nautobot_ver,
         "PLAYWRIGHT_VER": _locked_version("playwright"),
         "PYTEST_VER": _locked_version("pytest"),
@@ -249,8 +250,8 @@ def playwright(  # noqa: PLR0913,PLR0917
     command = "pytest -p playwright -p base_url --tracing=retain-on-failure --screenshot=only-on-failure"
     if headed:
         command += " --headed"
-    # Double quotes survive both paths: the host shell strips them, compose splits on them
-    # inside the single-quoted --entrypoint string.
+    # Double quotes work in both cases. On the host and with `compose exec`, the shell removes
+    # them. With `compose run`, compose splits the single-quoted --entrypoint string on them.
     if pattern:
         command += f' -k="{pattern}"'
     if marker:
@@ -260,7 +261,8 @@ def playwright(  # noqa: PLR0913,PLR0917
     command_env = {"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"}
     if show_output or look or scratch:
         command += " -s"
-    # Both directories sit outside pytest's testpaths, so only these explicit paths reach them.
+    # Both directories are outside pytest's testpaths, so pytest collects them only when given
+    # these explicit paths.
     if look:
         command += " {{ cookiecutter.app_name }}/tests/look"
         if "://" in look:
@@ -381,7 +383,7 @@ def build(context, force_rm=False, cache=True):
 
     if playwright:
         # `compose run` only builds this image when its tag is missing, and the tag does not change
-        # when Dockerfile-playwright is edited or `next` moves, so a rebuild needs an explicit path.
+        # when Dockerfile-playwright is edited or `next` moves, so this flag rebuilds it explicitly.
         version = context.{{ cookiecutter.app_name }}.playwright_nautobot_ver
         print(f"Building the playwright image with Nautobot {version}...")
         docker_compose(context, f"--profile playwright {command} playwright")

@@ -19,8 +19,8 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.12"]
-        # The Nautobot the app runs on. The test client's Nautobot is `playwright_nautobot_ver`
-        # in tasks.py, read in a step below.
+        # The Nautobot version that the app runs on. The test client's Nautobot version is
+        # `playwright_nautobot_ver` in tasks.py, which a later step reads.
         nautobot-version: ["{{ min_nautobot_version }}"]
     runs-on: "ubuntu-latest"
     env:
@@ -45,8 +45,8 @@ jobs:
         run: "poetry run invoke lock --constrain-nautobot-ver --constrain-python-ver={% raw %}${{ matrix.python-version }}{% endraw %}"
       - name: "Read the playwright image versions"
         # The image tag must match the one tasks.py gives the compose service, so read every part
-        # from tasks.py. A bare assignment carries the exit status of the substitution, so a
-        # missing value fails this step.
+        # from tasks.py. A bare assignment returns the exit status of the command substitution,
+        # so a failed lookup fails this step.
         run: |
           PLAYWRIGHT_NAUTOBOT_VER=$(poetry run python -c "from tasks import namespace; print(namespace.configuration()['{{ cookiecutter.app_name }}']['playwright_nautobot_ver'])")
           PLAYWRIGHT_VER=$(poetry run python -c "from tasks import _locked_version; print(_locked_version('playwright'))")
@@ -84,7 +84,7 @@ jobs:
             "artifactory_username={% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
             "artifactory_password={% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
       - name: "Build the playwright image"
-        # Tag must match the `image` of the playwright service in docker-compose.dev.yml.
+        # The tag must match the `image` of the playwright service in docker-compose.dev.yml.
         uses: "docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25"  # v5.4.0
         with:
           builder: "{% raw %}${{ steps.buildx.outputs.name }}{% endraw %}"
