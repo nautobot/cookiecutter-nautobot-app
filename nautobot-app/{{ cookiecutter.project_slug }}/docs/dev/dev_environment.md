@@ -498,9 +498,7 @@ To run an individual test, you can run any or all of the following:
 ### Browser Tests and Screenshots
 {%- if cookiecutter.__commercial %}
 
-The Playwright suite in `{{ cookiecutter.app_name }}/tests/integration/` drives a real browser against the
-development stack. [Running the Playwright Tests](playwright.md) covers how to run it, and the
-`testing-nautobot-ui` skill shows how to take a screenshot with it.
+The Playwright suite in `{{ cookiecutter.app_name }}/tests/integration/` drives a real browser against the development stack. [Running the Playwright Tests](playwright.md) covers how to run it, and the `testing-nautobot-ui` skill shows how to take a screenshot with it.
 {%- endif %}
 
 #### Keeping the Debug Toolbar Out of the Way
