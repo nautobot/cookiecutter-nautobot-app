@@ -119,5 +119,6 @@ nav:
   - Developer Guide:
       - Extending the App: "dev/extending.md"
       - Development Environment: "dev/dev_environment.md"
+      - Playwright Tests: "dev/playwright.md"
       - Release Checklist: "dev/release_checklist.md"
   - Nautobot Docs Home ↗︎: "{{ cookiecutter.docs_base_url }}"
