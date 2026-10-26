@@ -10,6 +10,8 @@ import os
 import re
 from pathlib import Path
 
+from nautobot.playwright.base_page import BasePage
+
 TEXT_LIMIT = int(os.environ.get("NAUTOBOT_PLAYWRIGHT_LOOK_CHARS", "4000"))
 # Responses at or above this status are listed as problems.
 ERROR_STATUS = 400
@@ -39,7 +41,7 @@ def test_look(auth_page, base_url):
     )
 
     response = auth_page.goto(f"{base_url}{path}")
-    auth_page.wait_for_load_state("networkidle")
+    BasePage(auth_page, base_url).wait_for_load()
 
     slug = re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-") or "root"
     # Save to screenshots/, which persists between runs; pytest clears test-results/ every session.
