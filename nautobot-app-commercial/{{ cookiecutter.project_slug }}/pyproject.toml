@@ -85,7 +85,7 @@ optional = true
 # Test runner for the Playwright suite. The unittest suites do not use pytest.
 pytest = "~9.1.1"
 # Playwright browser automation and its pytest plugin (fixtures, --headed, --tracing).
-pytest-playwright = "~0.10.0"
+pytest-playwright = {version = "~0.10.0", extras = ["base-url"]}  # base-url: the playwright task runs pytest with -p base_url
 # Pinned: Playwright ties browser builds to the driver release, so upgrades stay deliberate.
 # A host run installs this and fetches matching browsers. tasks.py reads the exact version that
 # poetry.lock resolves this to and builds the container image with it, so the host and the
