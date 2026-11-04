@@ -58,12 +58,14 @@ jobs:
           ARTIFACTORY_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
           ARTIFACTORY_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
         run: |
-          # The image stores the harness as mode 0555, directory included, so copying the directory
-          # itself creates it read-only and the first file into it fails. Copy the contents instead.
+          # The image stores the harness as mode 0555, directories included, so a plain docker cp
+          # creates each directory read-only and fails on the first file in it. tar sets directory
+          # modes after their contents, so stream the copy through it, then make the tree writable.
           mkdir -p "${RUNNER_TEMP}/smoke-test"
           cid="$(docker create "${BASE_IMAGE}:${BASE_IMAGE_TAG}")"
-          docker cp "${cid}:/opt/nautobot/smoke-test/." "${RUNNER_TEMP}/smoke-test"
+          docker cp "${cid}:/opt/nautobot/smoke-test/." - | tar -x -C "${RUNNER_TEMP}/smoke-test"
           docker rm "${cid}" > /dev/null
+          chmod -R u+w "${RUNNER_TEMP}/smoke-test"
           APP_PATH="${GITHUB_WORKSPACE}" \
           APP_REPO="{% raw %}${{ github.repository }}{% endraw %}" \
           APP_REF="{% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}" \
