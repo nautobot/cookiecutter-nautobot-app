@@ -1,0 +1,1 @@
+Raised the minimum Python version to 3.11 in all templates, matching the floor on every supported Nautobot line, and moved the templates' CI matrix to 3.11. Updated the commercial template's `pytest-playwright` pin to 0.10.0 so a generated app's development stack locks against Nautobot `next`, and added a `next` against `develop` cell to the shared upstream testing workflow.
