@@ -247,7 +247,7 @@ def playwright(  # noqa: PLR0913,PLR0917
             "--headed needs a display, which the container does not have. Set `local: true` in invoke.yml.", code=1
         )
     # Traces and screenshots are kept only for failing tests, under test-results/.
-    command = "pytest -p playwright -p base_url --tracing=retain-on-failure --screenshot=only-on-failure"
+    command = "pytest -p playwright --tracing=retain-on-failure --screenshot=only-on-failure"
     if headed:
         command += " --headed"
     # Double quotes work in both cases. On the host and with `compose exec`, the shell removes
