@@ -70,6 +70,29 @@ If you are backporting any fixes to a prior major or minor version of this app, 
 
 We will create a `release-X.Y` branch for you to open your PR against and cut a new release once the PR is successfully merged.
 
+## AI-Assisted Contributions
+
+This project accepts contributions written with the help of AI coding tools. The
+following conditions apply.
+
+- **A human owns the change.** You are the author. You understand every line you
+  submit, and you answer review questions yourself.
+- **You test the change.** Run `invoke tests` locally before you open the pull
+  request. Do not submit output you have not run.
+- **You disclose the assistance.** Tick the disclosure item in the pull request
+  template, and name the provider and the model, for example
+  `Anthropic Claude Opus 4.5` or `GitHub Copilot (GPT-5)`. Disclosure is not a
+  penalty; it helps reviewers calibrate their attention.
+- **You keep the change small.** Maintainers close large, unreviewed,
+  machine-generated pull requests without a detailed review.
+- **You follow the repository standards.** `AGENTS.md` in the repository root states
+  the design patterns, the do's and don'ts, and the maintainer expectations for this
+  repository. Point your agent at that file.
+
+`AGENTS.md` is the canonical instruction file. `CLAUDE.md`, `GEMINI.md`,
+`.cursorrules`, and `.github/copilot-instructions.md` all point to it. Update
+`AGENTS.md`, not the pointers.
+
 ## Release Policy
 
 {{ cookiecutter.verbose_name }} has currently no intended scheduled release schedule, and will release new features in minor versions.

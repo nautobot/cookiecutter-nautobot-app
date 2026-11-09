@@ -17,6 +17,12 @@ def test_bake_project(cookies):
     assert "pyproject.toml" in found_toplevel_files
     assert "README.md" in found_toplevel_files
     assert "LICENSE" in found_toplevel_files
+    assert "CONTRIBUTING.md" in found_toplevel_files
+    assert "AGENTS.md" in found_toplevel_files
+    assert "CLAUDE.md" in found_toplevel_files
+    assert "GEMINI.md" in found_toplevel_files
+    assert ".cursorrules" in found_toplevel_files
+    assert (result.project_path / ".github" / "copilot-instructions.md").is_file()
 
     # `changes/.gitignore` is what keeps the empty towncrier fragment directory in git.
     assert (result.project_path / "changes" / ".gitignore").is_file()
