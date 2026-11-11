@@ -14,7 +14,7 @@ ARG PLAYWRIGHT_NAUTOBOT_VER="next"
 # same versions.
 ARG PYTEST_VER
 ARG PYTEST_PLAYWRIGHT_VER
-RUN pip install --no-cache-dir "pytest==${PYTEST_VER}" "pytest-playwright==${PYTEST_PLAYWRIGHT_VER}" \
+RUN pip install --no-cache-dir "pytest==${PYTEST_VER}" "pytest-playwright[base-url]==${PYTEST_PLAYWRIGHT_VER}" \
         "playwright==${PLAYWRIGHT_VER}" \
     && (pip install --no-cache-dir "nautobot==${PLAYWRIGHT_NAUTOBOT_VER}" \
         || pip install --no-cache-dir "nautobot @ git+https://github.com/nautobot/nautobot.git@${PLAYWRIGHT_NAUTOBOT_VER}")
