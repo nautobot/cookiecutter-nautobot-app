@@ -1,0 +1,1 @@
+Added the Cloud compatibility workflow to the commercial app template. On every pull request it runs the app-compatibility harness from the `ncloud-nautobot` image against the checkout and posts the report as a PR comment without failing the PR.
