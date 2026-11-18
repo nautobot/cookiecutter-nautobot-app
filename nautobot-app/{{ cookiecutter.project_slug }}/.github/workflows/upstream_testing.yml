@@ -16,6 +16,8 @@ jobs:
             app_branch: "main"
           - nautobot_branch: "next"
             app_branch: "main"
+          - nautobot_branch: "next"
+            app_branch: "develop"
           - nautobot_branch: "ltm-2.4"
             app_branch: "ltm-2.4"
             # - nautobot_branch: "next-4.0"
