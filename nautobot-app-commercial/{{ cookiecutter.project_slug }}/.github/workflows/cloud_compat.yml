@@ -1,0 +1,111 @@
+---
+# Cloud compatibility check: caller workflow for Nautobot app repos in networktocode-llc.
+#
+# The workflow runs in this repo's CI against this checkout. It pulls the base image with
+# GITHUB_TOKEN, so this repo must be listed with Read under the ncloud-nautobot package's
+# "Manage Actions access". The harness is copied out of the image, so it matches the image under test.
+#
+# It never fails the PR. When this repo has no access, the workflow posts an "unable to check" notice instead.
+name: "Cloud Compatibility"
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: "read"
+  packages: "read"
+  pull-requests: "write"
+
+concurrency:
+  group: "cloud-compat-{% raw %}${{ github.ref }}{% endraw %}"
+  cancel-in-progress: true
+
+env:
+  BASE_IMAGE: "ghcr.io/networktocode-llc/ncloud-nautobot"
+  BASE_IMAGE_TAG: "latest"
+  SMOKE_MODE: "app"
+
+jobs:
+  cloud-compat:
+    runs-on: "ubuntu-24.04"
+    timeout-minutes: 45
+    steps:
+      - name: "Check out"
+        uses: "actions/checkout@v7"
+
+      - name: "Pull Cloud base image"
+        id: "pull"
+        env:
+          GH_TOKEN: "{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}"
+        run: |
+          if ! echo "${GH_TOKEN}" | docker login ghcr.io -u "{% raw %}${{ github.actor }}{% endraw %}" --password-stdin; then
+            echo "status=login-failed" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          if docker pull "${BASE_IMAGE}:${BASE_IMAGE_TAG}"; then
+            echo "status=pulled" >> "${GITHUB_OUTPUT}"
+          else
+            echo "status=pull-failed" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: "Run smoke test against this checkout"
+        id: "smoke"
+        if: "steps.pull.outputs.status == 'pulled'"
+        continue-on-error: true
+        env:
+          # Only needed when this app has private JFrog-hosted dependencies.
+          ARTIFACTORY_USERNAME: "{% raw %}${{ secrets.ARTIFACTORY_USERNAME }}{% endraw %}"
+          ARTIFACTORY_PASSWORD: "{% raw %}${{ secrets.ARTIFACTORY_PASSWORD }}{% endraw %}"
+        run: |
+          # The image stores the harness as mode 0555, directories included, so a plain docker cp
+          # creates each directory read-only and fails on the first file in it. tar sets directory
+          # modes after their contents, so stream the copy through it, then make the tree writable.
+          mkdir -p "${RUNNER_TEMP}/smoke-test"
+          cid="$(docker create "${BASE_IMAGE}:${BASE_IMAGE_TAG}")"
+          docker cp "${cid}:/opt/nautobot/smoke-test/." - | tar -x -C "${RUNNER_TEMP}/smoke-test"
+          docker rm "${cid}" > /dev/null
+          chmod -R u+w "${RUNNER_TEMP}/smoke-test"
+          APP_PATH="${GITHUB_WORKSPACE}" \
+          APP_REPO="{% raw %}${{ github.repository }}{% endraw %}" \
+          APP_REF="{% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}" \
+          MODE="${SMOKE_MODE}" \
+          OUTDIR="${RUNNER_TEMP}/smoke-out" \
+          bash "${RUNNER_TEMP}/smoke-test/cloud-app-smoke.sh"
+
+      - name: "Compose report"
+        if: "always()"
+        env:
+          PULL_STATUS: "{% raw %}${{ steps.pull.outputs.status }}{% endraw %}"
+        run: |
+          REPORT="${RUNNER_TEMP}/smoke-out/smoke-report.md"
+          OUT="${RUNNER_TEMP}/cloud-compat-comment.md"
+          if [ -f "${REPORT}" ]; then
+            cp "${REPORT}" "${OUT}"
+          else
+            case "${PULL_STATUS}" in
+              login-failed|pull-failed) REASON="cannot pull the Cloud base image. Ask a package admin to add this repository with Read under the ncloud-nautobot package's Actions access" ;;
+              *) REASON="the check did not produce a result" ;;
+            esac
+            printf '## ⚠️ Unable to check Cloud compatibility\n\n%s.\n' "${REASON}" > "${OUT}"
+          fi
+          cat "${OUT}" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: "Upload logs"
+        if: "always() && steps.pull.outputs.status == 'pulled'"
+        uses: "actions/upload-artifact@v4"
+        with:
+          name: "cloud-compat-result"
+          path: |
+            {% raw %}${{ runner.temp }}{% endraw %}/smoke-out/smoke-result.json
+            {% raw %}${{ runner.temp }}{% endraw %}/smoke-out/smoke-report.md
+            {% raw %}${{ runner.temp }}{% endraw %}/smoke-out/logs/
+          if-no-files-found: "warn"
+
+      - name: "Post sticky PR comment"
+        if: "always() && github.event_name == 'pull_request'"
+        continue-on-error: true
+        uses: "marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405"  # v2.9.4
+        with:
+          header: "cloud-app-smoke"
+          path: "{% raw %}${{ runner.temp }}{% endraw %}/cloud-compat-comment.md"
