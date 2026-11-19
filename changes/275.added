@@ -1,0 +1,2 @@
+Added `AGENTS.md` agent instruction files to the `nautobot-app`, `nautobot-app-chatops`, and `nautobot-app-ssot` templates, with `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, and `.github/copilot-instructions.md` pointing to them.
+Added a root `CONTRIBUTING.md` with an AI-usage policy to the open source templates, and an AI-assistance disclosure item to the pull request template.

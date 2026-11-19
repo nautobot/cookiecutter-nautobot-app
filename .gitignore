@@ -312,18 +312,19 @@ invoke.yml
 CLAUDE.local.md
 
 # OpenAI Codex CLI
-AGENTS.md
-AGENTS.override.md
+# Anchored to the repository root so the templates can ship their own agent files.
+/AGENTS.md
+/AGENTS.override.md
 .codex/
 
 # Google Gemini CLI
-GEMINI.md
+/GEMINI.md
 .gemini/
 .vertexai/
 
 # Cursor (Anysphere)
 .cursor/
-.cursorrules
+/.cursorrules
 .cursorignore
 .cursorindexingignore
 
