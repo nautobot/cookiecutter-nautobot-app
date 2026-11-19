@@ -437,6 +437,27 @@ def markdownlint(context, fix=False):
     run_command(context, command)
 
 
+@task
+def lint(context, fix=False):
+    """Run all linters."""
+    linters = (
+        lambda: hadolint(context),
+        lambda: markdownlint(context, fix=fix),
+        lambda: yamllint(context),
+        lambda: ruff(context, fix=fix),
+        lambda: pylint(context),
+        lambda: build_and_check_docs(context),
+    )
+
+    # Run each linter even if preceeding linter has failure
+    for linter in linters:
+        try:
+            linter()
+        except Exception:  # noqa: S110
+            # Left empty in order to run all linters, logging already performed
+            pass
+
+
 @task(
     help={
         "label": "specify a directory with tests directory instead of running all tests for all templates (e.g. -l='nautobot-app/tests')",
