@@ -1,6 +1,6 @@
 # Using the App
 
-This document describes common use-cases and scenarios for this App.
+This page describes common use-cases and scenarios for this App.
 
 ## General Usage
 

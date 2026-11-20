@@ -1,6 +1,6 @@
 # App Overview
 
-This document provides an overview of the App including critical information and important considerations when applying it to your Nautobot environment.
+This page provides an overview of the {{ cookiecutter.verbose_name }} app and what you need to know before you install it in Nautobot.
 
 !!! note
     Throughout this documentation, the terms "app" and "plugin" will be used interchangeably.
