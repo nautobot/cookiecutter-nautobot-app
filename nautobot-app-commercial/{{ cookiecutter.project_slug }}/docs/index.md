@@ -18,7 +18,7 @@ This is a commercial (licensed) [Nautobot](https://docs.nautobot.com/projects/co
 !!! warning "Developer Note - Remove Me!"
     Add a 1-2 paragraph description of what the App does, what problems it solves, and the key functionality it adds to Nautobot.
 
-To get started, check out the [Installation Guide](./admin/install.md). You can then follow the [Getting Started](./user/app_getting_started.md) guide, or explore practical [Use Cases](./user/app_use_cases.md) to see how to integrate the App into your automation pipeline.
+To get started, check out the [Installation Guide](./admin/install.md). You can then follow the [Getting Started](./user/app_getting_started.md) guide, or explore practical [Use Cases](./user/app_use_cases.md) for more advanced workflows enabled by the app.
 
 ### Screenshots
 

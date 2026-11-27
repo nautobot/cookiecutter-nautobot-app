@@ -19,6 +19,8 @@ Remove the configuration you added in `nautobot_config.py` from `PLUGINS` & `PLU
 
 ## Uninstall the package
 
-```bash
-$ pip3 uninstall {{ cookiecutter.app_slug }}
+```shell
+pip uninstall {{ cookiecutter.app_slug }}
 ```
+
+Remove `{{ cookiecutter.app_slug }}` from `local_requirements.txt`.

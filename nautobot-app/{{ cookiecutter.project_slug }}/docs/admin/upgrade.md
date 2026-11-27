@@ -1,10 +1,26 @@
 # Upgrading the App
 
-Here you will find any steps necessary to upgrade the App in your Nautobot environment.
+This page describes how to upgrade this app in an existing Nautobot installation.
 
 ## Upgrade Guide
 
-!!! warning "Developer Note - Remove Me!"
-    Add more detailed steps on how the app is upgraded in an existing Nautobot setup and any version specifics (such as upgrading between major versions with breaking changes).
+1. Read the [Release Notes](release_notes/index.md) for every version between your version and the new one. Check for breaking changes and new requirements.
+2. Check the [Compatibility Matrix](compatibility_matrix.md). Make sure that the new version supports your Nautobot version.
+3. Back up the Nautobot database.
+4. Upgrade the package:
 
-When a new release comes out it may be necessary to run a migration of the database to account for any changes in the data models used by this app. Execute the command `nautobot-server post-upgrade` within the runtime environment of your Nautobot installation after updating the `{{ cookiecutter.app_slug }}` package via `pip`.
+    ```shell
+    pip install --upgrade {{ cookiecutter.app_slug }}
+    ```
+
+5. Apply the database migrations and clear the cache:
+
+    ```shell
+    nautobot-server post_upgrade
+    ```
+
+6. Restart the Nautobot services:
+
+    ```shell
+    sudo systemctl restart nautobot nautobot-worker nautobot-scheduler
+    ```
