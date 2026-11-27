@@ -1,0 +1,1 @@
+Added tests for the commercial template's `_locked_version` helper and for the `invoke playwright` exits without a lock file and on a full URL passed to `--look`.
